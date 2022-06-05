@@ -7,4 +7,5 @@ public class Common {
 
     public static final String UPDATE = "Cập nhật";
     public static final String DELETE = "Xoá";
+    public static final int PICK_IMAGE_REQUEST = 71;
 }
