@@ -1,5 +1,6 @@
 package com.waterbase.foodifyServer;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -53,7 +55,7 @@ public class FoodList extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
 
-    String categoryId ="";
+    String categoryId = "";
 
     FirebaseRecyclerAdapter<Food, FoodViewHolder> adapter;
 
@@ -92,10 +94,10 @@ public class FoodList extends AppCompatActivity {
             }
         });
 
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             categoryId = getIntent().getStringExtra("CategoryId");
         }
-        if(!categoryId.isEmpty())
+        if (!categoryId.isEmpty())
             loadListFood(categoryId);
     }
 
@@ -139,7 +141,7 @@ public class FoodList extends AppCompatActivity {
                 dialog.dismiss();
 
                 //Upload new category
-                if(newFood != null) {
+                if (newFood != null) {
                     foodList.push().setValue(newFood);
                     Snackbar.make(rootLayout, "Món ăn " + newFood.getName() + " đã được thêm", Snackbar.LENGTH_SHORT)
                             .show();
@@ -157,7 +159,7 @@ public class FoodList extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        if(saveUri != null) {
+        if (saveUri != null) {
             ProgressDialog mDialog = new ProgressDialog(this);
             mDialog.setMessage("Đang tải lên....");
             mDialog.show();
@@ -173,7 +175,7 @@ public class FoodList extends AppCompatActivity {
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    //Set value for new Category if image upload and we can get download link
+                                    //Set value for new Food if image upload and we can get download link
                                     newFood = new Food();
                                     newFood.setName(edtName.getText().toString());
                                     newFood.setDescription(edtDescription.getText().toString());
@@ -181,6 +183,8 @@ public class FoodList extends AppCompatActivity {
                                     newFood.setDiscount(edtDiscount.getText().toString());
                                     newFood.setMenuId(categoryId);
                                     newFood.setImage(uri.toString());
+
+
                                 }
                             });
                         }
@@ -234,10 +238,128 @@ public class FoodList extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Common.PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+        if (requestCode == Common.PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             saveUri = data.getData();
             btnSelect.setText("Ảnh đã được chọn!");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle().equals(Common.UPDATE)) {
+            showUpdateFoodDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+        } else if (item.getTitle().equals(Common.DELETE)) {
+            deleteFood(adapter.getRef(item.getOrder()).getKey());
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteFood(String key) {
+        foodList.child(key).removeValue();
+        Toast.makeText(this, "Xoá thành công!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showUpdateFoodDialog(String key, Food item) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodList.this);
+        alertDialog.setTitle("Cập nhật món ăn");
+        alertDialog.setMessage("Vui lòng điền đầy đủ thông tin");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View add_menu_layout = inflater.inflate(R.layout.add_new_food_layout, null);
+
+        edtName = add_menu_layout.findViewById(R.id.edtName);
+        edtDescription = add_menu_layout.findViewById(R.id.edtDescription);
+        edtPrice = add_menu_layout.findViewById(R.id.edtPrice);
+        edtDiscount = add_menu_layout.findViewById(R.id.edtDiscount);
+
+        btnSelect = add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = add_menu_layout.findViewById(R.id.btnUpload);
+
+        //Set default value for view
+        edtName.setText(item.getName());
+        edtDescription.setText(item.getDescription());
+        edtPrice.setText(item.getPrice());
+        edtDiscount.setText(item.getDiscount());
+
+        //Event for button
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage(); //Let user select image from Gallery and save Uri of this image
+            }
+        });
+
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeImage(item);
+            }
+        });
+
+        alertDialog.setView(add_menu_layout);
+        alertDialog.setIcon(R.drawable.ic_baseline_shopping_cart_24);
+
+        alertDialog.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //Update information food
+                item.setName(edtName.getText().toString());
+                item.setDescription(edtDescription.getText().toString());
+                item.setPrice(edtPrice.getText().toString());
+                item.setDiscount(edtDiscount.getText().toString());
+
+                foodList.child(key).setValue(item);
+                Snackbar.make(rootLayout, "Món ăn " + item.getName() + " đã được cập nhật!", Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        alertDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void changeImage(Food item) {
+        if (saveUri != null) {
+            ProgressDialog mDialog = new ProgressDialog(this);
+            mDialog.setMessage("Đang tải lên....");
+            mDialog.show();
+
+            String imageName = UUID.randomUUID().toString();
+            StorageReference imageFolder = storageReference.child("/images/" + imageName);
+            imageFolder.putFile(saveUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDialog.dismiss();
+                            Toast.makeText(FoodList.this, "Đã cập nhật ảnh thành công!", Toast.LENGTH_SHORT).show();
+                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    item.setImage(uri.toString());
+
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener((e) -> {
+                        mDialog.dismiss();
+                        Toast.makeText(FoodList.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mDialog.setMessage("Đang tải " + progress + "%");
+                        }
+                    });
         }
     }
 }
