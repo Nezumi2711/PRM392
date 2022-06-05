@@ -4,4 +4,7 @@ import com.waterbase.foodifyServer.Model.User;
 
 public class Common {
     public static User currentUser;
+
+    public static final String UPDATE = "Cập nhật";
+    public static final String DELETE = "Xoá";
 }

@@ -43,6 +43,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodifyServer.Common.Category;
 import com.waterbase.foodifyServer.Common.Common;
+import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.ViewHolder.MenuViewHolder;
 import com.waterbase.foodifyServer.databinding.ActivityHomeBinding;
 
@@ -239,6 +240,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int i) {
                 viewHolder.txtMenuName.setText(model.getName());
                 Picasso.with(Home.this).load(model.getImage()).into(viewHolder.imageView);
+
+                viewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+
+                    }
+                });
             }
         };
 
@@ -262,5 +270,113 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if(item.getTitle(). equals(Common.UPDATE))
+        {
+            showUpdateDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+        } else if(item.getTitle().equals(Common.DELETE))
+        {
+            deleteCategory(adapter.getRef(item.getOrder()).getKey());
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteCategory(String key) {
+        categories.child(key).removeValue();
+        Toast.makeText(this, "Xoá thành công!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showUpdateDialog(String key, Category item) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("Cập nhật danh mục:");
+        alertDialog.setMessage("Vui lòng điền đầy đủ thông tin");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout, null);
+
+        edtName = add_menu_layout.findViewById(R.id.edtName);
+        btnSelect = add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = add_menu_layout.findViewById(R.id.btnUpload);
+
+        //Set default name
+        edtName.setText(item.getName());
+        
+        //Event for button
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage(); //Let user select image from Gallery and save Uri of this image
+            }
+        });
+
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeImage(item);
+            }
+        });
+
+        alertDialog.setView(add_menu_layout);
+        alertDialog.setIcon(R.drawable.ic_baseline_shopping_cart_24);
+
+        alertDialog.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                //Update information
+                item.setName(edtName.getText().toString());
+                categories.child(key).setValue(item);
+            }
+        });
+
+        alertDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void changeImage(Category item) {
+        if(saveUri != null) {
+            ProgressDialog mDialog = new ProgressDialog(this);
+            mDialog.setMessage("Đang tải lên....");
+            mDialog.show();
+
+            String imageName = UUID.randomUUID().toString();
+            StorageReference imageFolder = storageReference.child("/images/" + imageName);
+            imageFolder.putFile(saveUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDialog.dismiss();
+                            Toast.makeText(Home.this, "Đã cập nhật ảnh thành công!", Toast.LENGTH_SHORT).show();
+                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    item.setImage(uri.toString());
+
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener((e) -> {
+                        mDialog.dismiss();
+                        Toast.makeText(Home.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mDialog.setMessage("Đang tải " + progress + "%");
+                        }
+                    });
+        }
     }
 }
