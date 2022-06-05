@@ -18,9 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:backgroundTint="#CCCCCC"
-            android:drawableLeft="@drawable/ic_baseline_vpn_key_24"
+            android:drawableLeft="@drawable/ic_baseline_fastfood_24"
             android:drawablePadding="13dp"
-            android:hint="Tên"
+            android:hint="Tên danh mục"
             android:inputType="text"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
@@ -37,7 +37,7 @@
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/btnSelect"
-                android:text="Chọn"
+                android:text="Chọn ảnh..."
                 android:textColor="@color/white"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="8dp"
@@ -55,7 +55,7 @@
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/btnUpload"
-                android:text="Upload"
+                android:text="Tải ảnh lên"
                 android:textColor="@color/white"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="8dp"
