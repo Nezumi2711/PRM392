@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Category;
+import com.waterbase.foodify.Service.ListenOrder;
 import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 
 
@@ -73,6 +74,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         View headerView = navigationView.getHeaderView(0);
         TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
         navUserName.setText(Common.currentUser.getName());
+
+        //Register Service
+        Intent service = new Intent(Home.this, ListenOrder.class);
+        startService(service);
     }
 
     private void loadMenu() {
