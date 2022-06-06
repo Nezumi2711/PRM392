@@ -1,4 +1,4 @@
-package com.waterbase.foodifyServer.Common;
+package com.waterbase.foodifyServer.Model;
 
 public class Category {
     private String Name;

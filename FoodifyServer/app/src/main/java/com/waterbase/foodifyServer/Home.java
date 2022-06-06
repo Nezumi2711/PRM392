@@ -24,10 +24,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,11 +37,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
-import com.waterbase.foodifyServer.Common.Category;
+import com.waterbase.foodifyServer.Model.Category;
 import com.waterbase.foodifyServer.Common.Common;
 import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.ViewHolder.MenuViewHolder;
-import com.waterbase.foodifyServer.databinding.ActivityHomeBinding;
 
 import java.util.UUID;
 
@@ -268,6 +263,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        if(id == R.id.nav_orders) {
+            Intent orders = new Intent(Home.this, OrderStatus.class);
+            startActivity(orders);
+        }
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
