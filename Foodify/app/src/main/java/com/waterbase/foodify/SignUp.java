@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
 public class SignUp extends AppCompatActivity {
@@ -48,35 +49,40 @@ public class SignUp extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
-                mDialog.setMessage("Please waiting...");
-                mDialog.show();
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
+                    mDialog.setMessage("Please waiting...");
+                    mDialog.show();
 
-                table_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Check if already user phone
-                        if(dataSnapshot.child(edtPhone.getText().toString()).exists()) {
-                            mDialog.dismiss();
-                            Toast.makeText(SignUp.this, "Phone Number is already register!", Toast.LENGTH_SHORT).show();
-                            finish();
+                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //Check if already user phone
+                            if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+                                mDialog.dismiss();
+                                Toast.makeText(SignUp.this, "Phone Number is already register!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                mDialog.dismiss();
+                                User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                table_user.child(edtPhone.getText().toString()).setValue(user);
+                                Toast.makeText(SignUp.this, "Sign up successfully!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                         }
-                        else {
-                            mDialog.dismiss();
-                            User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                            table_user.child(edtPhone.getText().toString()).setValue(user);
-                            Toast.makeText(SignUp.this, "Sign up successfully!", Toast.LENGTH_SHORT).show();
-                            finish();
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(SignUp.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
+
     }
 
     public void login(View view) {

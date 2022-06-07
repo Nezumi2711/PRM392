@@ -48,46 +48,51 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final ProgressDialog mDialog = new ProgressDialog(SignIn.this);
-                mDialog.setMessage("Please waiting...");
-                mDialog.show();
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    final ProgressDialog mDialog = new ProgressDialog(SignIn.this);
+                    mDialog.setMessage("Please waiting...");
+                    mDialog.show();
 
-                table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Check phone and password is null or not
-                        if(!edtPhone.getText().toString().isEmpty() && !edtPassword.getText().toString().isEmpty()){
-                            //Check if user not in database
-                            if(dataSnapshot.child(edtPhone.getText().toString()).exists()){
-                                //Get User information
-                                mDialog.dismiss();
-                                User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
-                                user.setPhone(edtPhone.getText().toString());
-                                if(user.getPassword().equals(edtPassword.getText().toString())){
-                                    Intent homeIntent = new Intent(SignIn.this, Home.class);
-                                    Common.currentUser  = user;
-                                    startActivity(homeIntent);
-                                    finish();
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //Check phone and password is null or not
+                            if (!edtPhone.getText().toString().isEmpty() && !edtPassword.getText().toString().isEmpty()) {
+                                //Check if user not in database
+                                if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+                                    //Get User information
+                                    mDialog.dismiss();
+                                    User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
+                                    user.setPhone(edtPhone.getText().toString());
+                                    if (user.getPassword().equals(edtPassword.getText().toString())) {
+                                        Intent homeIntent = new Intent(SignIn.this, Home.class);
+                                        Common.currentUser = user;
+                                        startActivity(homeIntent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(SignIn.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
-                                    Toast.makeText(SignIn.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                    mDialog.dismiss();
+                                    Toast.makeText(SignIn.this, "Số điện thoại chưa được đăng ký. Vui lòng đăng ký để sử dụng!", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 mDialog.dismiss();
-                                Toast.makeText(SignIn.this, "Số điện thoại chưa được đăng ký. Vui lòng đăng ký để sử dụng!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignIn.this, "Số điện thoại và mật khẩu không được để trống. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                             }
-                        } else{
-                            mDialog.dismiss();
-                            Toast.makeText(SignIn.this, "Số điện thoại và mật khẩu không được để trống. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    Toast.makeText(SignIn.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
     }

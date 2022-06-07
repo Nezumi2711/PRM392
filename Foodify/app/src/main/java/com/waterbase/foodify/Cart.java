@@ -66,7 +66,10 @@ public class Cart extends AppCompatActivity {
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAlertDialog();
+                if(cart.size() > 0)
+                    showAlertDialog();
+                else
+                    Toast.makeText(Cart.this, "Giỏ hàng của bạn đang trống!!!", Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -130,6 +133,7 @@ public class Cart extends AppCompatActivity {
     private void loadListFood() {
         cart = new Database(this).getCarts();
         adapter = new CartAdapter(cart, this);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
         //Calculate total price
@@ -150,5 +154,24 @@ public class Cart extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if(item.getTitle().equals(Common.DELETE))
+            deleteCart(item.getOrder());
+        return true;
+    }
+
+    private void deleteCart(int position) {
+        //Remove item at List<Order> by position
+        cart.remove(position);
+        //Delete all old data from SQLite
+        new Database(this).cleanCart();
+        //Update new data from List<Order> to SQLite
+        for(Order item: cart)
+            new Database(this).addToCart(item);
+        //Refresh
+        loadListFood();
     }
 }

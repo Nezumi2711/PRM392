@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -68,7 +69,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         layoutManager = new LinearLayoutManager(this);
         recyler_menu.setLayoutManager(layoutManager);
 
-        loadMenu();
+        if(Common.isConnectedToInternet(getBaseContext()))
+            loadMenu();
+        else {
+            Toast.makeText(this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
@@ -107,6 +114,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.refresh)
+            loadMenu();
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

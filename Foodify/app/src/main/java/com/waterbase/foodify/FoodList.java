@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.squareup.picasso.Picasso;
+import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.ViewHolder.FoodViewHolder;
@@ -65,7 +66,12 @@ public class FoodList extends AppCompatActivity {
             categoryId = getIntent().getStringExtra("CategoryId");
             categoryName = getIntent().getStringExtra("CategoryName");
         if(!categoryId.isEmpty() && categoryId != null) {
-            loadListFood(categoryId);
+            if(Common.isConnectedToInternet(getBaseContext()))
+                loadListFood(categoryId);
+            else {
+                Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         //Search

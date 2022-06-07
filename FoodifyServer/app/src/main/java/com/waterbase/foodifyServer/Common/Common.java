@@ -33,7 +33,7 @@ public class Common {
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);
     }
 
-    public static Bitmap scaleBitmap(Bitmap bitmap, int newWidth, int newHeight) {
+    public static Bitmap scaleBitmap(Bitmap bitmap, int newWidth, int newHeight)  {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
         float scaleX = newWidth / (float)bitmap.getWidth();

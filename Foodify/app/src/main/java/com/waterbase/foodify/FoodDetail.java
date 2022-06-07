@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.Model.Order;
@@ -81,7 +82,12 @@ public class FoodDetail extends AppCompatActivity {
         if(getIntent() != null)
             foodId = getIntent().getStringExtra("FoodId");
         if(!foodId.isEmpty()) {
-            getDetailFood(foodId);
+            if(Common.isConnectedToInternet(getBaseContext()))
+                getDetailFood(foodId);
+            else {
+                Toast.makeText(FoodDetail.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         setTitle("Chi tiết");
