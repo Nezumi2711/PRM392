@@ -29,6 +29,8 @@ import com.waterbase.foodify.Model.Category;
 import com.waterbase.foodify.Service.ListenOrder;
 import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 
+import io.paperdb.Paper;
+
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -62,6 +64,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Init database
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
+
+        //Init paper
+        Paper.init(this);
 
         //Load menu
         recyler_menu = (RecyclerView) findViewById(R.id.recyler_menu);
@@ -135,6 +140,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             Intent orderIntent = new Intent(Home.this, OrderStatus.class);
             startActivity(orderIntent);
         } else if (id == R.id.nav_log_out) {
+
+            //Delete Remember user & password
+            Paper.book().destroy();
+
+            //Logout
             Intent signIn = new Intent(Home.this, SignIn.class);
             signIn.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(signIn);

@@ -17,14 +17,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rey.material.widget.CheckBox;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
+
+import io.paperdb.Paper;
 
 public class SignIn extends AppCompatActivity {
 
     EditText edtPhone, edtPassword;
     Button btnSignIn;
     TextView txtAppName;
+    CheckBox ckbRemember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,10 @@ public class SignIn extends AppCompatActivity {
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        ckbRemember = (CheckBox)findViewById(R.id.ckbRemember);
+
+        //Init Paper
+        Paper.init(this);
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
 
@@ -49,6 +57,12 @@ public class SignIn extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (Common.isConnectedToInternet(getBaseContext())) {
+
+                    //Save user& password
+                    if(ckbRemember.isChecked()) {
+                        Paper.book().write(Common.USER_KEY, edtPhone.getText().toString());
+                        Paper.book().write(Common.PWD_KEY, edtPassword.getText().toString());
+                    }
                     final ProgressDialog mDialog = new ProgressDialog(SignIn.this);
                     mDialog.setMessage("Please waiting...");
                     mDialog.show();
