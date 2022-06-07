@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.loader.content.AsyncTaskLoader;
 
 import android.Manifest;
 import android.app.ProgressDialog;

@@ -6,73 +6,78 @@
     app:cardElevation="4dp"
     >
 
-    <LinearLayout
-        android:layout_margin="20dp"
-        android:orientation="vertical"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edtName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="#CCCCCC"
-            android:drawableLeft="@drawable/ic_baseline_fastfood_24"
-            android:drawablePadding="13dp"
-            android:hint="Tên danh mục"
-            android:inputType="text"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_percent=".8" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:weightSum="2"
-            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <info.hoang8f.widget.FButton
-                android:id="@+id/btnSelect"
-                android:text="Chọn ảnh..."
-                android:textColor="@color/white"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_margin="8dp"
-                android:layout_width="0dp"
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_alignParentBottom="true"
-                app:fButtonColor="@color/colorPrimary"
-                app:shadowColor="@color/black"
-                app:shadowEnabled="true"
-                app:shadowHeight="5dp"
-                app:cornerRadius="4dp"
-                />
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#CCCCCC"
+                android:drawableLeft="@drawable/ic_baseline_fastfood_24"
+                android:drawablePadding="13dp"
+                android:hint="Tên danh mục"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent=".8" />
 
-            <info.hoang8f.widget.FButton
-                android:id="@+id/btnUpload"
-                android:text="Tải ảnh lên"
-                android:textColor="@color/white"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_margin="8dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_alignParentBottom="true"
-                app:fButtonColor="@color/btnSignActive"
-                app:shadowColor="@color/black"
-                app:shadowEnabled="true"
-                app:shadowHeight="5dp"
-                app:cornerRadius="4dp"
-                />
+            <LinearLayout
+                android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/btnSelect"
+                    android:text="Chọn ảnh..."
+                    android:textColor="@color/white"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_margin="8dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_alignParentBottom="true"
+                    app:fButtonColor="@color/colorPrimary"
+                    app:shadowColor="@color/black"
+                    app:shadowEnabled="true"
+                    app:shadowHeight="5dp"
+                    app:cornerRadius="4dp"
+                    />
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/btnUpload"
+                    android:text="Tải ảnh lên"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_margin="8dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_alignParentBottom="true"
+                    app:fButtonColor="@color/btnSignActive"
+                    app:shadowColor="@color/black"
+                    app:shadowEnabled="true"
+                    app:shadowHeight="5dp"
+                    app:cornerRadius="4dp"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.cardview.widget.CardView>
