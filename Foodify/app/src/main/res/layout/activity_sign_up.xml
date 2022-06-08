@@ -45,10 +45,27 @@
         app:layout_constraintTop_toBottomOf="@+id/txtAppName" />
 
     <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#CCCCCC"
+        android:drawableLeft="@drawable/ic_baseline_email_24"
+        android:drawablePadding="13dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSignUp"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
         android:id="@+id/txtFullName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#CCCCCC"
         android:drawableLeft="@drawable/ic_baseline_account_circle_24"
         android:drawablePadding="13dp"
@@ -57,7 +74,7 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSignUp"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmail"
         app:layout_constraintWidth_percent=".8" />
 
     <EditText
