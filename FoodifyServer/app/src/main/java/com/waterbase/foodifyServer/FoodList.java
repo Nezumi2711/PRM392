@@ -297,6 +297,7 @@ public class FoodList extends AppCompatActivity {
             }
         });
 
+
         alertDialog.setView(add_menu_layout);
         alertDialog.setIcon(R.drawable.ic_baseline_shopping_cart_24);
 

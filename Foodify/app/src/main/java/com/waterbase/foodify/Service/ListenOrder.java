@@ -78,10 +78,10 @@ public class ListenOrder extends Service implements ChildEventListener {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setTicker("food")
-                .setContentInfo("your order was updated")
-                .setContentText("Order #"+key+" was updated to "+ Common.convertCodeToStatus(request.getStatus()))
+                .setContentInfo("Tình trạng đơn hàng của bạn đã được cập nhật")
+                .setContentText("Đơn hàng #"+key+" đã cập nhật thành "+ Common.convertCodeToStatus(request.getStatus()))
                 .setContentIntent(contentIntent)
-                .setContentInfo("Info")
+                .setContentInfo("Thông tin")
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         NotificationManager notificationManager=(NotificationManager)getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);

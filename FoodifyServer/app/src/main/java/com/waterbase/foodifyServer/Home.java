@@ -29,8 +29,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -40,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import com.waterbase.foodifyServer.Model.Category;
 import com.waterbase.foodifyServer.Common.Common;
 import com.waterbase.foodifyServer.Interface.ItemClickListener;
+import com.waterbase.foodifyServer.Service.ListenOrder;
 import com.waterbase.foodifyServer.ViewHolder.MenuViewHolder;
 
 import java.util.UUID;
@@ -112,6 +117,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recycler_menu.setLayoutManager(layoutManager);
         
         loadMenu();
+
+        //Call service
+        Intent service = new Intent(Home.this, ListenOrder.class);
+        startService(service);
 
     }
 
@@ -288,6 +297,24 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void deleteCategory(String key) {
+
+        //Get all food in category
+        DatabaseReference foods = database.getReference("Foods");
+        Query foodInCategory = foods.orderByChild("menuId").equalTo(key);
+        foodInCategory.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot: dataSnapshot.getChildren()) {
+                    postSnapShot.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         categories.child(key).removeValue();
         Toast.makeText(this, "Xoá thành công!", Toast.LENGTH_SHORT).show();
     }
