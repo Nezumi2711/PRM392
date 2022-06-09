@@ -28,7 +28,7 @@ import com.waterbase.foodify.Model.User;
 
 public class SignUp extends AppCompatActivity {
 
-    EditText edtPhone, edtName, edtPassword, edtEmail;
+    EditText edtPhone, edtName, edtPassword;
     Button btnSignUp;
     TextView txtAppName;
 
@@ -40,7 +40,6 @@ public class SignUp extends AppCompatActivity {
         edtName = (EditText) findViewById(R.id.txtFullName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
-        edtEmail = (EditText) findViewById(R.id.edtEmail);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
@@ -56,7 +55,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!TextUtils.isEmpty(edtName.getText().toString()) && !TextUtils.isEmpty(edtPassword.getText().toString())
-                        && !TextUtils.isEmpty(edtPhone.getText().toString()) && !TextUtils.isEmpty(edtEmail.getText().toString()))    {
+                        && !TextUtils.isEmpty(edtPhone.getText().toString()))    {
                     if (Common.isConnectedToInternet(getBaseContext())) {
                         final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
                         mDialog.setMessage("Vui lòng chờ...");
@@ -71,24 +70,16 @@ public class SignUp extends AppCompatActivity {
                                     Toast.makeText(SignUp.this, "Số điện thoại đã được đăng ký!", Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else {
-                                    //Firebase Auth
-                                    final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                                    firebaseAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtPassword.getText().toString()).addOnCompleteListener((task) -> {
-                                        if(task.isSuccessful()) {
-                                            firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()) {
-                                                        mDialog.dismiss();
-                                                        User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                                                        table_user.child(edtPhone.getText().toString()).setValue(user);
-                                                        Toast.makeText(SignUp.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                                                        finish();
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
+                                    mDialog.dismiss();
+                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                    Intent intent = new Intent(SignUp.this, VerifyPhone.class);
+                                    intent.putExtra("user", user);
+                                    intent.putExtra("phone", edtPhone.getText().toString());
+                                    startActivity(intent);
+//                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+//                                    table_user.child(edtPhone.getText().toString()).setValue(user);
+//                                    Toast.makeText(SignUp.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+//                                    finish();
                                 }
                             }
 

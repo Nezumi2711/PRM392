@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    android:background="@drawable/bg4"
+    tools:context=".VerifyPhone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+        
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/sms"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="Mã xác thực OTP"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textAllCaps="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textAlignment="center"
+            android:text="Chúng tôi đã gửi mã xác thực cho bạn. Vui lòng nhập mã OTP khi nhận được tin nhắn!"
+            android:textStyle="bold"
+            android:textColor="@color/common_google_signin_btn_text_dark"
+            android:textSize="12dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textAlignment="center"
+            android:text="Nhập mã xác thực"
+            android:textStyle="bold"
+            android:textColor="@color/common_google_signin_btn_text_dark"
+            android:textSize="12dp"
+            />
+        
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <EditText
+                android:id="@+id/inputCode1"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+            <EditText
+                android:id="@+id/inputCode2"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+            <EditText
+                android:id="@+id/inputCode3"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+            <EditText
+                android:id="@+id/inputCode4"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+            <EditText
+                android:id="@+id/inputCode5"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+            <EditText
+                android:id="@+id/inputCode6"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:backgroundTint="#CCCCCC"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Không nhận được mã OTP?"
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gửi lại"
+                android:textSize="12dp"
+                android:textColor="@color/purple_500"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                />
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg_design"
+            android:padding="10dp"
+            android:text="Xác thực"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:layout_marginTop="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp" />
+
+
+    </LinearLayout>
+
+</ScrollView>
