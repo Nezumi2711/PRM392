@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,11 +29,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
+import java.util.concurrent.TimeUnit;
+
 public class SignUp extends AppCompatActivity {
 
     EditText edtPhone, edtName, edtPassword;
     Button btnSignUp;
     TextView txtAppName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,8 @@ public class SignUp extends AppCompatActivity {
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
+
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
 
@@ -57,29 +65,55 @@ public class SignUp extends AppCompatActivity {
                 if(!TextUtils.isEmpty(edtName.getText().toString()) && !TextUtils.isEmpty(edtPassword.getText().toString())
                         && !TextUtils.isEmpty(edtPhone.getText().toString()))    {
                     if (Common.isConnectedToInternet(getBaseContext())) {
-                        final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
-                        mDialog.setMessage("Vui lòng chờ...");
-                        mDialog.show();
-
+                        progressBar.setVisibility(View.VISIBLE);
+                        btnSignUp.setVisibility(View.GONE);
                         table_user.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 //Check if already user phone
                                 if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
-                                    mDialog.dismiss();
+                                    progressBar.setVisibility(View.GONE);
+                                    btnSignUp.setVisibility(View.VISIBLE);
                                     Toast.makeText(SignUp.this, "Số điện thoại đã được đăng ký!", Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else {
-                                    mDialog.dismiss();
-                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                                    Intent intent = new Intent(SignUp.this, VerifyPhone.class);
-                                    intent.putExtra("user", user);
-                                    intent.putExtra("phone", edtPhone.getText().toString());
-                                    startActivity(intent);
-//                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-//                                    table_user.child(edtPhone.getText().toString()).setValue(user);
-//                                    Toast.makeText(SignUp.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-//                                    finish();
+                                    //Success
+
+                                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                            "+84" + edtPhone.getText().toString(),
+                                            60,
+                                            TimeUnit.SECONDS,
+                                            SignUp.this,
+                                            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                                @Override
+                                                public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                                                    progressBar.setVisibility(View.GONE);
+                                                    btnSignUp.setVisibility(View.VISIBLE);
+                                                }
+
+                                                @Override
+                                                public void onVerificationFailed(FirebaseException e) {
+                                                    progressBar.setVisibility(View.GONE);
+                                                    btnSignUp.setVisibility(View.VISIBLE);
+                                                    Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                                    progressBar.setVisibility(View.GONE);
+                                                    btnSignUp.setVisibility(View.VISIBLE);
+                                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                                    Intent intent = new Intent(SignUp.this, VerifyPhone.class);
+                                                    intent.putExtra("user", user);
+                                                    intent.putExtra("phone", edtPhone.getText().toString());
+                                                    intent.putExtra("verificationId", verificationId);
+                                                    startActivity(intent);
+                                                }
+                                            }
+                                    );
+
+
+
                                 }
                             }
 

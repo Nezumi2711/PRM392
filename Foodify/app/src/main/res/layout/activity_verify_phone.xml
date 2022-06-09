@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:overScrollMode="never"
     android:scrollbars="none"
     android:background="@drawable/bg4"
@@ -33,6 +32,7 @@
             android:textAllCaps="true"
             />
         <TextView
+            android:id="@+id/txtPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -69,7 +69,7 @@
             <EditText
                 android:id="@+id/inputCode1"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -83,7 +83,7 @@
             <EditText
                 android:id="@+id/inputCode2"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -97,7 +97,7 @@
             <EditText
                 android:id="@+id/inputCode3"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -111,7 +111,7 @@
             <EditText
                 android:id="@+id/inputCode4"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -125,7 +125,7 @@
             <EditText
                 android:id="@+id/inputCode5"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -139,7 +139,7 @@
             <EditText
                 android:id="@+id/inputCode6"
                 android:layout_width="40dp"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -163,13 +163,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Không nhận được mã OTP?"
+                android:text="Không nhận được mã OTP? Hãy thử lại sau "
                 android:textSize="12dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 />
 
             <TextView
+                android:id="@+id/resendCode"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gửi lại"
+                android:textSize="12dp"
+                android:textColor="@color/purple_500"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                />
+
+            <TextView
+                android:id="@+id/countdown"
                 android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -183,18 +196,32 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnVerify"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_bg_design"
-            android:padding="10dp"
-            android:text="Xác thực"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:layout_marginTop="80dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnVerify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_bg_design"
+                android:padding="10dp"
+                android:text="Xác thực"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:layout_marginTop="80dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/progress_bg"
+                android:visibility="gone" />
+        </FrameLayout>
 
 
     </LinearLayout>
