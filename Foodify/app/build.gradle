@@ -3,6 +3,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\phanh\\Desktop\\testKeyStore.jks')
+            storePassword '123456'
+            keyAlias 'CBNV'
+            keyPassword '123456'
+        }
+        release {
+            storeFile file('C:\\Users\\phanh\\Desktop\\testKeyStore.jks')
+            storePassword '123456'
+            keyAlias 'CBNV'
+            keyPassword '123456'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
