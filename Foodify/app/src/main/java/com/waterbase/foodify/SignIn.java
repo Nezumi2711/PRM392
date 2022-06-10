@@ -27,7 +27,7 @@ public class SignIn extends AppCompatActivity {
 
     EditText edtPhone, edtPassword;
     Button btnSignIn;
-    TextView txtAppName;
+    TextView txtAppName, edtForgotPassword;
     CheckBox ckbRemember;
 
     @Override
@@ -39,6 +39,7 @@ public class SignIn extends AppCompatActivity {
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
         ckbRemember = (CheckBox)findViewById(R.id.ckbRemember);
+        edtForgotPassword = findViewById(R.id.forgotPassword);
 
         //Init Paper
         Paper.init(this);
@@ -107,6 +108,15 @@ public class SignIn extends AppCompatActivity {
                     Toast.makeText(SignIn.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+            }
+        });
+
+        //Set on click Forgot Password
+        edtForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignIn.this, ForgotPassword.class);
+                startActivity(intent);
             }
         });
     }

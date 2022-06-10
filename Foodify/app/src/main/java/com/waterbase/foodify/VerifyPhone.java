@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.ChangeEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -35,7 +36,7 @@ public class VerifyPhone extends AppCompatActivity {
 
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     User user = null;
-    String verificationId, phone;
+    String verificationId, phone, isForgotPassword = null;
     TextView resendCode, countdown;
 
     @Override
@@ -45,9 +46,10 @@ public class VerifyPhone extends AppCompatActivity {
 
         user = (User) getIntent().getSerializableExtra("user");
         phone = getIntent().getStringExtra("phone");
+        isForgotPassword = getIntent().getStringExtra("isForgotPassword");
 
         TextView textView = findViewById(R.id.txtPhone);
-        textView.setText("Mã xác thực đã gửi đến số " + String.format("+84-%s", phone) + ". Vui lòng nhập mã OTP khi nhận được tin nhắn!");
+        textView.setText("Mã xác thực đã gửi đến số " + phone + ". Vui lòng nhập mã OTP khi nhận được tin nhắn!");
 
         inputCode1 = findViewById(R.id.inputCode1);
         inputCode2 = findViewById(R.id.inputCode2);
@@ -157,12 +159,25 @@ public class VerifyPhone extends AppCompatActivity {
                                         table_user.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                table_user.child(getIntent().getStringExtra("phone")).setValue(user);
-                                                Intent intent = new Intent(getApplicationContext(), SignIn.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                if(isForgotPassword == null){
 
-                                                Toast.makeText(VerifyPhone.this, "Tạo tài khoản thành công! Vui lòng đăng nhập lại để tiếp tục", Toast.LENGTH_SHORT).show();
-                                                startActivity(intent);
+                                                    //Create new User
+                                                    table_user.child(getIntent().getStringExtra("phone")).setValue(user);
+                                                    Intent intent = new Intent(getApplicationContext(), SignIn.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                                                    Toast.makeText(VerifyPhone.this, "Tạo tài khoản thành công! Vui lòng đăng nhập lại để tiếp tục", Toast.LENGTH_SHORT).show();
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+
+                                                    //Change pass user
+                                                    Intent intent = new Intent(VerifyPhone.this, ChangePassword.class);
+                                                    intent.putExtra("user", user);
+                                                    intent.putExtra("phone", phone);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
                                             }
 
                                             @Override
@@ -170,13 +185,6 @@ public class VerifyPhone extends AppCompatActivity {
 
                                             }
                                         });
-
-//                                        //-------------------------------------------------------
-//                                        User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-//                                        table_user.child(edtPhone.getText().toString()).setValue(user);
-//                                        Toast.makeText(SignUp.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-//                                        finish();
-//                                        //--------------------------------------------------------
                                     } else {
                                         Toast.makeText(VerifyPhone.this, "Mã code không đúng. Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
                                     }

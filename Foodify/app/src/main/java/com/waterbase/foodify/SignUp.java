@@ -30,13 +30,17 @@ import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
 
-    EditText edtPhone, edtName, edtPassword;
+    EditText edtPhone, edtName, edtPassword, edtPasswordVerify;
     Button btnSignUp;
     TextView txtAppName;
 
+    final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+    final String PHONE_PATTERN = "^0[98753]{1}\\d{8}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class SignUp extends AppCompatActivity {
 
         edtName = (EditText) findViewById(R.id.txtFullName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
+        edtPasswordVerify = (EditText) findViewById(R.id.edtPasswordVerify);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
@@ -62,70 +67,94 @@ public class SignUp extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(edtName.getText().toString()) && !TextUtils.isEmpty(edtPassword.getText().toString())
-                        && !TextUtils.isEmpty(edtPhone.getText().toString()))    {
-                    if (Common.isConnectedToInternet(getBaseContext())) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        btnSignUp.setVisibility(View.GONE);
-                        table_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                //Check if already user phone
-                                if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
-                                    progressBar.setVisibility(View.GONE);
-                                    btnSignUp.setVisibility(View.VISIBLE);
-                                    Toast.makeText(SignUp.this, "Số điện thoại đã được đăng ký!", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                } else {
-                                    //Success
+                if (!TextUtils.isEmpty(edtName.getText().toString()) && !TextUtils.isEmpty(edtPassword.getText().toString())
+                        && !TextUtils.isEmpty(edtPhone.getText().toString())) {
 
-                                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                            "+84" + edtPhone.getText().toString(),
-                                            60,
-                                            TimeUnit.SECONDS,
-                                            SignUp.this,
-                                            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                                @Override
-                                                public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                                                    progressBar.setVisibility(View.GONE);
-                                                    btnSignUp.setVisibility(View.VISIBLE);
-                                                }
+                    //Verify password
+                    Pattern patternPassword = Pattern.compile(PASSWORD_PATTERN);
+                    Matcher matcherPassword = patternPassword.matcher(edtPasswordVerify.getText().toString());
 
-                                                @Override
-                                                public void onVerificationFailed(FirebaseException e) {
-                                                    progressBar.setVisibility(View.GONE);
-                                                    btnSignUp.setVisibility(View.VISIBLE);
-                                                    Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
+                    if (matcherPassword.matches() && edtPasswordVerify.getText().toString().length() >= 8) {
 
-                                                @Override
-                                                public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                                    progressBar.setVisibility(View.GONE);
-                                                    btnSignUp.setVisibility(View.VISIBLE);
-                                                    User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                                                    Intent intent = new Intent(SignUp.this, VerifyPhone.class);
-                                                    intent.putExtra("user", user);
-                                                    intent.putExtra("phone", edtPhone.getText().toString());
-                                                    intent.putExtra("verificationId", verificationId);
-                                                    startActivity(intent);
-                                                }
+                        //Check same password
+                        if (edtPassword.getText().toString().equals(edtPasswordVerify.getText().toString())) {
+
+                            //Validate Phone Number
+                            Pattern patternPhone = Pattern.compile(PHONE_PATTERN);
+                            Matcher matcherPhone = patternPhone.matcher(edtPhone.getText().toString());
+                            if (matcherPhone.find()) {
+
+                                //Check Internet connection
+                                if (Common.isConnectedToInternet(getBaseContext())) {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    btnSignUp.setVisibility(View.GONE);
+                                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            //Check if already user phone
+                                            if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+                                                progressBar.setVisibility(View.GONE);
+                                                btnSignUp.setVisibility(View.VISIBLE);
+                                                Toast.makeText(SignUp.this, "Số điện thoại đã được đăng ký!", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            } else {
+
+                                                //Success
+                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                        "+84" + edtPhone.getText().toString(),
+                                                        60,
+                                                        TimeUnit.SECONDS,
+                                                        SignUp.this,
+                                                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                                            @Override
+                                                            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSignUp.setVisibility(View.VISIBLE);
+                                                            }
+
+                                                            @Override
+                                                            public void onVerificationFailed(FirebaseException e) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSignUp.setVisibility(View.VISIBLE);
+                                                                Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            }
+
+                                                            @Override
+                                                            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSignUp.setVisibility(View.VISIBLE);
+                                                                User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                                                Intent intent = new Intent(SignUp.this, VerifyPhone.class);
+                                                                intent.putExtra("user", user);
+                                                                intent.putExtra("phone", edtPhone.getText().toString());
+                                                                intent.putExtra("verificationId", verificationId);
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        }
+                                                );
                                             }
-                                    );
+                                        }
 
-
-
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(SignUp.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
+                            } else {
+                                edtPhone.setError("Số điện thoại không đúng định dạng. Vui lòng kiểm tra lại!");
                             }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                        } else {
+                            edtPasswordVerify.setError("Mật khẩu không giống nhau! Vui lòng kiểm tra lại");
+                        }
                     } else {
-                        Toast.makeText(SignUp.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
-                        return;
+                        Toast.makeText(SignUp.this, "Mật khẩu của bạn cần tối thiểu có 8 ký tự, 1 ký tự viết hoa, 1 số và 1 ký tự đặc biệt!", Toast.LENGTH_LONG).show();
                     }
+
                 } else {
                     Toast.makeText(SignUp.this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                     return;
