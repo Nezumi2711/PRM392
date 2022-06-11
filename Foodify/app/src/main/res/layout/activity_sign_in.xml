@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.waterbase.foodify.SignIn">
+    tools:context="com.waterbase.foodify.SignIn"
+    style="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+    >
 
     <ImageView
         android:id="@+id/imageView3"

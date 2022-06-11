@@ -52,6 +52,12 @@ public class FoodList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
 
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         //Firebase
         database = FirebaseDatabase.getInstance();
         foodList = database.getReference("Foods");
@@ -126,12 +132,6 @@ public class FoodList extends AppCompatActivity {
         });
 
         setTitle(categoryName);
-
-        // calling the action bar
-        ActionBar actionBar = getSupportActionBar();
-
-        // showing the back button in action bar
-        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void startSearch(CharSequence text) {

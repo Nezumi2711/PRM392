@@ -2,6 +2,8 @@ package com.waterbase.foodify;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,16 +104,23 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        //Get Category Id and send to new Activity
-                        Intent foodList = new Intent(getBaseContext(), FoodList.class);
-                        foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
-                        foodList.putExtra("CategoryName", model.getName());
-                        startActivity(foodList);
+
+                        try {
+                            //Get Category Id and send to new Activity
+                            Intent foodList = new Intent(getBaseContext(), FoodList.class);
+                            foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
+                            foodList.putExtra("CategoryName", model.getName());
+                            startActivity(foodList);
+                        }catch (Exception e){
+                            Log.d("ERROR", e.getStackTrace().toString());
+                        }
+
                     }
                 });
             }
         };
         recyler_menu.setAdapter(adapter);
+
     }
 
     @Override

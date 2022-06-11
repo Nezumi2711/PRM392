@@ -12,14 +12,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:orientation="vertical">
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:backgroundTint="#CCCCCC"
                 android:drawablePadding="13dp"
                 android:hint="Tên món ăn"
@@ -34,15 +33,18 @@
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_marginTop="20dp"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
                 android:backgroundTint="#CCCCCC"
                 android:drawablePadding="13dp"
                 android:hint="Mô tả về món ăn này"
                 android:inputType="textMultiLine"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent=".8" />
@@ -50,7 +52,7 @@
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtPrice"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="#CCCCCC"
                 android:drawablePadding="13dp"
@@ -58,7 +60,7 @@
                 android:inputType="number"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent=".8" />
@@ -66,7 +68,7 @@
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtDiscount"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="#CCCCCC"
                 android:drawablePadding="13dp"
@@ -74,7 +76,7 @@
                 android:inputType="number"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent=".8" />
