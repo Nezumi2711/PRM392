@@ -34,7 +34,7 @@ import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 import io.paperdb.Paper;
 
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseDatabase database;
     DatabaseReference category;
@@ -76,7 +76,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         layoutManager = new LinearLayoutManager(this);
         recyler_menu.setLayoutManager(layoutManager);
 
-        if(Common.isConnectedToInternet(getBaseContext()))
+        if (Common.isConnectedToInternet(getBaseContext()))
             loadMenu();
         else {
             Toast.makeText(this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
@@ -105,16 +105,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
 
-                        try {
-                            //Get Category Id and send to new Activity
-                            Intent foodList = new Intent(getBaseContext(), FoodList.class);
-                            foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
-                            foodList.putExtra("CategoryName", model.getName());
-                            startActivity(foodList);
-                        }catch (Exception e){
-                            Log.d("ERROR", e.getStackTrace().toString());
-                        }
-
+                        //Get Category Id and send to new Activity
+                        Intent foodList = new Intent(getBaseContext(), FoodList.class);
+                        foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
+                        foodList.putExtra("CategoryName", model.getName());
+                        startActivity(foodList);
                     }
                 });
             }
@@ -132,7 +127,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.refresh)
+        if (item.getItemId() == R.id.refresh)
             loadMenu();
 
         return super.onOptionsItemSelected(item);
@@ -142,7 +137,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.nav_cart) {
+        if (id == R.id.nav_cart) {
             Intent cartIntent = new Intent(Home.this, Cart.class);
             startActivity(cartIntent);
         } else if (id == R.id.nav_order) {

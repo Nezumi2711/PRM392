@@ -51,13 +51,19 @@
             android:theme="@style/Theme.Foodify.NoActionBar" />
         <activity
             android:name=".SignUp"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Foodify.NoActionBar" />
+            />
         <activity
             android:name=".SignIn"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Foodify.NoActionBar" />
+            />
         <activity
             android:name=".Welcome"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Foodify.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
