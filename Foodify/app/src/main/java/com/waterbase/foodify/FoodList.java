@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
+import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.ViewHolder.FoodViewHolder;
@@ -47,20 +48,20 @@ public class FoodList extends AppCompatActivity {
     List<String> suggestList = new ArrayList<>();
     MaterialSearchBar materialSearchBar;
 
+    //Favorites
+    Database localDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
 
-        // calling the action bar
-        ActionBar actionBar = getSupportActionBar();
-
-        // showing the back button in action bar
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
         //Firebase
         database = FirebaseDatabase.getInstance();
         foodList = database.getReference("Foods");
+
+        //Local DB
+        localDB = new Database(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyler_food);
         recyclerView.setHasFixedSize(true);
@@ -70,7 +71,7 @@ public class FoodList extends AppCompatActivity {
         //Get Intent here
         if(getIntent() != null)
             categoryId = getIntent().getStringExtra("CategoryId");
-            categoryName = getIntent().getStringExtra("CategoryName");
+        categoryName = getIntent().getStringExtra("CategoryName");
         if(!categoryId.isEmpty() && categoryId != null) {
             if(Common.isConnectedToInternet(getBaseContext()))
                 loadListFood(categoryId);
@@ -132,6 +133,12 @@ public class FoodList extends AppCompatActivity {
         });
 
         setTitle(categoryName);
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void startSearch(CharSequence text) {
@@ -179,28 +186,47 @@ public class FoodList extends AppCompatActivity {
     }
 
     private void loadListFood(String categoryId){
-       adapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(Food.class, R.layout.food_item,
-               FoodViewHolder.class, foodList.orderByChild("menuId").equalTo(categoryId) // like: Select * from Foods where MenuId = 'categoryId'
-               ) {
-           @Override
-           protected void populateViewHolder(FoodViewHolder viewHolder, Food model, int position) {
-               viewHolder.food_name.setText(model.getName());
-               Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
+        adapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(Food.class, R.layout.food_item,
+                FoodViewHolder.class, foodList.orderByChild("menuId").equalTo(categoryId) // like: Select * from Foods where MenuId = 'categoryId'
+        ) {
+            @Override
+            protected void populateViewHolder(FoodViewHolder viewHolder, Food model, int position) {
+                viewHolder.food_name.setText(model.getName());
+                Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
 
-               final Food local = model;
-               viewHolder.setItemClickListener(new ItemClickListener() {
-                   @Override
-                   public void onClick(View view, int position, boolean isLongClick) {
-                       //Start Activity
-                       Intent foodDetail = new Intent(FoodList.this, FoodDetail.class);
-                       foodDetail.putExtra("FoodId", adapter.getRef(position).getKey()); // Send Food Id to new activity
-                       startActivity(foodDetail);
-                   }
-               });
-           }
-       };
+                //Add Favorites
+                if(localDB.isFavorite(adapter.getRef(position).getKey()))
+                    viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
 
-       //Set Adapter
+                //Click to change state of Favorites
+                viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!localDB.isFavorite(adapter.getRef(position).getKey())){
+                            localDB.addToFavorites(adapter.getRef(position).getKey());
+                            viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
+                            Toast.makeText(FoodList.this, model.getName() + " đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
+                        } else {
+                            localDB.removeFromFavorites(adapter.getRef(position).getKey());
+                            viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                            Toast.makeText(FoodList.this, model.getName() + " đã xoá khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                viewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //Start Activity
+                        Intent foodDetail = new Intent(FoodList.this, FoodDetail.class);
+                        foodDetail.putExtra("FoodId", adapter.getRef(position).getKey()); // Send Food Id to new activity
+                        startActivity(foodDetail);
+                    }
+                });
+            }
+        };
+
+        //Set Adapter
         recyclerView.setAdapter(adapter);
     }
 
