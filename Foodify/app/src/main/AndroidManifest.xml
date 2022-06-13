@@ -58,7 +58,6 @@
             android:name=".SignIn"
             android:exported="false"
             android:theme="@style/Theme.Foodify.NoActionBar" />
-            />
         <activity
             android:name=".Welcome"
             android:exported="true"
