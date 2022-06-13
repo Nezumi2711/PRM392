@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.R;
 
-public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
+public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener,
+View.OnLongClickListener{
 
     public TextView txtOrderId, txtOrderStatus, txtOrderPhone, txtOrderAddress;
 
@@ -26,6 +27,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
         itemView.setOnClickListener(this);
         itemView.setOnCreateContextMenuListener(this);
+        itemView.setOnLongClickListener(this);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -43,5 +45,11 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
         contextMenu.add(0,0, getAdapterPosition(), "Cập nhật");
         contextMenu.add(0,1, getAdapterPosition(), "Xoá");
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        itemClickListener.onClick(view, getAdapterPosition(), true);
+        return true;
     }
 }
