@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -44,7 +45,7 @@ import com.squareup.picasso.Picasso;
 import com.waterbase.foodifyServer.Model.Category;
 import com.waterbase.foodifyServer.Common.Common;
 import com.waterbase.foodifyServer.Interface.ItemClickListener;
-import com.waterbase.foodifyServer.Service.ListenOrder;
+import com.waterbase.foodifyServer.Model.Token;
 import com.waterbase.foodifyServer.ViewHolder.MenuViewHolder;
 
 import java.util.UUID;
@@ -118,10 +119,16 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         
         loadMenu();
 
-        //Call service
-        Intent service = new Intent(Home.this, ListenOrder.class);
-        startService(service);
+        //Send token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
+    }
+
+    private void updateToken(String token) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+        Token data = new Token(token, true);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {

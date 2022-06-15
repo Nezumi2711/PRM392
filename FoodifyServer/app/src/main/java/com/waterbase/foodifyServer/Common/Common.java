@@ -7,6 +7,7 @@ import android.graphics.Paint;
 
 import com.waterbase.foodifyServer.Model.Request;
 import com.waterbase.foodifyServer.Model.User;
+import com.waterbase.foodifyServer.Remote.APIService;
 import com.waterbase.foodifyServer.Remote.IGeoCoordinates;
 import com.waterbase.foodifyServer.Remote.RetrofitClient;
 
@@ -19,6 +20,12 @@ public class Common {
     public static final int PICK_IMAGE_REQUEST = 71;
 
     public static final String baseUrl = "https://maps.googleapis.com";
+
+    private static final String fcmUrl = "https://fcm.googleapis.com/";
+
+    public static APIService getFCMClient(){
+        return RetrofitClient.getClient(fcmUrl).create(APIService.class);
+    }
 
     public static String coverCodeToStatus(String code){
         if(code.equals("0"))

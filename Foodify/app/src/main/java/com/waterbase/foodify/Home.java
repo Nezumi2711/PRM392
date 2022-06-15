@@ -2,8 +2,6 @@ package com.waterbase.foodify;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +22,12 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Category;
-import com.waterbase.foodify.Service.ListenOrder;
+import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 
 import io.paperdb.Paper;
@@ -89,9 +88,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
         navUserName.setText(Common.currentUser.getName());
 
-        //Register Service
-        Intent service = new Intent(Home.this, ListenOrder.class);
-        startService(service);
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    private void updateToken(String token) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+        Token data = new Token(token, false);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void loadMenu() {
