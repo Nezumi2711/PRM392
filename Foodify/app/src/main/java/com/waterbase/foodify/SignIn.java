@@ -86,6 +86,8 @@ public class SignIn extends AppCompatActivity {
                                         Common.currentUser = user;
                                         startActivity(homeIntent);
                                         finish();
+
+                                        table_user.removeEventListener(this);
                                     } else {
                                         Toast.makeText(SignIn.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                                     }

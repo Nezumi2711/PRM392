@@ -12,6 +12,13 @@
             android:id="@+id/nav_order"
             android:icon="@drawable/ic_baseline_access_time_24"
             android:title="Tình trạng đơn hàng" />
+
+        <item
+            android:id="@+id/nav_change_pwd"
+            android:icon="@drawable/ic_baseline_security_24"
+            android:title="Đổi mật khẩu"
+            android:iconTint="@color/white"
+            />
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_baseline_exit_to_app_24"

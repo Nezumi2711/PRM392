@@ -2,6 +2,7 @@ package com.waterbase.foodifyServer.ViewHolder;
 
 import android.view.ContextMenu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.R;
 
-public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener{
+public class OrderViewHolder extends RecyclerView.ViewHolder{
 
     public TextView txtOrderId, txtOrderStatus, txtOrderPhone, txtOrderAddress;
 
-    private ItemClickListener itemClickListener;
+    public Button btnEdit, btnRemove, btnDetail, btnDirection;
 
     public OrderViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -24,25 +25,11 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         txtOrderStatus = (TextView) itemView.findViewById(R.id.order_status);
         txtOrderPhone = (TextView) itemView.findViewById(R.id.order_phone);
 
-        itemView.setOnClickListener(this);
-        itemView.setOnCreateContextMenuListener(this);
+        btnEdit = (Button) itemView.findViewById(R.id.btnEdit);
+        btnDetail = (Button)itemView.findViewById(R.id.btnDetail);
+        btnDirection = (Button)itemView.findViewById(R.id.btnDirection);
+        btnRemove = (Button)itemView.findViewById(R.id.btnRemove);
+
+
     }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    @Override
-    public void onClick(View v) {
-        itemClickListener.onClick(v, getAdapterPosition(), false);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        contextMenu.setHeaderTitle("Tuỳ chọn");
-
-        contextMenu.add(0,0, getAdapterPosition(), "Cập nhật");
-        contextMenu.add(0,1, getAdapterPosition(), "Xoá");
-    }
-
 }
