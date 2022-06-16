@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import com.waterbase.foodifyServer.Model.Request;
 import com.waterbase.foodifyServer.Model.User;
 import com.waterbase.foodifyServer.Remote.APIService;
+import com.waterbase.foodifyServer.Remote.FCMRetrofitClient;
 import com.waterbase.foodifyServer.Remote.IGeoCoordinates;
 import com.waterbase.foodifyServer.Remote.RetrofitClient;
 
@@ -24,7 +25,7 @@ public class Common {
     private static final String fcmUrl = "https://fcm.googleapis.com/";
 
     public static APIService getFCMClient(){
-        return RetrofitClient.getClient(fcmUrl).create(APIService.class);
+        return FCMRetrofitClient.getClient(fcmUrl).create(APIService.class);
     }
 
     public static String coverCodeToStatus(String code){

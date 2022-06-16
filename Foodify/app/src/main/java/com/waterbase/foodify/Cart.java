@@ -178,6 +178,7 @@ public class Cart extends AppCompatActivity {
                                     //Only run when get result
                                     if (response.code() == 200) {
                                         if (response.body().success == 1) {
+                                            new Database(getBaseContext()).cleanCart();
                                             Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
                                             finish();
                                         } else {

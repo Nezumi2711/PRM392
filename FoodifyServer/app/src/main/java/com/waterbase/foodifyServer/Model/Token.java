@@ -9,6 +9,9 @@ public class Token {
         this.isServerToken = isServerToken;
     }
 
+    public Token() {
+    }
+
     public String getToken() {
         return token;
     }
