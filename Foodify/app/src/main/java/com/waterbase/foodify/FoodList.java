@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,6 +52,8 @@ public class FoodList extends AppCompatActivity {
     //Favorites
     Database localDB;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,23 +66,52 @@ public class FoodList extends AppCompatActivity {
         //Local DB
         localDB = new Database(this);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Get Intent here
+                if(getIntent() != null)
+                    categoryId = getIntent().getStringExtra("CategoryId");
+                categoryName = getIntent().getStringExtra("CategoryName");
+                if(!categoryId.isEmpty() && categoryId != null) {
+                    if(Common.isConnectedToInternet(getBaseContext()))
+                        loadListFood(categoryId);
+                    else {
+                        Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        });
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                //Get Intent here
+                if(getIntent() != null)
+                    categoryId = getIntent().getStringExtra("CategoryId");
+                categoryName = getIntent().getStringExtra("CategoryName");
+                if(!categoryId.isEmpty() && categoryId != null) {
+                    if(Common.isConnectedToInternet(getBaseContext()))
+                        loadListFood(categoryId);
+                    else {
+                        Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        });
+
         recyclerView = (RecyclerView) findViewById(R.id.recyler_food);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        //Get Intent here
-        if(getIntent() != null)
-            categoryId = getIntent().getStringExtra("CategoryId");
-        categoryName = getIntent().getStringExtra("CategoryName");
-        if(!categoryId.isEmpty() && categoryId != null) {
-            if(Common.isConnectedToInternet(getBaseContext()))
-                loadListFood(categoryId);
-            else {
-                Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
 
         //Search
         materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
@@ -228,6 +260,7 @@ public class FoodList extends AppCompatActivity {
 
         //Set Adapter
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

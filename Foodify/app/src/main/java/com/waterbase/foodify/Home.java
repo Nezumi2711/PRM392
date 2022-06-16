@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,7 +54,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     RecyclerView.LayoutManager layoutManager;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
 
-    private AppBarConfiguration mAppBarConfiguration;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,37 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Menu");
         setSupportActionBar(toolbar);
+
+        //View
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Common.isConnectedToInternet(getBaseContext()))
+                    loadMenu();
+                else {
+                    Toast.makeText(getBaseContext(), "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+
+        //Default, load for first time
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (Common.isConnectedToInternet(getBaseContext()))
+                    loadMenu();
+                else {
+                    Toast.makeText(getBaseContext(), "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name);
@@ -85,14 +117,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recyler_menu.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyler_menu.setLayoutManager(layoutManager);
-
-        if (Common.isConnectedToInternet(getBaseContext()))
-            loadMenu();
-        else {
-            Toast.makeText(this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
 
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
@@ -131,7 +155,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
         };
         recyler_menu.setAdapter(adapter);
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
