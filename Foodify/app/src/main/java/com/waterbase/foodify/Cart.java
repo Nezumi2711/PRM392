@@ -86,13 +86,13 @@ public class Cart extends AppCompatActivity {
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cart.size() > 0)
+                if (cart.size() > 0)
                     showAlertDialog();
                 else
                     Toast.makeText(Cart.this, "Giỏ hàng của bạn đang trống!!!", Toast.LENGTH_SHORT).show();
             }
         });
-        
+
         loadListFood();
 
         setTitle("Giỏ hàng");
@@ -162,7 +162,7 @@ public class Cart extends AppCompatActivity {
         data.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapShot: dataSnapshot.getChildren()){
+                for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
 
                     Token serverToken = postSnapShot.getValue(Token.class);
 
@@ -174,11 +174,15 @@ public class Cart extends AppCompatActivity {
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if(response.body().success == 1){
-                                        Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    } else {
-                                        Toast.makeText(Cart.this, "Hệ thống bị lỗi. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+
+                                    //Only run when get result
+                                    if (response.code() == 200) {
+                                        if (response.body().success == 1) {
+                                            Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(Cart.this, "Hệ thống bị lỗi. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
 
@@ -205,8 +209,8 @@ public class Cart extends AppCompatActivity {
 
         //Calculate total price
         float total = 0;
-        for(Order order:cart)
-            total += (Float.parseFloat(order.getPrice()))*(Float.parseFloat(order.getQuantity()));
+        for (Order order : cart)
+            total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(order.getQuantity()));
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
@@ -225,7 +229,7 @@ public class Cart extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if(item.getTitle().equals(Common.DELETE))
+        if (item.getTitle().equals(Common.DELETE))
             deleteCart(item.getOrder());
         return true;
     }
@@ -236,7 +240,7 @@ public class Cart extends AppCompatActivity {
         //Delete all old data from SQLite
         new Database(this).cleanCart();
         //Update new data from List<Order> to SQLite
-        for(Order item: cart)
+        for (Order item : cart)
             new Database(this).addToCart(item);
         //Refresh
         loadListFood();
