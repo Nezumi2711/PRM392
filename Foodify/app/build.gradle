@@ -66,6 +66,9 @@ dependencies {
     implementation 'com.github.rey5137:material:1.2.4'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

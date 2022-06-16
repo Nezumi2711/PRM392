@@ -1,6 +1,7 @@
 package com.waterbase.foodify;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,6 +20,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.paperdb.Paper;
 
 public class Welcome extends AppCompatActivity {
@@ -27,8 +32,20 @@ public class Welcome extends AppCompatActivity {
     TextView txtSlogan, txtAppName;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/font.ttf")
+                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
+                                .build()))
+                .build());
         setContentView(R.layout.activity_welcome);
 
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
