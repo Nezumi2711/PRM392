@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.andremion.counterfab.CounterFab;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +45,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     TextView food_name, food_price, food_description;
     ImageView food_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    FloatingActionButton btnCart, btnRating;
+    FloatingActionButton btnRating;
+    CounterFab btnCart;
     ElegantNumberButton numberButton;
     RatingBar ratingBar;
 
@@ -83,7 +85,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         //Init view
         numberButton = (ElegantNumberButton) findViewById(R.id.number_button);
-        btnCart = (FloatingActionButton) findViewById(R.id.btnCart);
+        btnCart = findViewById(R.id.btnCart);
         btnRating = (FloatingActionButton) findViewById(R.id.btnRating);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
@@ -105,9 +107,11 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                         currentFood.getDiscount()
                 ));
 
-                Toast.makeText(FoodDetail.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodDetail.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        btnCart.setCount(new Database(this).getCountCart());
 
         food_description = (TextView) findViewById(R.id.food_description);
         food_name = (TextView) findViewById(R.id.food_name);

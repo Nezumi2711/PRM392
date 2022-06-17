@@ -36,12 +36,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.andremion.counterfab.CounterFab
         android:id="@+id/btnCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
         android:elevation="6dp"
+        android:backgroundTint="#33cf08"
+        app:badgeBackgroundColor="#7df25c"
         android:src="@drawable/ic_baseline_shopping_cart_24"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end"

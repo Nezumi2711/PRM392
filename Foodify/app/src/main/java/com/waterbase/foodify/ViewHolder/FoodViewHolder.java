@@ -13,7 +13,7 @@ import com.waterbase.foodify.R;
 public class FoodViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView food_name, food_price;
-    public ImageView food_image, fav_image;
+    public ImageView food_image, fav_image, quick_cart;
 
     private ItemClickListener itemClickListener;
 
@@ -28,6 +28,7 @@ public class FoodViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         food_image = (ImageView) itemView.findViewById(R.id.food_image);
         fav_image = (ImageView) itemView.findViewById(R.id.fav);
         food_price = (TextView) itemView.findViewById(R.id.food_price);
+        quick_cart = (ImageView) itemView.findViewById(R.id.btn_quick_cart);
 
         itemView.setOnClickListener(this);
     }

@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +24,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.andremion.counterfab.CounterFab;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,6 +37,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
+import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Category;
 import com.waterbase.foodify.Model.Token;
@@ -60,6 +65,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     SwipeRefreshLayout swipeRefreshLayout;
 
+    CounterFab fab;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
@@ -84,6 +91,17 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Menu");
         setSupportActionBar(toolbar);
+
+        //Floating Action Button
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, Cart.class));
+            }
+        });
+        
+        fab.setCount(new Database(this).getCountCart());
 
         //View
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -128,33 +146,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
 
-        //Init paper
-        Paper.init(this);
-
-        //Load menu
-        recyler_menu = (RecyclerView) findViewById(R.id.recyler_menu);
-        recyler_menu.setHasFixedSize(true);
-//        layoutManager = new LinearLayoutManager(this);
-//        recyler_menu.setLayoutManager(layoutManager);
-        recyler_menu.setLayoutManager(new GridLayoutManager(this, 2));
-
-        //Set name for user
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
-        navUserName.setText(Common.currentUser.getName());
-
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-
-    }
-
-    private void updateToken(String token) {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference tokens = db.getReference("Tokens");
-        Token data = new Token(token, false);
-        tokens.child(Common.currentUser.getPhone()).setValue(data);
-    }
-
-    private void loadMenu() {
         adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class, R.layout.menu_item, MenuViewHolder.class, category) {
             @Override
             protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
@@ -174,8 +165,47 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 });
             }
         };
+
+        //Init paper
+        Paper.init(this);
+
+        //Load menu
+        recyler_menu = (RecyclerView) findViewById(R.id.recyler_menu);
+        recyler_menu.setLayoutManager(new GridLayoutManager(this, 2));
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(recyler_menu.getContext(),
+                R.anim.layout_fall_down);
+        recyler_menu.setLayoutAnimation(controller);
+
+        //Set name for user
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
+        navUserName.setText(Common.currentUser.getName());
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fab.setCount(new Database(this).getCountCart());
+    }
+
+    private void updateToken(String token) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+        Token data = new Token(token, false);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
+    }
+
+    private void loadMenu() {
+
         recyler_menu.setAdapter(adapter);
         swipeRefreshLayout.setRefreshing(false);
+
+        //Animation
+        recyler_menu.getAdapter().notifyDataSetChanged();
+        recyler_menu.scheduleLayoutAnimation();
     }
 
     @Override
@@ -285,4 +315,5 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         AlertDialog dialog = alertDialog.create();
         dialog.show();
     }
+
 }

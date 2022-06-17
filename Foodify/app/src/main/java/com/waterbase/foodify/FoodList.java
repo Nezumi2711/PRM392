@@ -28,6 +28,7 @@ import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.Model.Food;
+import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.ViewHolder.FoodViewHolder;
 
 import java.util.ArrayList;
@@ -247,6 +248,22 @@ public class FoodList extends AppCompatActivity {
                 viewHolder.food_name.setText(model.getName());
                 viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
+
+                //Quick Cart
+                viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new Database(getBaseContext()).addToCart(new Order(
+                                adapter.getRef(position).getKey(),
+                                model.getName(),
+                                "1",
+                                model.getPrice(),
+                                model.getDiscount()
+                        ));
+
+                        Toast.makeText(FoodList.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 //Add Favorites
                 if(localDB.isFavorite(adapter.getRef(position).getKey()))
