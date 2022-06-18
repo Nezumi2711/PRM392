@@ -50,20 +50,22 @@
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/btnPlaceOrder"
-                android:text="Place Order"
-                android:textColor="@android:color/white"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Place Order"
+                android:textColor="@android:color/white"
+                app:cornerRadius="4dp"
                 app:fButtonColor="@color/btnSignActive"
                 app:shadowColor="@android:color/black"
                 app:shadowEnabled="true"
-                app:shadowHeight="5dp"
-                app:cornerRadius="4dp"
-                />
+                app:shadowHeight="5dp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
