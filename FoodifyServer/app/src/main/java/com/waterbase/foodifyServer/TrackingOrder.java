@@ -68,6 +68,8 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     private static int FATEST_INTERVAL = 5000;
     private static int DISPLACEMENT = 10;
 
+    private static String MAP_API = "AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs";
+
     private IGeoCoordinates mService;
 
     @Override
@@ -127,7 +129,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     }
 
     private void drawRoute(LatLng yourLocation, String address) {
-        mService.getGeoCode(address).enqueue(new Callback<String>() {
+        mService.getGeoCode(address, MAP_API).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
@@ -157,7 +159,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
 
                     //draw route
                     mService.getDirections(yourLocation.latitude + ", " + yourLocation.longitude,
-                            orderLocation.latitude + ", " + orderLocation.longitude)
+                            orderLocation.latitude + ", " + orderLocation.longitude, MAP_API)
                             .enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
