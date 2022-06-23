@@ -1,22 +1,35 @@
 package com.waterbase.foodify;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +46,7 @@ import com.waterbase.foodify.Model.Request;
 import com.waterbase.foodify.Model.Sender;
 import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.Remote.APIService;
+import com.waterbase.foodify.Remote.IGoogleService;
 import com.waterbase.foodify.ViewHolder.CartAdapter;
 
 import java.text.NumberFormat;
@@ -49,7 +63,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Cart extends AppCompatActivity {
+public class Cart extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -64,6 +79,21 @@ public class Cart extends AppCompatActivity {
     CartAdapter adapter;
 
     APIService mService;
+
+    //Location
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+
+    private static int UPDATE_INTERVAL = 5000;
+    private static int FATEST_INTERVAL = 3000;
+    private static int DISPLACEMENT = 10;
+
+    private static final int LOCATION_REQUEST_CODE = 9999;
+    private static final int PLAY_SERVICES_REQUEST = 9997;
+
+    //Declare Google Map API Retrofit
+    IGoogleService mGoogleMapService;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -84,8 +114,25 @@ public class Cart extends AppCompatActivity {
 
         setContentView(R.layout.activity_cart);
 
+        //Runtime permission
+        if(checkLocatePermission())
+        {
+            ActivityCompat.requestPermissions(this, new String[]
+                    {
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    }, LOCATION_REQUEST_CODE
+                    );
+        } else {
+            if(checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+            }
+        }
+
         //Init
         mService = Common.getFCMService();
+        mGoogleMapService = Common.getGoogleMapAPI();
 
         //Firebase
         database = FirebaseDatabase.getInstance();
@@ -120,6 +167,55 @@ public class Cart extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE:
+            {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(checkPlayServices()) {
+                        buildGoogleApiClient();
+                        createLocationRequest();
+                    }
+                }
+            }
+        }
+    }
+
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+    private synchronized void buildGoogleApiClient() {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+
+        mGoogleApiClient.connect();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if(resultCode != ConnectionResult.SUCCESS) {
+            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode))
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_REQUEST).show();
+            else
+            {
+                Toast.makeText(this, "Thiết bị này chưa được hỗ trợ!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
     private void showAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
         alertDialog.setTitle("Còn 1 bước nữa!");
@@ -130,6 +226,23 @@ public class Cart extends AppCompatActivity {
 
         MaterialEditText edtAddress = (MaterialEditText) order_address_comment.findViewById(R.id.edtAddress);
         MaterialEditText edtComment = (MaterialEditText) order_address_comment.findViewById(R.id.edtComment);
+
+
+        //Radio
+        RadioButton rdiShipToAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiShipToAddress);
+        RadioButton rdiHomeAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiHomeAddress);
+
+        //Add event
+        rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    if(isChecked){
+
+                    }
+                }
+            }
+        });
 
 
         alertDialog.setView(order_address_comment);
@@ -156,10 +269,6 @@ public class Cart extends AppCompatActivity {
 
                 sendNotificationOrder(order_number);
 
-                //Delete Cart
-//                new Database(getBaseContext()).cleanCart();
-//                Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-//                finish();
             }
         });
 
@@ -262,5 +371,51 @@ public class Cart extends AppCompatActivity {
             new Database(this).addToCart(item);
         //Refresh
         loadListFood();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        displayLocation();
+        startLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        if(checkLocatePermission()){
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    private void displayLocation() {
+        if(checkLocatePermission())
+            return;
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation != null) {
+            Log.d("LOCATION", "Your location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
+        }
+        else {
+            Log.d("LOCATION", "Could not get your location!");
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    
+    private boolean checkLocatePermission() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        displayLocation();
     }
 }

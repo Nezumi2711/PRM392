@@ -47,6 +47,28 @@
                 app:met_primaryColor="@color/colorPrimary"
                 app:met_singleLineEllipsis="true"
                 />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <RadioButton
+                    android:id="@+id/rdiShipToAddress"
+                    android:text="Giao hàng đến vị trí của bạn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+                <RadioButton
+                    android:id="@+id/rdiHomeAddress"
+                    android:text="Giao hàng đến địa chỉ trên"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+
+            </RadioGroup>
         </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

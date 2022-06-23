@@ -17,4 +17,15 @@ public class RetrofitClient {
         }
         return retrofit;
     }
+
+    public static Retrofit getGoogleClient(String baseURL)
+    {
+        if(retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofit;
+    }
 }
