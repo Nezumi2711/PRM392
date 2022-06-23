@@ -100,7 +100,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 startActivity(new Intent(Home.this, Cart.class));
             }
         });
-        
+
         fab.setCount(new Database(this).getCountCart());
 
         //View
