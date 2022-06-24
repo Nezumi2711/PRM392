@@ -95,7 +95,7 @@ public class Welcome extends AppCompatActivity {
             final DatabaseReference table_user = database.getReference("User");
 
             final ProgressDialog mDialog = new ProgressDialog(Welcome.this);
-            mDialog.setMessage("Please waiting...");
+            mDialog.setMessage("Xin vui lòng chờ...");
             mDialog.show();
 
             table_user.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -60,7 +60,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     DatabaseReference category;
 
     RecyclerView recyler_menu;
-    RecyclerView.LayoutManager layoutManager;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
 
     SwipeRefreshLayout swipeRefreshLayout;

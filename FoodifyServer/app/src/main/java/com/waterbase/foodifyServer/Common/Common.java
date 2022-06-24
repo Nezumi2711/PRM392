@@ -30,11 +30,11 @@ public class Common {
 
     public static String coverCodeToStatus(String code){
         if(code.equals("0"))
-            return "Placed";
+            return "Đã nhận đơn";
         else if(code.equals("1"))
-            return "On my way";
+            return "Đang trên đường";
         else
-            return "Shipped";
+            return "Giao thành công";
     }
 
     public static IGeoCoordinates getGeoCodeService() {

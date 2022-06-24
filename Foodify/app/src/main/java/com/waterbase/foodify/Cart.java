@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,6 +50,10 @@ import com.waterbase.foodify.Remote.APIService;
 import com.waterbase.foodify.Remote.IGoogleService;
 import com.waterbase.foodify.ViewHolder.CartAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +70,8 @@ import retrofit2.Response;
 
 public class Cart extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+
+    String address = null;
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -230,7 +237,14 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         //Radio
         RadioButton rdiShipToAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiShipToAddress);
-        RadioButton rdiHomeAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiHomeAddress);
+        RadioButton rdiAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiAdress);
+
+        rdiAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                edtAddress.setText("");
+            }
+        });
 
         //Add event
         rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -238,7 +252,32 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     if(isChecked){
+                        mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
+                                        mLastLocation.getLatitude(),
+                                        mLastLocation.getLongitude()))
+                                .enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response.body());
 
+                                            JSONArray resultsArray = jsonObject.getJSONArray("results");
+
+                                            JSONObject firstObject = resultsArray.getJSONObject(0);
+
+                                            address = firstObject.getString("formatted_address");
+                                            edtAddress.setText(address);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        Toast.makeText(Cart.this, "Error to get location: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.i("LOCATION", "" + t.getMessage());
+                                    }
+                                });
                     }
                 }
             }
@@ -251,6 +290,12 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         alertDialog.setPositiveButton("Đặt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                if(TextUtils.isEmpty(address)){
+                    Toast.makeText(Cart.this, "Vui lòng nhập địa chỉ giao hàng!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 //Create new Request
                 Request request = new Request(
                         Common.currentUser.getPhone(),
@@ -269,6 +314,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
                 sendNotificationOrder(order_number);
 
+                //Delete Cart
+                new Database(getBaseContext()).cleanCart();
+                Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 

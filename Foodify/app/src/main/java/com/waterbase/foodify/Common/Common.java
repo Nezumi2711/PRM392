@@ -20,7 +20,7 @@ public class Common {
     }
 
     public static IGoogleService getGoogleMapAPI(){
-        return RetrofitClient.getGoogleClient(GOOGLE_API_URL).create(IGoogleService.class);
+        return RetrofitClient.getGoogleApiClient(GOOGLE_API_URL).create(IGoogleService.class);
     }
 
     public static final String DELETE = "Xoá";
@@ -29,11 +29,11 @@ public class Common {
 
     public static String convertCodeToStatus(String status) {
         if(status.equals("0"))
-            return "Placed";
+            return "Đã nhận đơn";
         else if(status.equals("1"))
-            return "On my way";
+            return "Đang trên đường";
         else
-            return "Shipped";
+            return "Giao thành công";
     }
 
     public static boolean isConnectedToInternet(Context context) {

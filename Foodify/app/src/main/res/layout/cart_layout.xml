@@ -46,10 +46,11 @@
         <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
             android:id="@+id/btn_quantity"
             android:layout_width="130dp"
-            android:layout_height="47dp"
-            android:layout_margin="10dp"
-            app:textSize="8sp"
-            app:backGroundColor="@color/colorAccent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            app:textSize="6sp"
+            app:textColor="@color/purple_500"
+            app:backGroundColor="@color/white"
             app:initialNumber="1"
             app:finalNumber="20"
 
