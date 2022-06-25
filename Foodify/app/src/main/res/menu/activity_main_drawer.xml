@@ -5,6 +5,12 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home_address"
+            android:icon="@drawable/ic_baseline_home_24"
+            android:iconTint="@color/white"
+            android:title="Địa chỉ mặc định"
+            />
+        <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="Giỏ hàng" />

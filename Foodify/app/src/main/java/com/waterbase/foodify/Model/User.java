@@ -8,6 +8,7 @@ public class User implements Serializable {
     private String Password;
     private String Phone;
     private String IsStaff;
+    private String homeAddress;
 
     public User(){}
 
@@ -47,5 +48,13 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         Phone = phone;
+    }
+
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
     }
 }

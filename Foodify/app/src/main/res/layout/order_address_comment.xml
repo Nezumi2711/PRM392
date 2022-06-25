@@ -9,67 +9,74 @@
     app:cardElevation="4dp"
     >
 
-        <LinearLayout
-            android:orientation="vertical"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edtAddress"
+            android:hint="Địa chỉ"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:textColorHint="@color/colorPrimary"
+            android:text=""
+            android:textColor="@color/colorPrimary"
+            android:textSize="34sp"
+            android:inputType="text"
+            app:met_baseColor="@color/colorPrimary"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@color/colorPrimary"
+            app:met_singleLineEllipsis="true"
+            />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edtComment"
+            android:hint="Ghi chú"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorPrimary"
+            android:text=""
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:inputType="textMultiLine"
+            app:met_baseColor="@color/colorPrimary"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@color/colorPrimary"
+            app:met_singleLineEllipsis="true"
+            />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             >
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edtAddress"
-                android:hint="Địa chỉ"
+            <RadioButton
+                android:id="@+id/rdiAddress"
+                android:text="Giao hàng đến địa chỉ trên"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                android:text=""
-                android:textColor="@color/colorPrimary"
-                android:textSize="34sp"
-                android:inputType="text"
-                app:met_baseColor="@color/colorPrimary"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@color/colorPrimary"
-                app:met_singleLineEllipsis="true"
+                android:checked="true"
                 />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edtComment"
-                android:hint="Ghi chú"
+            <RadioButton
+                android:id="@+id/rdiShipToAddress"
+                android:text="Giao hàng đến vị trí của bạn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                android:text=""
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:inputType="textMultiLine"
-                app:met_baseColor="@color/colorPrimary"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@color/colorPrimary"
-                app:met_singleLineEllipsis="true"
                 />
 
-            <RadioGroup
+            <RadioButton
+                android:id="@+id/rdiHomeAddress"
+                android:text="Giao hàng đến địa chỉ mặc định"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
-
-                <RadioButton
-                    android:id="@+id/rdiShipToAddress"
-                    android:text="Giao hàng đến vị trí của bạn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-                <RadioButton
-                    android:id="@+id/rdiAdress"
-                    android:text="Giao hàng đến địa chỉ trên"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    />
+                />
 
 
-            </RadioGroup>
-        </LinearLayout>
+        </RadioGroup>
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

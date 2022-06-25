@@ -234,6 +234,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             startActivity(orderIntent);
         } else if (id == R.id.nav_change_pwd) {
             showChangePasswordDialog();
+        } else if (id == R.id.nav_home_address) {
+            showHomeAddressDialog();
         }
         else if (id == R.id.nav_log_out) {
 
@@ -251,6 +253,41 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private void showHomeAddressDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("Đặt địa chỉ mặc định");
+        alertDialog.setMessage("Vui lòng điền đầy đủ thông tin");
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout_home_address = inflater.inflate(R.layout.home_address_layout, null);
+
+        final MaterialEditText edtHomeAddress = layout_home_address.findViewById(R.id.edtHomeAddress);
+
+        alertDialog.setView(layout_home_address);
+
+        alertDialog.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                //Set new Home Address
+                Common.currentUser.setHomeAddress(edtHomeAddress.getText().toString());
+
+                FirebaseDatabase.getInstance().getReference("User")
+                        .child(Common.currentUser.getPhone())
+                        .setValue(Common.currentUser)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(Home.this, "Cập nhật địa chỉ thành công!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void showChangePasswordDialog() {

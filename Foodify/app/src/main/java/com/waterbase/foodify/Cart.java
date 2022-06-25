@@ -122,16 +122,15 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         setContentView(R.layout.activity_cart);
 
         //Runtime permission
-        if(checkLocatePermission())
-        {
+        if (checkLocatePermission()) {
             ActivityCompat.requestPermissions(this, new String[]
                     {
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION
                     }, LOCATION_REQUEST_CODE
-                    );
+            );
         } else {
-            if(checkPlayServices()) {
+            if (checkPlayServices()) {
                 buildGoogleApiClient();
                 createLocationRequest();
             }
@@ -178,10 +177,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case LOCATION_REQUEST_CODE:
-            {
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(checkPlayServices()) {
+            case LOCATION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (checkPlayServices()) {
                         buildGoogleApiClient();
                         createLocationRequest();
                     }
@@ -210,11 +208,10 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(resultCode != ConnectionResult.SUCCESS) {
-            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode))
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_REQUEST).show();
-            else
-            {
+            else {
                 Toast.makeText(this, "Thiết bị này chưa được hỗ trợ!", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -236,12 +233,27 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
 
         //Radio
-        RadioButton rdiShipToAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiShipToAddress);
-        RadioButton rdiAddress = (RadioButton) order_address_comment.findViewById(R.id.rdiAdress);
+        RadioButton rdiShipToAddress = order_address_comment.findViewById(R.id.rdiShipToAddress);
+        RadioButton rdiAddress = order_address_comment.findViewById(R.id.rdiAddress);
+        RadioButton rdiHomeAddress = order_address_comment.findViewById(R.id.rdiHomeAddress);
+
+        rdiHomeAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) || Common.currentUser.getHomeAddress() != null) {
+                        edtAddress.setText(Common.currentUser.getHomeAddress());
+                    } else
+                        Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
 
         rdiAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
                 edtAddress.setText("");
             }
         });
@@ -250,35 +262,33 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    if(isChecked){
-                        mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
-                                        mLastLocation.getLatitude(),
-                                        mLastLocation.getLongitude()))
-                                .enqueue(new Callback<String>() {
-                                    @Override
-                                    public void onResponse(Call<String> call, Response<String> response) {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(response.body());
+                if (isChecked) {
+                    mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
+                                    mLastLocation.getLatitude(),
+                                    mLastLocation.getLongitude()))
+                            .enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.body());
 
-                                            JSONArray resultsArray = jsonObject.getJSONArray("results");
+                                        JSONArray resultsArray = jsonObject.getJSONArray("results");
 
-                                            JSONObject firstObject = resultsArray.getJSONObject(0);
+                                        JSONObject firstObject = resultsArray.getJSONObject(0);
 
-                                            address = firstObject.getString("formatted_address");
-                                            edtAddress.setText(address);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                                        address = firstObject.getString("formatted_address");
+                                        edtAddress.setText(address);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
+                                }
 
-                                    @Override
-                                    public void onFailure(Call<String> call, Throwable t) {
-                                        Toast.makeText(Cart.this, "Error to get location: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                        Log.i("LOCATION", "" + t.getMessage());
-                                    }
-                                });
-                    }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    Toast.makeText(Cart.this, "Error to get location: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.i("LOCATION", "" + t.getMessage());
+                                }
+                            });
                 }
             }
         });
@@ -291,7 +301,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if(TextUtils.isEmpty(address)){
+                if (TextUtils.isEmpty(edtAddress.getText().toString())) {
                     Toast.makeText(Cart.this, "Vui lòng nhập địa chỉ giao hàng!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -429,20 +439,19 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void startLocationUpdates() {
-        if(checkLocatePermission()){
+        if (checkLocatePermission()) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     private void displayLocation() {
-        if(checkLocatePermission())
+        if (checkLocatePermission())
             return;
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if(mLastLocation != null) {
+        if (mLastLocation != null) {
             Log.d("LOCATION", "Your location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
-        }
-        else {
+        } else {
             Log.d("LOCATION", "Could not get your location!");
         }
     }
@@ -456,7 +465,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-    
+
     private boolean checkLocatePermission() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
