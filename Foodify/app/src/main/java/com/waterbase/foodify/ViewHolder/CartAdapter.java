@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Cart;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
@@ -32,6 +33,7 @@ class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
 
     public TextView txt_card_item, txt_price;
     public ElegantNumberButton btn_quantity;
+    public ImageView cart_image;
 
     private ItemClickListener itemClickListener;
 
@@ -44,6 +46,8 @@ class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         txt_card_item = (TextView) itemView.findViewById(R.id.cart_item_name);
         txt_price = (TextView) itemView.findViewById(R.id.cart_item_Price);
         btn_quantity = (ElegantNumberButton) itemView.findViewById(R.id.btn_quantity);
+        cart_image = (ImageView) itemView.findViewById(R.id.cart_image);
+
         itemView.setOnCreateContextMenuListener(this);
     }
 
@@ -79,8 +83,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, final int position) {
-//        TextDrawable drawable = TextDrawable.builder().buildRound("" + listData.get(position).getQuantity(), Color.RED);
-//        holder.img_cart_count.setImageDrawable(drawable);
+
+        Picasso.with(cart.getBaseContext())
+                        .load(listData.get(position).getImage())
+                        .resize(70,70)
+                        .centerCrop()
+                        .into(holder.cart_image);
 
         holder.btn_quantity.setNumber(listData.get(position).getQuantity());
         holder.btn_quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {

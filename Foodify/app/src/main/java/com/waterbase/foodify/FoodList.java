@@ -258,7 +258,8 @@ public class FoodList extends AppCompatActivity {
                                 model.getName(),
                                 "1",
                                 model.getPrice(),
-                                model.getDiscount()
+                                model.getDiscount(),
+                                model.getImage()
                         ));
 
                         Toast.makeText(FoodList.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
