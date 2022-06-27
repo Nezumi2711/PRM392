@@ -1,6 +1,7 @@
 package com.waterbase.foodify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.andremion.counterfab.CounterFab;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +37,7 @@ import com.waterbase.foodify.Model.Rating;
 
 import java.util.Arrays;
 
+import info.hoang8f.widget.FButton;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
@@ -56,6 +60,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     DatabaseReference foods;
     DatabaseReference ratingTbl;
 
+    FButton btnShowComment;
+
     Food currentFood;
 
     @Override
@@ -77,6 +83,16 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 .build());
 
         setContentView(R.layout.activity_food_detail);
+
+        btnShowComment = findViewById(R.id.btnShowComment);
+        btnShowComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodDetail.this, ShowComment.class);
+                intent.putExtra(Common.INTENT_FOOD_ID, foodId);
+                startActivity(intent);
+            }
+        });
 
         //Firebase
         database = FirebaseDatabase.getInstance();
@@ -239,26 +255,35 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 foodId,
                 String.valueOf(value),
                 comments);
-        ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(Common.currentUser.getPhone()).exists()) {
-                    //Remove old feedback
-                    ratingTbl.child(Common.currentUser.getPhone()).removeValue();
-                    //Update new feedback
-                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-                } else {
 
-                    //Update new value
-                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-                }
-                Toast.makeText(FoodDetail.this, "Cảm ơn bạn đã đánh giá món ăn!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        ratingTbl.push()
+                .setValue(rating)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(FoodDetail.this, "Cảm ơn bạn đã đánh giá!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+//        ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.child(Common.currentUser.getPhone()).exists()) {
+//                    //Remove old feedback
+//                    ratingTbl.child(Common.currentUser.getPhone()).removeValue();
+//                    //Update new feedback
+//                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
+//                } else {
+//
+//                    //Update new value
+//                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
+//                }
+//                Toast.makeText(FoodDetail.this, "Cảm ơn bạn đã đánh giá món ăn!", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 }

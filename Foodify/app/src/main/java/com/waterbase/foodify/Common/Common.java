@@ -15,6 +15,8 @@ public class Common {
     private static final String BASE_URL = "https://fcm.googleapis.com/";
     private static final String GOOGLE_API_URL = "https://maps.googleapis.com/";
 
+    public static final String INTENT_FOOD_ID = "FoodId";
+
     public static APIService getFCMService(){
         return RetrofitClient.getClient(BASE_URL).create(APIService.class);
     }

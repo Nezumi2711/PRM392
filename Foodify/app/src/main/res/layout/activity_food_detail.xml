@@ -175,6 +175,21 @@
 
             </androidx.cardview.widget.CardView>
 
+            <info.hoang8f.widget.FButton
+                android:id="@+id/btnShowComment"
+                android:text="Hiển thị bình luận"
+                android:textColor="@color/white"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_margin="8dp"
+                app:fButtonColor="#34eba1"
+                app:shadowColor="#1e7854"
+                app:shadowEnabled="true"
+                app:shadowHeight="5dp"
+                app:cornerRadius="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
         </LinearLayout>
 

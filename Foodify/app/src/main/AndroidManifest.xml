@@ -20,6 +20,9 @@
         tools:replace="android:theme"
         tools:targetApi="31">
         <activity
+            android:name=".ShowComment"
+            android:exported="false" />
+        <activity
             android:name=".ChangePassword"
             android:exported="false" />
         <activity
@@ -28,7 +31,6 @@
         <activity
             android:name=".VerifyPhone"
             android:exported="false" />
-
         <activity
             android:name=".OrderStatus"
             android:exported="false" />
@@ -57,8 +59,7 @@
         <activity
             android:name=".Welcome"
             android:exported="true"
-            android:theme="@style/Theme.Foodify.NoActionBar"
-            >
+            android:theme="@style/Theme.Foodify.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,7 +72,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Service.MyFirebaseMessaging"
             android:exported="false">
@@ -79,7 +79,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

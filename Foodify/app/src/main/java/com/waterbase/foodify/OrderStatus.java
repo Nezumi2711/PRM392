@@ -2,7 +2,10 @@ package com.waterbase.foodify;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -11,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.Request;
 import com.waterbase.foodify.ViewHolder.OrderViewHolder;
@@ -77,22 +82,39 @@ public class OrderStatus extends AppCompatActivity {
     }
 
     private void loadOrders(String phone) {
-        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(
-                Request.class,
-                R.layout.order_layout,
-                OrderViewHolder.class,
-                requests.orderByChild("phone")
-                        .equalTo(phone)
-        ) {
+
+        Query getOrderByUser = requests.orderByChild("phone")
+                .equalTo(phone);
+
+        FirebaseRecyclerOptions<Request> orderOptions = new FirebaseRecyclerOptions.Builder<Request>()
+                .setQuery(getOrderByUser, Request.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
             @Override
-            protected void populateViewHolder(OrderViewHolder orderViewHolder, Request model, int i) {
+            protected void onBindViewHolder(@NonNull OrderViewHolder orderViewHolder, int i, @NonNull Request model) {
                 orderViewHolder.txtOrderId.setText(adapter.getRef(i).getKey());
                 orderViewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
                 orderViewHolder.txtOrderAddress.setText(model.getAddress());
                 orderViewHolder.txtOrderPhone.setText(model.getPhone());
             }
+
+            @NonNull
+            @Override
+            public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.order_layout, parent, false);
+                return new OrderViewHolder(itemView);
+            }
         };
+        adapter.startListening();
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     @Override
