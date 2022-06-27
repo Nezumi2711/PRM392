@@ -1,5 +1,7 @@
 package com.waterbase.foodify;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,8 +9,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -63,6 +71,8 @@ public class ShowComment extends AppCompatActivity {
 
         setContentView(R.layout.activity_show_comment);
 
+        setTitle("Bình luận");
+
         //Firebase
         database = FirebaseDatabase.getInstance();
         ratingTbl = database.getReference("Rating");
@@ -82,9 +92,93 @@ public class ShowComment extends AppCompatActivity {
                 {
                     Query query = ratingTbl.orderByChild("foodId").equalTo(foodId);
 
+                    FirebaseRecyclerOptions<Rating> options = new FirebaseRecyclerOptions.Builder<Rating>()
+                            .setQuery(query, Rating.class)
+                            .build();
+
+                    adapter = new FirebaseRecyclerAdapter<Rating, ShowCommentViewHolder>(options) {
+                        @Override
+                        protected void onBindViewHolder(@NonNull ShowCommentViewHolder holder, int i, @NonNull Rating model) {
+                            holder.ratingBar.setRating(Float.parseFloat(model.getRateValue()));
+                            holder.txtComment.setText(model.getComment());
+                            holder.txtUserPhone.setText(model.getUserPhone());
+                        }
+
+                        @NonNull
+                        @Override
+                        public ShowCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.show_comment_layout, parent, false);
+                            return new ShowCommentViewHolder(view);
+                        }
+                    };
                     
+                    loadComment(foodId);
                 }
             }
         });
+
+        //Thread to load comment on first launch
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+
+                if(getIntent() != null)
+                    foodId = getIntent().getStringExtra(Common.INTENT_FOOD_ID);
+                if(!foodId.isEmpty() && foodId != null) {
+                    Query query = ratingTbl.orderByChild("foodId").equalTo(foodId);
+
+                    FirebaseRecyclerOptions<Rating> options = new FirebaseRecyclerOptions.Builder<Rating>()
+                            .setQuery(query, Rating.class)
+                            .build();
+
+
+                    adapter = new FirebaseRecyclerAdapter<Rating, ShowCommentViewHolder>(options) {
+                        @Override
+                        protected void onBindViewHolder(@NonNull ShowCommentViewHolder holder, int i, @NonNull Rating model) {
+                            holder.ratingBar.setRating(Float.parseFloat(model.getRateValue()));
+                            holder.txtComment.setText(model.getComment());
+                            holder.txtUserPhone.setText(model.getUserPhone());
+                        }
+
+                        @NonNull
+                        @Override
+                        public ShowCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.show_comment_layout, parent, false);
+
+                            return new ShowCommentViewHolder(view);
+                        }
+                    };
+
+                    loadComment(foodId);
+
+                }
+            }
+        });
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void loadComment(String foodId) {
+        adapter.startListening();
+
+        recyclerView.setAdapter(adapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
