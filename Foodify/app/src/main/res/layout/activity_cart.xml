@@ -8,13 +8,25 @@
     android:padding="16dp"
     tools:context=".Cart">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listCart"
-        android:background="@android:color/transparent"
+    <LinearLayout
+
+        android:layout_above="@+id/cardView"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listCart"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_alignParentBottom="true"
         app:cardBackgroundColor="@color/colorPrimary"
         android:layout_width="match_parent"

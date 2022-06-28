@@ -1,6 +1,8 @@
 package com.waterbase.foodify.Model;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
 
     private int ID;
     private String ProductId;

@@ -3,6 +3,7 @@ package com.waterbase.foodify;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -314,20 +315,24 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         txtTotalPrice.getText().toString(),
                         "0",
                         edtComment.getText().toString(),
+                        "Chưa thanh toán!",
                         cart
                 );
 
+                //Pass object to another activity!
+                Intent intent = new Intent(Cart.this, OrderDetail.class);
+                intent.putExtra("requests", request);
+                startActivity(intent);
+
                 //Summit to Firebase
                 //We will using System.CurrentMilli to key
-                String order_number = String.valueOf(System.currentTimeMillis());
-                requests.child(order_number).setValue(request);
+//                String order_number = String.valueOf(System.currentTimeMillis());
+//                requests.child(order_number).setValue(request);
+//
+//                sendNotificationOrder(order_number);
 
-                sendNotificationOrder(order_number);
 
-                //Delete Cart
-                new Database(getBaseContext()).cleanCart();
-                Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-                finish();
+
             }
         });
 
@@ -341,51 +346,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         alertDialog.show();
     }
 
-    private void sendNotificationOrder(String order_number) {
-        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query data = tokens.orderByChild("serverToken").equalTo(true); //Get all node with isServerToken is true;
-        data.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
 
-                    Token serverToken = postSnapShot.getValue(Token.class);
-
-                    //Create raw payload to send
-                    Notification notification = new Notification("Foodify", "Bạn có 1 đơn hàng mới " + order_number);
-                    Sender content = new Sender(serverToken.getToken(), notification);
-
-                    mService.sendNotification(content)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-
-                                    //Only run when get result
-                                    if (response.code() == 200) {
-                                        if (response.body().success == 1) {
-                                            new Database(getBaseContext()).cleanCart();
-                                            Toast.makeText(Cart.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        } else {
-                                            Toast.makeText(Cart.this, "Hệ thống bị lỗi. Vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-                                    Log.e("ERROR", t.getMessage());
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void loadListFood() {
         cart = new Database(this).getCarts();

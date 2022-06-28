@@ -94,7 +94,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
         holder.btn_quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
-                Order order = listData.get(position);
+                Order order = listData.get(holder.getAdapterPosition());
                 order.setQuantity(String.valueOf(newValue));
                 new Database(cart).updateCart(order);
 
