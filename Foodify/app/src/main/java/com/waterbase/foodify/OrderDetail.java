@@ -1,15 +1,6 @@
 package com.waterbase.foodify;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +30,6 @@ import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Model.MyResponse;
 import com.waterbase.foodify.Model.Notification;
-import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.Model.Request;
 import com.waterbase.foodify.Model.Sender;
 import com.waterbase.foodify.Model.Token;
@@ -41,9 +38,6 @@ import com.waterbase.foodify.ViewHolder.OrderDetailAdapter;
 import com.waterbase.foodify.Zalopay.Api.CreateOrder;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

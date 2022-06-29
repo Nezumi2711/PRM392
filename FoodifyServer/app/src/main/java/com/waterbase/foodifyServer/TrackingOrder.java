@@ -163,7 +163,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                             .enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-                                    new ParserTask().execute(response.body().toString());
+                                    new ParserTask().execute(response.body());
                                 }
 
                                 @Override
@@ -307,12 +307,10 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             mDialog.dismiss();
 
-            ArrayList points;
-            PolylineOptions lineOptions = null;
+            ArrayList points =  new ArrayList();
+            PolylineOptions lineOptions = new PolylineOptions();
 
             for(int i = 0; i < lists.size(); i++){
-                points = new ArrayList();
-                lineOptions = new PolylineOptions();
 
                 List<HashMap<String, String>> path = lists.get(i);
 
@@ -331,7 +329,8 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                 lineOptions.color(Color.RED);
                 lineOptions.geodesic(true);
             }
-            mMap.addPolyline(lineOptions);
+            if(lineOptions != null)
+                mMap.addPolyline(lineOptions);
         }
     }
 }

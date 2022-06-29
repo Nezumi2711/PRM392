@@ -26,6 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.andremion.counterfab.CounterFab;
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,14 +37,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Interface.ItemClickListener;
+import com.waterbase.foodify.Model.Banner;
 import com.waterbase.foodify.Model.Category;
 import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.ViewHolder.MenuViewHolder;
@@ -67,6 +75,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     SwipeRefreshLayout swipeRefreshLayout;
 
     CounterFab fab;
+
+    //Slider
+    HashMap<String, String> image_list;
+    SliderLayout mSlider;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -198,12 +210,77 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
+        //Setup Slider
+        setupSlider();
+
+    }
+
+    private void setupSlider() {
+        mSlider = findViewById(R.id.slider);
+        image_list = new HashMap<>();
+
+        DatabaseReference banners = database.getReference("Banner");
+
+        banners.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot postSnapShot: dataSnapshot.getChildren())
+                {
+                    Banner banner = postSnapShot.getValue(Banner.class);
+
+                    image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
+                }
+                for(String key: image_list.keySet())
+                {
+                    String[] keySplit = key.split("@@@");
+                    String nameOfFood = keySplit[0];
+                    String idOfFood = keySplit[1];
+
+                    //Create Slider
+                    TextSliderView textSliderView = new TextSliderView(getBaseContext());
+                    textSliderView
+                            .description(nameOfFood)
+                            .image(image_list.get(key))
+                            .setScaleType(BaseSliderView.ScaleType.Fit)
+                            .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                                @Override
+                                public void onSliderClick(BaseSliderView slider) {
+                                    Intent intent = new Intent(Home.this, FoodDetail.class);
+                                    //Send Food id to another activity
+                                    intent.putExtras(textSliderView.getBundle());
+                                    startActivity(intent);
+                                }
+                            });
+
+                    //Add extra bundle
+                    textSliderView.bundle(new Bundle());
+                    textSliderView.getBundle().putString("FoodId", idOfFood);
+
+                    mSlider.addSlider(textSliderView);
+
+                    //Remove event after finish
+                    banners.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mSlider.setPresetTransformer(SliderLayout.Transformer.Background2Foreground);
+        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mSlider.setCustomAnimation(new DescriptionAnimation());
+        mSlider.setDuration(4000);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+        mSlider.stopAutoCycle();
     }
 
     @Override
