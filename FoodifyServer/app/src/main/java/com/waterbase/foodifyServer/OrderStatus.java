@@ -162,7 +162,23 @@ public class OrderStatus extends AppCompatActivity {
         final View view = inflater.inflate(R.layout.update_order_layout, null);
 
         spinner = (MaterialSpinner) view.findViewById(R.id.statusSpinner);
-        spinner.setItems("Placed", "On my way", "Shipped");
+        spinner.setItems("ĐÃ NHẬN ĐƠN", "ĐANG TRÊN ĐƯỜNG", "GIAO THÀNH CÔNG");
+
+        requests.orderByKey().equalTo(key)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot postSnapShot: dataSnapshot.getChildren()) {
+                            Request data = postSnapShot.getValue(Request.class);
+                            spinner.setSelectedIndex(Integer.parseInt(data.getStatus()));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(OrderStatus.this, "Đã có lỗi từ hệ thống, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         alertDialog.setView(view);
 
