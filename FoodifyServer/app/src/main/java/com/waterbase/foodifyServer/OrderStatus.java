@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,14 +74,14 @@ public class OrderStatus extends AppCompatActivity {
     }
 
     private void loadOrders() {
-        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(
-                Request.class,
-                R.layout.order_layout,
-                OrderViewHolder.class,
-                requests
-        ) {
+
+        FirebaseRecyclerOptions<Request> options = new FirebaseRecyclerOptions.Builder<Request>()
+                .setQuery(requests, Request.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(options) {
             @Override
-            protected void populateViewHolder(OrderViewHolder viewHolder, Request model, int i) {
+            protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, int i, @NonNull Request model) {
                 viewHolder.txtOrderId.setText(adapter.getRef(i).getKey());
                 viewHolder.txtOrderStatus.setText(Common.coverCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
@@ -89,14 +91,14 @@ public class OrderStatus extends AppCompatActivity {
                 viewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showUpdateDialog(adapter.getRef(i).getKey(), adapter.getItem(i));
+                        showUpdateDialog(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), adapter.getItem(viewHolder.getAdapterPosition()));
                     }
                 });
 
                 viewHolder.btnRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deleteOrder(adapter.getRef(i).getKey());
+                        deleteOrder(adapter.getRef(viewHolder.getAdapterPosition()).getKey());
                     }
                 });
 
@@ -105,7 +107,7 @@ public class OrderStatus extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent orderDetail = new Intent(OrderStatus.this, OrderDetail.class);
                         Common.currentRequest = model;
-                        orderDetail.putExtra("OrderId", adapter.getRef(i).getKey());
+                        orderDetail.putExtra("OrderId", adapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         startActivity(orderDetail);
                     }
                 });
@@ -119,9 +121,31 @@ public class OrderStatus extends AppCompatActivity {
                     }
                 });
             }
+
+            @NonNull
+            @Override
+            public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.order_layout, parent, false);
+                return new OrderViewHolder(itemView);
+            }
         };
+        adapter.startListening();
+
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadOrders();
     }
 
     private void deleteOrder(String key) {
