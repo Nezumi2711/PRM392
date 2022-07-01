@@ -164,6 +164,7 @@ public class OrderStatus extends AppCompatActivity {
         spinner = (MaterialSpinner) view.findViewById(R.id.statusSpinner);
         spinner.setItems("ĐÃ NHẬN ĐƠN", "ĐANG TRÊN ĐƯỜNG", "GIAO THÀNH CÔNG");
 
+        //Set value default spinner
         requests.orderByKey().equalTo(key)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
