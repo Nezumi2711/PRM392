@@ -11,7 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -273,7 +276,25 @@ public class FoodList extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FoodViewHolder viewHolder, int position, @NonNull Food model) {
                 viewHolder.food_name.setText(model.getName());
-                viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
+
+                if(Integer.parseInt(model.getDiscount()) > 0)
+                {
+                    String foodPrice = model.getPrice() + "đ";
+                    long newFoodPrice = Long.parseLong(model.getPrice()) - Long.parseLong(model.getPrice())* Long.parseLong(model.getDiscount())/100;
+                    SpannableStringBuilder spnBuilder = new SpannableStringBuilder(foodPrice);
+                    StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
+                    spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    viewHolder.food_price.setText(spnBuilder);
+                    viewHolder.newPrice.setText(newFoodPrice+"đ");
+                } else
+                {
+                    viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
+                    viewHolder.discount.setVisibility(View.GONE);
+                    viewHolder.newPrice.setVisibility(View.GONE);
+                }
+
+
+                viewHolder.discount.setText("- " + model.getDiscount() + "%");
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
 
                 //Quick Cart
@@ -293,20 +314,21 @@ public class FoodList extends AppCompatActivity {
                     }
                 });
 
+
                 //Add Favorites
-                if(localDB.isFavorite(adapter.getRef(position).getKey()))
+                if(localDB.isFavorite(adapter.getRef(position).getKey(),Common.currentUser.getPhone()))
                     viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
 
                 //Click to change state of Favorites
                 viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!localDB.isFavorite(adapter.getRef(viewHolder.getAdapterPosition()).getKey())){
-                            localDB.addToFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey());
+                        if(!localDB.isFavorite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())){
+                            localDB.addToFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
                             Toast.makeText(FoodList.this, model.getName() + " đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
                         } else {
-                            localDB.removeFromFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey());
+                            localDB.removeFromFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                             Toast.makeText(FoodList.this, model.getName() + " đã xoá khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
                         }

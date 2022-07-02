@@ -357,7 +357,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         //Calculate total price
         float total = 0;
         for (Order order : cart)
-            total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(order.getQuantity()));
+            total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(order.getQuantity())) * (100 - Long.parseLong(order.getDiscount()))/100;;
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 

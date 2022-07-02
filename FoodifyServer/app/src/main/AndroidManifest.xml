@@ -17,6 +17,9 @@
         android:theme="@style/Theme.FoodifyServer"
         tools:targetApi="31">
         <activity
+            android:name=".SendMessage"
+            android:exported="false" />
+        <activity
             android:name=".BannerActivity"
             android:exported="false" />
         <activity

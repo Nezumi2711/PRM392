@@ -12,6 +12,8 @@ import com.waterbase.foodify.Remote.RetrofitClient;
 public class Common {
     public static User currentUser;
 
+    public static String topicName = "News";
+
     private static final String BASE_URL = "https://fcm.googleapis.com/";
     private static final String GOOGLE_API_URL = "https://maps.googleapis.com/";
 

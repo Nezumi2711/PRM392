@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_baseline_laptop_24"
             android:title="Banner" />
         <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_baseline_message_24"
+            android:title="Thông báo" />
+        <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="Giỏ hàng" />

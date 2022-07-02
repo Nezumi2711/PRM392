@@ -31,7 +31,7 @@ import java.util.Locale;
 
 class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
-    public TextView txt_card_item, txt_price;
+    public TextView txt_card_item, txt_price, txtDiscount;
     public ElegantNumberButton btn_quantity;
     public ImageView cart_image;
 
@@ -45,6 +45,7 @@ class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         super(itemView);
         txt_card_item = (TextView) itemView.findViewById(R.id.cart_item_name);
         txt_price = (TextView) itemView.findViewById(R.id.cart_item_Price);
+        txtDiscount = (TextView) itemView.findViewById(R.id.txtDiscount);
         btn_quantity = (ElegantNumberButton) itemView.findViewById(R.id.btn_quantity);
         cart_image = (ImageView) itemView.findViewById(R.id.cart_image);
 
@@ -102,10 +103,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
                 float total = 0;
                 List<Order> orders = new Database(cart).getCarts();
                 for (Order item : orders)
-                    total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(item.getQuantity()));
+                    total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount()))/100;
                 Locale locale = new Locale("vi", "VN");
                 NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-                float price = newValue*(Float.parseFloat(order.getPrice()));
+                float price = newValue*(Float.parseFloat(order.getPrice())) * (100 - Long.parseLong(order.getDiscount()))/100;
                 holder.txt_price.setText(fmt.format(price));
 
                 cart.txtTotalPrice.setText(fmt.format(total));
@@ -114,8 +115,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
 
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-        float price = (Float.parseFloat(listData.get(position).getPrice()))*(Float.parseFloat(listData.get(position).getQuantity()));
+        float price = (Float.parseFloat(listData.get(position).getPrice()))*(Float.parseFloat(listData.get(position).getQuantity())) * (100 - Long.parseLong(listData.get(position).getDiscount()))/100;
         holder.txt_price.setText(fmt.format(price));
+        if(Integer.parseInt(listData.get(position).getDiscount()) > 0)
+        {
+            holder.txtDiscount.setVisibility(View.VISIBLE);
+            holder.txtDiscount.setText("-" + listData.get(position).getDiscount() + "%");
+        }
 
         holder.txt_card_item.setText(listData.get(position).getProductName());
     }

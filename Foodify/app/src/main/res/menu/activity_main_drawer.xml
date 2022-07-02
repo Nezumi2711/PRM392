@@ -26,6 +26,12 @@
             android:iconTint="@color/white"
             />
         <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="Cài đặt"
+            android:iconTint="@color/white"
+            />
+        <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_baseline_exit_to_app_24"
             android:iconTint="@color/white"

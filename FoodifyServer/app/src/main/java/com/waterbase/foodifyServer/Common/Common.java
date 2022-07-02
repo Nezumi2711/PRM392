@@ -16,6 +16,8 @@ public class Common {
     public static User currentUser;
     public static Request currentRequest;
 
+    public static String topicName = "News";
+
     public static final String UPDATE = "Cập nhật";
     public static final String DELETE = "Xoá";
     public static final int PICK_IMAGE_REQUEST = 71;

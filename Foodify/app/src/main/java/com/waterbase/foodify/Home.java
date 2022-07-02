@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
@@ -321,6 +324,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             showChangePasswordDialog();
         } else if (id == R.id.nav_home_address) {
             showHomeAddressDialog();
+        } else if (id == R.id.nav_setting) {
+            showSettingDialog();
         }
         else if (id == R.id.nav_log_out) {
 
@@ -338,6 +343,47 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private void showSettingDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("Cài đặt");
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout_setting = inflater.inflate(R.layout.setting_layout, null);
+
+        CheckBox ckb_subscribe_new = layout_setting.findViewById(R.id.ckb_sub_new);
+        //Add code remember state of Checkbox
+        Paper.init(this);
+        String isSubscribe = Paper.book().read("sub_new");
+        if(isSubscribe == null || TextUtils.isEmpty(isSubscribe) || isSubscribe.equals("false"))
+            ckb_subscribe_new.setChecked(false);
+        else
+            ckb_subscribe_new.setChecked(true);
+
+        alertDialog.setView(layout_setting);
+
+        alertDialog.setPositiveButton("Xong", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                if(ckb_subscribe_new.isChecked())
+                {
+                    FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
+                    //Write value
+                    Paper.book().write("sub_new", "true");
+                }
+                else
+                {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(Common.topicName);
+                    //Write value
+                    Paper.book().write("sub_new", "false");
+                }
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void showHomeAddressDialog() {

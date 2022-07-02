@@ -14,7 +14,7 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtHomeAddress"
-            android:hint="Home Address"
+            android:hint="Địa chỉ mặc định"
             android:inputType="textMultiLine"
             android:textColor="@color/purple_500"
             android:textColorHint="@color/purple_500"
