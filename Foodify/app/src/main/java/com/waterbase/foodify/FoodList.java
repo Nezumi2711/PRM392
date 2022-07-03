@@ -218,6 +218,21 @@ public class FoodList extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FoodViewHolder viewHolder, int i, @NonNull Food model) {
                 viewHolder.food_name.setText(model.getName());
+                if (Integer.parseInt(model.getDiscount()) > 0) {
+                    String foodPrice = model.getPrice() + "đ";
+                    long newFoodPrice = Long.parseLong(model.getPrice()) - Long.parseLong(model.getPrice()) * Long.parseLong(model.getDiscount()) / 100;
+                    SpannableStringBuilder spnBuilder = new SpannableStringBuilder(foodPrice);
+                    StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
+                    spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    viewHolder.food_price.setText(spnBuilder);
+                    viewHolder.newPrice.setText(newFoodPrice + "đ");
+                    viewHolder.discount.setText("- " + model.getDiscount() + "%");
+                } else {
+                    viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
+                    viewHolder.discount.setVisibility(View.GONE);
+                    viewHolder.newPrice.setVisibility(View.GONE);
+                }
+
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
 
                 viewHolder.setItemClickListener(new ItemClickListener() {
@@ -285,14 +300,13 @@ public class FoodList extends AppCompatActivity {
                     spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.food_price.setText(spnBuilder);
                     viewHolder.newPrice.setText(newFoodPrice + "đ");
+                    viewHolder.discount.setText("- " + model.getDiscount() + "%");
                 } else {
                     viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
                     viewHolder.discount.setVisibility(View.GONE);
                     viewHolder.newPrice.setVisibility(View.GONE);
                 }
 
-
-                viewHolder.discount.setText("- " + model.getDiscount() + "%");
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
 
                 //Quick Cart

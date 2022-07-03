@@ -270,6 +270,7 @@ public class SearchActivity extends AppCompatActivity {
                     spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.food_price.setText(spnBuilder);
                     viewHolder.newPrice.setText(newFoodPrice + "đ");
+                    viewHolder.discount.setText("- " + model.getDiscount() + "%");
                 } else {
                     viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
                     viewHolder.discount.setVisibility(View.GONE);
