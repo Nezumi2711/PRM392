@@ -277,6 +277,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         mSlider.setCustomAnimation(new DescriptionAnimation());
         mSlider.setDuration(4000);
+
     }
 
     @Override
@@ -483,4 +484,18 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         dialog.show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_search)
+            startActivity(new Intent(Home.this, SearchActivity.class));
+
+        return super.onOptionsItemSelected(item);
+    }
 }
