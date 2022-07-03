@@ -8,9 +8,37 @@
     app:cardElevation="4dp"
     >
 
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:background="@color/bgRowBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:src="@drawable/ic_baseline_delete_24"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="Xoá"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </RelativeLayout>
+
     <LinearLayout
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:id="@+id/view_foreground"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
@@ -18,7 +46,7 @@
 
         <ImageView
             android:id="@+id/cart_image"
-            android:layout_marginLeft="5dp"
+            android:layout_margin="10dp"
             android:layout_width="70dp"
             android:layout_height="70dp"/>
 

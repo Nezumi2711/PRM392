@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,24 +35,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
-import com.waterbase.foodify.Model.MyResponse;
-import com.waterbase.foodify.Model.Notification;
+import com.waterbase.foodify.Helper.RecyclerItemTouchHelper;
+import com.waterbase.foodify.Interface.RecyclerItemTouchHelperListener;
 import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.Model.Request;
-import com.waterbase.foodify.Model.Sender;
-import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.Remote.APIService;
 import com.waterbase.foodify.Remote.IGoogleService;
 import com.waterbase.foodify.ViewHolder.CartAdapter;
+import com.waterbase.foodify.ViewHolder.CartViewHolder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,7 +69,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Cart extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, RecyclerItemTouchHelperListener {
 
     String address = null;
 
@@ -87,6 +86,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     CartAdapter adapter;
 
     APIService mService;
+
+    RelativeLayout rootLayout;
 
     //Location
     private LocationRequest mLocationRequest;
@@ -150,6 +151,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        rootLayout = findViewById(R.id.rootLayout);
+
+        //Swipe to delete
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         txtTotalPrice = (TextView) findViewById(R.id.total);
         btnPlace = (FButton) findViewById(R.id.btnPlaceOrder);
@@ -436,5 +442,47 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if(viewHolder instanceof CartViewHolder)
+        {
+            String name = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).getProductName();
+
+            Order deleteItem = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
+            int deleteIndex = viewHolder.getAdapterPosition();
+
+            adapter.removeItem(deleteIndex);
+            new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(), Common.currentUser.getPhone());
+
+            updateTotalPrice();
+
+            //Make Snackbar
+            Snackbar snackbar = Snackbar.make(rootLayout, name + " đã xoá khỏi giỏ hàng của bạn!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("Hoàn tác", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    adapter.restoreItem(deleteItem, deleteIndex);
+                    new Database(getBaseContext()).addToCart(deleteItem);
+                    updateTotalPrice();
+
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
+    }
+
+    public void updateTotalPrice()
+    {
+        //Calculate total price
+        float total = 0;
+        List<Order> orders = new Database(getBaseContext()).getCarts();
+        for (Order item : orders)
+            total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount()))/100;
+        Locale locale = new Locale("vi", "VN");
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+        txtTotalPrice.setText(fmt.format(total));
     }
 }
