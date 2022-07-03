@@ -121,7 +121,7 @@ public class OrderDetail extends AppCompatActivity {
                 sendNotificationOrder(order_number);
 
                 //Delete Cart
-                new Database(getBaseContext()).cleanCart();
+                new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
                 Toast.makeText(OrderDetail.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(OrderDetail.this, Home.class));
                 finish();
@@ -160,7 +160,7 @@ public class OrderDetail extends AppCompatActivity {
                                         sendNotificationOrder(order_number);
 
                                         //Delete Cart
-                                        new Database(getBaseContext()).cleanCart();
+                                        new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
                                         Toast.makeText(OrderDetail.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(OrderDetail.this, Home.class));
                                         finish();
@@ -216,7 +216,7 @@ public class OrderDetail extends AppCompatActivity {
                                     //Only run when get result
                                     if (response.code() == 200) {
                                         if (response.body().success == 1) {
-                                            new Database(getBaseContext()).cleanCart();
+                                            new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
                                             Toast.makeText(OrderDetail.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
                                             finish();
                                         } else {

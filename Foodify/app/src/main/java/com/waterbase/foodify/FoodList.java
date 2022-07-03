@@ -105,11 +105,11 @@ public class FoodList extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 //Get Intent here
-                if(getIntent() != null)
+                if (getIntent() != null)
                     categoryId = getIntent().getStringExtra("CategoryId");
                 categoryName = getIntent().getStringExtra("CategoryName");
-                if(!categoryId.isEmpty() && categoryId != null) {
-                    if(Common.isConnectedToInternet(getBaseContext()))
+                if (!categoryId.isEmpty() && categoryId != null) {
+                    if (Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else {
                         Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
@@ -123,11 +123,11 @@ public class FoodList extends AppCompatActivity {
             @Override
             public void run() {
                 //Get Intent here
-                if(getIntent() != null)
+                if (getIntent() != null)
                     categoryId = getIntent().getStringExtra("CategoryId");
                 categoryName = getIntent().getStringExtra("CategoryName");
-                if(!categoryId.isEmpty() && categoryId != null) {
-                    if(Common.isConnectedToInternet(getBaseContext()))
+                if (!categoryId.isEmpty() && categoryId != null) {
+                    if (Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else {
                         Toast.makeText(FoodList.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
@@ -153,8 +153,8 @@ public class FoodList extends AppCompatActivity {
                         //When user type their text, we will change suggest list
 
                         List<String> suggest = new ArrayList<String>();
-                        for(String search:suggestList) {
-                            if(search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
+                        for (String search : suggestList) {
+                            if (search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
                                 suggest.add(search);
                         }
                         materialSearchBar.setLastSuggestions(suggest);
@@ -170,7 +170,7 @@ public class FoodList extends AppCompatActivity {
                     public void onSearchStateChanged(boolean enabled) {
                         //When search bar is close
                         //Restore original adapter
-                        if(!enabled)
+                        if (!enabled)
                             recyclerView.setAdapter(adapter);
                     }
 
@@ -249,7 +249,7 @@ public class FoodList extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             Food item = postSnapshot.getValue(Food.class);
                             suggestList.add(item.getName());
                         }
@@ -264,7 +264,7 @@ public class FoodList extends AppCompatActivity {
                 });
     }
 
-    private void loadListFood(String categoryId){
+    private void loadListFood(String categoryId) {
         //Create query by category Id
         Query searchByName = foodList.orderByChild("menuId").equalTo(categoryId);
         //Create Options with query
@@ -277,17 +277,15 @@ public class FoodList extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull FoodViewHolder viewHolder, int position, @NonNull Food model) {
                 viewHolder.food_name.setText(model.getName());
 
-                if(Integer.parseInt(model.getDiscount()) > 0)
-                {
+                if (Integer.parseInt(model.getDiscount()) > 0) {
                     String foodPrice = model.getPrice() + "đ";
-                    long newFoodPrice = Long.parseLong(model.getPrice()) - Long.parseLong(model.getPrice())* Long.parseLong(model.getDiscount())/100;
+                    long newFoodPrice = Long.parseLong(model.getPrice()) - Long.parseLong(model.getPrice()) * Long.parseLong(model.getDiscount()) / 100;
                     SpannableStringBuilder spnBuilder = new SpannableStringBuilder(foodPrice);
                     StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
                     spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.food_price.setText(spnBuilder);
-                    viewHolder.newPrice.setText(newFoodPrice+"đ");
-                } else
-                {
+                    viewHolder.newPrice.setText(newFoodPrice + "đ");
+                } else {
                     viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
                     viewHolder.discount.setVisibility(View.GONE);
                     viewHolder.newPrice.setVisibility(View.GONE);
@@ -298,17 +296,24 @@ public class FoodList extends AppCompatActivity {
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.food_image);
 
                 //Quick Cart
+
                 viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new Database(getBaseContext()).addToCart(new Order(
-                                adapter.getRef(viewHolder.getAdapterPosition()).getKey(),
-                                model.getName(),
-                                "1",
-                                model.getPrice(),
-                                model.getDiscount(),
-                                model.getImage()
-                        ));
+                        boolean ifExists = new Database(getBaseContext()).checkFoodExists(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
+                        if (!ifExists) {
+                            new Database(getBaseContext()).addToCart(new Order(
+                                    Common.currentUser.getPhone(),
+                                    adapter.getRef(viewHolder.getAdapterPosition()).getKey(),
+                                    model.getName(),
+                                    "1",
+                                    model.getPrice(),
+                                    model.getDiscount(),
+                                    model.getImage()
+                            ));
+                        } else {
+                            new Database(getBaseContext()).increaseCart(Common.currentUser.getPhone(), adapter.getRef(viewHolder.getAdapterPosition()).getKey());
+                        }
 
                         Toast.makeText(FoodList.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
                     }
@@ -316,14 +321,14 @@ public class FoodList extends AppCompatActivity {
 
 
                 //Add Favorites
-                if(localDB.isFavorite(adapter.getRef(position).getKey(),Common.currentUser.getPhone()))
+                if (localDB.isFavorite(adapter.getRef(position).getKey(), Common.currentUser.getPhone()))
                     viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
 
                 //Click to change state of Favorites
                 viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!localDB.isFavorite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())){
+                        if (!localDB.isFavorite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())) {
                             localDB.addToFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
                             Toast.makeText(FoodList.this, model.getName() + " đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
@@ -365,7 +370,7 @@ public class FoodList extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(adapter == null) {
+        if (adapter == null) {
             adapter.stopListening();
             searchAdapter.stopListening();
         }

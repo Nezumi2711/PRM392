@@ -355,7 +355,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
 
     private void loadListFood() {
-        cart = new Database(this).getCarts();
+        cart = new Database(this).getCarts(Common.currentUser.getPhone());
         adapter = new CartAdapter(cart, this);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
@@ -391,7 +391,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         //Remove item at List<Order> by position
         cart.remove(position);
         //Delete all old data from SQLite
-        new Database(this).cleanCart();
+        new Database(this).cleanCart(Common.currentUser.getPhone());
         //Update new data from List<Order> to SQLite
         for (Order item : cart)
             new Database(this).addToCart(item);
@@ -478,7 +478,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     {
         //Calculate total price
         float total = 0;
-        List<Order> orders = new Database(getBaseContext()).getCarts();
+        List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
         for (Order item : orders)
             total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount()))/100;
         Locale locale = new Locale("vi", "VN");

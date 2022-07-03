@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Cart;
+import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.R;
@@ -56,7 +57,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
 
                 //Calculate total price
                 float total = 0;
-                List<Order> orders = new Database(cart).getCarts();
+                List<Order> orders = new Database(cart).getCarts(Common.currentUser.getPhone());
                 for (Order item : orders)
                     total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount()))/100;
                 Locale locale = new Locale("vi", "VN");
