@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,14 +24,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.waterbase.foodifyServer.Common.Common;
-import com.waterbase.foodifyServer.Interface.ItemClickListener;
+import com.waterbase.foodifyServer.Model.DataMessage;
 import com.waterbase.foodifyServer.Model.MyResponse;
-import com.waterbase.foodifyServer.Model.Notification;
 import com.waterbase.foodifyServer.Model.Request;
-import com.waterbase.foodifyServer.Model.Sender;
 import com.waterbase.foodifyServer.Model.Token;
 import com.waterbase.foodifyServer.Remote.APIService;
 import com.waterbase.foodifyServer.ViewHolder.OrderViewHolder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,9 +83,14 @@ public class OrderStatus extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, int i, @NonNull Request model) {
                 viewHolder.txtOrderId.setText(adapter.getRef(i).getKey());
+
+                viewHolder.txtOrderDate.setText(Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
+
                 viewHolder.txtOrderStatus.setText(Common.coverCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
                 viewHolder.txtOrderPhone.setText(model.getPhone());
+
+
 
                 //Event Button
                 viewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -216,10 +221,14 @@ public class OrderStatus extends AppCompatActivity {
                             Token token = postSnapShot.getValue(Token.class);
 
                             //Make raw payload
-                            Notification notification = new Notification("Foodify", "Đơn của bạn " + localKey + " đã được cập nhật!");
-                            Sender content = new Sender(token.getToken(), notification);
+//                            Notification notification = new Notification("Foodify", "Đơn của bạn " + localKey + " đã được cập nhật!");
+//                            Sender content = new Sender(token.getToken(), notification);
+                            Map<String, String> dataSend = new HashMap<>();
+                            dataSend.put("title", "EDMT Dev");
+                            dataSend.put("message", "Đơn của bạn " + localKey + " đã được cập nhật!");
+                            DataMessage dataMessage = new DataMessage(token.getToken(), dataSend);
 
-                            mService.sendNotification(content)
+                            mService.sendNotification(dataMessage)
                                     .enqueue(new Callback<MyResponse>() {
                                         @Override
                                         public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {

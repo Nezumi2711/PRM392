@@ -11,7 +11,7 @@ import com.waterbase.foodify.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView txtOrderId, txtOrderStatus, txtOrderPhone, txtOrderAddress;
+    public TextView txtOrderId, txtOrderStatus, txtOrderPhone, txtOrderAddress, txtOrderDate;
 
     private ItemClickListener itemClickListener;
 
@@ -22,6 +22,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         txtOrderId = (TextView) itemView.findViewById(R.id.order_id);
         txtOrderStatus = (TextView) itemView.findViewById(R.id.order_status);
         txtOrderPhone = (TextView) itemView.findViewById(R.id.order_phone);
+        txtOrderDate = (TextView) itemView.findViewById(R.id.order_date);
 
         itemView.setOnClickListener(this);
     }

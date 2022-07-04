@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.text.format.DateFormat;
 
 import com.waterbase.foodifyServer.Model.Request;
 import com.waterbase.foodifyServer.Model.User;
@@ -12,9 +13,14 @@ import com.waterbase.foodifyServer.Remote.FCMRetrofitClient;
 import com.waterbase.foodifyServer.Remote.IGeoCoordinates;
 import com.waterbase.foodifyServer.Remote.RetrofitClient;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 public class Common {
     public static User currentUser;
     public static Request currentRequest;
+
+    public static String PHONE_TEXT = "userPhone";
 
     public static String topicName = "News";
 
@@ -58,5 +64,13 @@ public class Common {
         canvas.drawBitmap(bitmap, 0, 0, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return scaledBitmap;
+    }
+
+    public static String getDate(long time){
+        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+        calendar.setTimeInMillis(time);
+        StringBuilder date = new StringBuilder(
+                DateFormat.format("dd-MM-yyyy HH:mm", calendar).toString());
+        return date.toString();
     }
 }

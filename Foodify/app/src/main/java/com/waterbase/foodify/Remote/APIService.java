@@ -1,7 +1,7 @@
 package com.waterbase.foodify.Remote;
 
+import com.waterbase.foodify.Model.DataMessage;
 import com.waterbase.foodify.Model.MyResponse;
-import com.waterbase.foodify.Model.Sender;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,5 +20,5 @@ public interface APIService {
 
 
     @POST("fcm/send")
-    Call<MyResponse> sendNotification(@Body Sender body);
+    Call<MyResponse> sendNotification(@Body DataMessage body);
 }

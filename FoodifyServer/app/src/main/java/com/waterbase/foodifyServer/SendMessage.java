@@ -8,10 +8,12 @@ import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.waterbase.foodifyServer.Common.Common;
+import com.waterbase.foodifyServer.Model.DataMessage;
 import com.waterbase.foodifyServer.Model.MyResponse;
-import com.waterbase.foodifyServer.Model.Notification;
-import com.waterbase.foodifyServer.Model.Sender;
 import com.waterbase.foodifyServer.Remote.APIService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import info.hoang8f.widget.FButton;
 import retrofit2.Call;
@@ -40,13 +42,18 @@ public class SendMessage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Create message
-                Notification notification = new Notification(edtTitle.getText().toString(), edtMessage.getText().toString());
+//                Notification notification = new Notification(edtTitle.getText().toString(), edtMessage.getText().toString());
+//
+//                Sender toTopic = new Sender();
+//                toTopic.to = new StringBuilder("/topics/").append(Common.topicName).toString();
+//                toTopic.notification = notification;
 
-                Sender toTopic = new Sender();
-                toTopic.to = new StringBuilder("/topics/").append(Common.topicName).toString();
-                toTopic.notification = notification;
-                
-                mService.sendNotification(toTopic)
+                Map<String,String> dataSend = new HashMap<>();
+                dataSend.put("title",edtTitle.getText().toString());
+                dataSend.put("message",edtMessage.getText().toString());
+                DataMessage dataMessage = new DataMessage(new StringBuilder("/topics/").append(Common.topicName).toString(),dataSend);
+
+                mService.sendNotification(dataMessage)
                         .enqueue(new Callback<MyResponse>() {
                             @Override
                             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {

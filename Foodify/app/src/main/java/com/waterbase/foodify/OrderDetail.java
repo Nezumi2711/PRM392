@@ -28,16 +28,18 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
+import com.waterbase.foodify.Model.DataMessage;
 import com.waterbase.foodify.Model.MyResponse;
-import com.waterbase.foodify.Model.Notification;
 import com.waterbase.foodify.Model.Request;
-import com.waterbase.foodify.Model.Sender;
 import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.Remote.APIService;
 import com.waterbase.foodify.ViewHolder.OrderDetailAdapter;
 import com.waterbase.foodify.Zalopay.Api.CreateOrder;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -205,10 +207,14 @@ public class OrderDetail extends AppCompatActivity {
                     Token serverToken = postSnapShot.getValue(Token.class);
 
                     //Create raw payload to send
-                    Notification notification = new Notification("Foodify", "Bạn có 1 đơn hàng mới " + order_number);
-                    Sender content = new Sender(serverToken.getToken(), notification);
+//                    Notification notification = new Notification("Foodify", "Bạn có 1 đơn hàng mới " + order_number);
+//                    Sender content = new Sender(serverToken.getToken(), notification);
+                    Map<String, String> dataSend = new HashMap<>();
+                    dataSend.put("title", "Foodify");
+                    dataSend.put("message", "Bạn có 1 đơn hàng mới +" + order_number);
+                    DataMessage dataMessage = new DataMessage(serverToken.getToken(), dataSend);
 
-                    mService.sendNotification(content)
+                    mService.sendNotification(dataMessage)
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {

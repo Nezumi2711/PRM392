@@ -3,14 +3,20 @@ package com.waterbase.foodify.Common;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.format.DateFormat;
 
 import com.waterbase.foodify.Model.User;
 import com.waterbase.foodify.Remote.APIService;
 import com.waterbase.foodify.Remote.IGoogleService;
 import com.waterbase.foodify.Remote.RetrofitClient;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 public class Common {
     public static User currentUser;
+
+    public static String PHONE_TEXT = "userPhone";
 
     public static String topicName = "News";
 
@@ -54,5 +60,13 @@ public class Common {
         }
 
         return false;
+    }
+
+    public static String getDate(long time){
+        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+        calendar.setTimeInMillis(time);
+        StringBuilder date = new StringBuilder(
+                DateFormat.format("dd-MM-yyyy HH:mm", calendar).toString());
+        return date.toString();
     }
 }
