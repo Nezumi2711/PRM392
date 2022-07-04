@@ -304,6 +304,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         } else if(id == R.id.nav_message) {
             Intent banner = new Intent(Home.this, SendMessage.class);
             startActivity(banner);
+        } else if (id == R.id.nav_log_out) {
+            //Logout
+            Intent signIn = new Intent(Home.this, SignIn.class);
+            signIn.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(signIn);
+            finish();
         }
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
