@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -98,6 +100,15 @@ public class OrderStatus extends AppCompatActivity {
                 orderViewHolder.txtOrderAddress.setText(model.getAddress());
                 orderViewHolder.txtOrderPhone.setText(model.getPhone());
                 orderViewHolder.txtOrderDate.setText(Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
+                orderViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(adapter.getItem(orderViewHolder.getAdapterPosition()).getStatus().equals("0"))
+                            deleteOrder(adapter.getRef(orderViewHolder.getAdapterPosition()).getKey());
+                        else
+                            Toast.makeText(OrderStatus.this, "Bạn không thể xoá đơn này!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @NonNull
@@ -110,6 +121,18 @@ public class OrderStatus extends AppCompatActivity {
         };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
+    }
+
+    private void deleteOrder(String key) {
+        requests.child(key)
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(OrderStatus.this, new StringBuilder("Đơn hàng ").append(key).append(" đã xoá!").toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener((e) -> {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override

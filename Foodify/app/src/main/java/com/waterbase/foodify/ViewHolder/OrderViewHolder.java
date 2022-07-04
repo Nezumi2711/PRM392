@@ -1,6 +1,7 @@
 package com.waterbase.foodify.ViewHolder;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,14 +16,17 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     private ItemClickListener itemClickListener;
 
+    public ImageView btn_delete;
+
     public OrderViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        txtOrderAddress = (TextView) itemView.findViewById(R.id.order_address);
-        txtOrderId = (TextView) itemView.findViewById(R.id.order_id);
-        txtOrderStatus = (TextView) itemView.findViewById(R.id.order_status);
-        txtOrderPhone = (TextView) itemView.findViewById(R.id.order_phone);
-        txtOrderDate = (TextView) itemView.findViewById(R.id.order_date);
+        txtOrderAddress = itemView.findViewById(R.id.order_address);
+        txtOrderId = itemView.findViewById(R.id.order_id);
+        txtOrderStatus = itemView.findViewById(R.id.order_status);
+        txtOrderPhone = itemView.findViewById(R.id.order_phone);
+        txtOrderDate = itemView.findViewById(R.id.order_date);
+        btn_delete = itemView.findViewById(R.id.btn_delete);
 
         itemView.setOnClickListener(this);
     }
