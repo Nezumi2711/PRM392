@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.waterbase.foodify.Interface.RecyclerItemTouchHelperListener;
 import com.waterbase.foodify.ViewHolder.CartViewHolder;
+import com.waterbase.foodify.ViewHolder.FavoritesViewHolder;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
@@ -27,7 +28,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        if(listener != null)
+        if (listener != null)
             listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
     }
 
@@ -38,28 +39,54 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
-        getDefaultUIUtil().clearView(foregroundView);
+        if (viewHolder instanceof CartViewHolder) {
+            View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().clearView(foregroundView);
+        } else if(viewHolder instanceof FavoritesViewHolder)
+        {
+            View foregroundView = ((FavoritesViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().clearView(foregroundView);
+        }
     }
 
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
-        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        if (viewHolder instanceof CartViewHolder) {
+            View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        } else if(viewHolder instanceof FavoritesViewHolder)
+        {
+            View foregroundView = ((FavoritesViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        }
+
     }
 
     @Override
     public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-        if(viewHolder != null)
-        {
-            View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
-            getDefaultUIUtil().onSelected(foregroundView);
+        if (viewHolder != null) {
+            if (viewHolder instanceof CartViewHolder) {
+                View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
+                getDefaultUIUtil().onSelected(foregroundView);
+            } else if(viewHolder instanceof  FavoritesViewHolder)
+            {
+                View foregroundView = ((FavoritesViewHolder) viewHolder).view_foreground;
+                getDefaultUIUtil().onSelected(foregroundView);
+            }
+
         }
     }
 
     @Override
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        if (viewHolder instanceof CartViewHolder) {
+            View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        } else if(viewHolder instanceof  FavoritesViewHolder)
+        {
+            View foregroundView = ((FavoritesViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        }
+
     }
 }

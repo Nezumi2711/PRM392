@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+import com.waterbase.foodify.Model.Favorites;
 import com.waterbase.foodify.Model.Order;
 
 import java.util.ArrayList;
@@ -114,10 +115,44 @@ public class Database extends SQLiteAssetHelper {
     }
 
     //Favorites
-    public void addToFavorites(String foodId, String userPhone) {
+    public void addToFavorites(Favorites food) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = String.format("INSERT INTO Favorites(FoodId,UserPhone) VALUES('%s', '%s');", foodId, userPhone);
+        String query = String.format("INSERT INTO Favorites" +
+                "(FoodId,FoodName,FoodPrice,FoodMenuId,FoodImage,FoodDiscount,FoodDescription,UserPhone) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+                food.getFoodId(), food.getFoodName(), food.getFoodPrice(), food.getFoodMenuId(), food.getFoodImage(),
+                food.getFoodDiscount(), food.getFoodDescription(), food.getUserPhone());
         db.execSQL(query);
+    }
+
+    public List<Favorites> getAllFavorites(String userPhone)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        String[] sqlSelect = {"UserPhone", "FoodId", "FoodName", "FoodPrice", "FoodMenuId", "FoodImage", "FoodDiscount", "FoodDescription"};
+        String sqlTable = "Favorites";
+
+        qb.setTables(sqlTable);
+        Cursor c = qb.query(db, sqlSelect, "UserPhone=?", new String[]{userPhone}, null, null, null);
+
+        final List<Favorites> result = new ArrayList<>();
+        if(c.moveToFirst())
+        {
+            do{
+                result.add(new Favorites(
+                        c.getString(c.getColumnIndexOrThrow("FoodId")),
+                        c.getString(c.getColumnIndexOrThrow("FoodName")),
+                        c.getString(c.getColumnIndexOrThrow("FoodPrice")),
+                        c.getString(c.getColumnIndexOrThrow("FoodMenuId")),
+                        c.getString(c.getColumnIndexOrThrow("FoodImage")),
+                        c.getString(c.getColumnIndexOrThrow("FoodDiscount")),
+                        c.getString(c.getColumnIndexOrThrow("FoodDescription")),
+                        c.getString(c.getColumnIndexOrThrow("UserPhone"))
+                ));
+            }while (c.moveToNext());
+        }
+
+        return result;
     }
 
     public void removeFromFavorites(String foodId, String userPhone) {

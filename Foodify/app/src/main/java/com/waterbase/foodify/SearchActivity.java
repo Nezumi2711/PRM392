@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
 import com.waterbase.foodify.Interface.ItemClickListener;
+import com.waterbase.foodify.Model.Favorites;
 import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.ViewHolder.FoodViewHolder;
@@ -123,11 +124,11 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        //Load add foods
-        loadAddFood();
+        //Load all foods
+        loadAllFood();
     }
 
-    private void loadAddFood() {
+    private void loadAllFood() {
         //Create query by category Id
         Query searchByName = foodList;
         //Create Options with query
@@ -191,8 +192,20 @@ public class SearchActivity extends AppCompatActivity {
                 viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        Favorites favorites = new Favorites();
+
+                        favorites.setFoodId(adapter.getRef(position).getKey());
+                        favorites.setFoodName(model.getName());
+                        favorites.setFoodDescription(model.getDescription());
+                        favorites.setFoodDiscount(model.getDiscount());
+                        favorites.setFoodImage(model.getImage());
+                        favorites.setFoodMenuId(model.getMenuId());
+                        favorites.setUserPhone(Common.currentUser.getPhone());
+                        favorites.setFoodPrice(model.getPrice());
+
                         if (!localDB.isFavorite(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone())) {
-                            localDB.addToFavorites(adapter.getRef(viewHolder.getAdapterPosition()).getKey(), Common.currentUser.getPhone());
+                            localDB.addToFavorites(favorites);
                             viewHolder.fav_image.setImageResource(R.drawable.ic_baseline_favorite_24);
                             Toast.makeText(SearchActivity.this, model.getName() + " đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
                         } else {

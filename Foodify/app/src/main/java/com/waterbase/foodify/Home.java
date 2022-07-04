@@ -327,6 +327,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             showHomeAddressDialog();
         } else if (id == R.id.nav_setting) {
             showSettingDialog();
+        } else if (id == R.id.nav_favorites) {
+            startActivity(new Intent(Home.this, FavoritesActivity.class));
         }
         else if (id == R.id.nav_log_out) {
 

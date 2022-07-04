@@ -24,7 +24,7 @@
             android:layout_below="@+id/searchBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyler_food"
+            android:id="@+id/recycler_food"
             android:scrollbars="vertical"
             />
 
