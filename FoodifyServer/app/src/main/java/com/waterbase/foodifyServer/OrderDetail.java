@@ -1,10 +1,13 @@
 package com.waterbase.foodifyServer;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.waterbase.foodifyServer.Common.Common;
@@ -46,5 +49,21 @@ public class OrderDetail extends AppCompatActivity {
         OrderDetailAdapter adapter = new OrderDetailAdapter(Common.currentRequest.getFoods());
         adapter.notifyDataSetChanged();
         lstFoods.setAdapter(adapter);
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -58,13 +58,16 @@
             android:name=".Home"
             android:exported="false"
             android:label="@string/title_activity_home"
-            android:theme="@style/Theme.FoodifyServer.NoActionBar" />
+            android:theme="@style/Theme.FoodifyServer.NoActionBar"
+            />
         <activity
             android:name=".SignIn"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.FoodifyServer.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.FoodifyServer.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

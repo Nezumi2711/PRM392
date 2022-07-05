@@ -77,7 +77,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(new CalligraphyInterceptor(
                         new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.ttf")
+                                .setDefaultFontPath("fonts/font.otf")
                                 .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
                                 .build()))
                 .build());
@@ -265,26 +265,5 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                         Toast.makeText(FoodDetail.this, "Cảm ơn bạn đã đánh giá!", Toast.LENGTH_SHORT).show();
                     }
                 });
-//        ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.child(Common.currentUser.getPhone()).exists()) {
-//                    //Remove old feedback
-//                    ratingTbl.child(Common.currentUser.getPhone()).removeValue();
-//                    //Update new feedback
-//                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-//                } else {
-//
-//                    //Update new value
-//                    ratingTbl.child(Common.currentUser.getPhone()).setValue(rating);
-//                }
-//                Toast.makeText(FoodDetail.this, "Cảm ơn bạn đã đánh giá món ăn!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 }

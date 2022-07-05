@@ -1,8 +1,11 @@
 package com.waterbase.foodifyServer;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,13 +44,6 @@ public class SendMessage extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Create message
-//                Notification notification = new Notification(edtTitle.getText().toString(), edtMessage.getText().toString());
-//
-//                Sender toTopic = new Sender();
-//                toTopic.to = new StringBuilder("/topics/").append(Common.topicName).toString();
-//                toTopic.notification = notification;
-
                 Map<String,String> dataSend = new HashMap<>();
                 dataSend.put("title",edtTitle.getText().toString());
                 dataSend.put("message",edtMessage.getText().toString());
@@ -68,5 +64,21 @@ public class SendMessage extends AppCompatActivity {
                         });
             }
         });
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

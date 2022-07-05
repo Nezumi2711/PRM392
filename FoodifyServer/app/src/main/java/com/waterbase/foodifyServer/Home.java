@@ -86,7 +86,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_home);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Menu Management");
+        toolbar.setTitle("Quản lý menu");
         setSupportActionBar(toolbar);
 
         //Init database

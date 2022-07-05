@@ -49,7 +49,7 @@ public class SignIn extends AppCompatActivity {
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(new CalligraphyInterceptor(
                         new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.ttf")
+                                .setDefaultFontPath("fonts/font.otf")
                                 .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
                                 .build()))
                 .build());
@@ -67,7 +67,7 @@ public class SignIn extends AppCompatActivity {
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/NABILA.TTF");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Nabila.ttf");
         txtAppName.setTypeface(face);
 
         //Init Firebase

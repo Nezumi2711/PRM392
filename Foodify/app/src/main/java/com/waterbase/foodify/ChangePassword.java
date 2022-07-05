@@ -43,7 +43,7 @@ public class ChangePassword extends AppCompatActivity {
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(new CalligraphyInterceptor(
                         new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.ttf")
+                                .setDefaultFontPath("fonts/font.otf")
                                 .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
                                 .build()))
                 .build());

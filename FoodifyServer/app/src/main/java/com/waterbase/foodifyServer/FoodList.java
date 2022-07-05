@@ -2,6 +2,7 @@ package com.waterbase.foodifyServer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,6 +74,8 @@ public class FoodList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
+
+        setTitle("Quản lý danh sách thức ăn");
 
         //Firebase
         db = FirebaseDatabase.getInstance();
@@ -158,6 +161,12 @@ public class FoodList extends AppCompatActivity {
             }
         });
         alertDialog.show();
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void uploadImage() {
@@ -391,5 +400,15 @@ public class FoodList extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

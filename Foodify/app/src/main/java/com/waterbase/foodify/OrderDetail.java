@@ -1,6 +1,7 @@
 package com.waterbase.foodify;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,8 +68,23 @@ public class OrderDetail extends AppCompatActivity {
     APIService mService;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Set font all activity
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/font.otf")
+                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
+                                .build()))
+                .build());
+
         setContentView(R.layout.activity_order_detail);
 
         String comment = "";
@@ -135,14 +155,13 @@ public class OrderDetail extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-
+                String order_number = String.valueOf(System.currentTimeMillis());
                 String totalPrice = request.getTotal().substring(0, request.getTotal().length() - 2).replace(".", ""); //Remove character " đ"
 
                 CreateOrder orderApi = new CreateOrder();
 
                 try {
-                    JSONObject data = orderApi.createOrder(totalPrice);
-                    Log.d("Amount", totalPrice);
+                    JSONObject data = orderApi.createOrder(totalPrice, order_number);
                     String code = data.getString("return_code");
 
                     if (code.equals("1")) {
@@ -156,7 +175,6 @@ public class OrderDetail extends AppCompatActivity {
                                         request.setPaymentStatus("Đã thanh toán!");
                                         //Summit to Firebase
                                         //We will using System.CurrentMilli to key
-                                        String order_number = String.valueOf(System.currentTimeMillis());
                                         requests.child(order_number).setValue(request);
 
                                         sendNotificationOrder(order_number);
@@ -209,7 +227,7 @@ public class OrderDetail extends AppCompatActivity {
                     //Create raw payload to send
                     Map<String, String> dataSend = new HashMap<>();
                     dataSend.put("title", "Foodify");
-                    dataSend.put("message", "Bạn có 1 đơn hàng mới +" + order_number);
+                    dataSend.put("message", "Bạn có 1 đơn hàng mới #" + order_number);
                     DataMessage dataMessage = new DataMessage(serverToken.getToken(), dataSend);
 
                     mService.sendNotification(dataMessage)

@@ -1,6 +1,7 @@
 package com.waterbase.foodifyServer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,6 +90,12 @@ public class BannerActivity extends AppCompatActivity {
 
         loadListBanner();
         loadListFood();
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void loadListBanner() {
@@ -392,5 +399,15 @@ public class BannerActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

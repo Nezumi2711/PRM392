@@ -1,5 +1,6 @@
 package com.waterbase.foodify;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,11 @@ import com.waterbase.foodify.Model.Favorites;
 import com.waterbase.foodify.ViewHolder.FavoritesAdapter;
 import com.waterbase.foodify.ViewHolder.FavoritesViewHolder;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class FavoritesActivity extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
     RecyclerView recyclerView;
@@ -29,8 +35,23 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
     RelativeLayout rootLayout;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Set font all activity
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/font.otf")
+                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
+                                .build()))
+                .build());
+
         setContentView(R.layout.activity_favorites);
 
         rootLayout = findViewById(R.id.rootLayout);

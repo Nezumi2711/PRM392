@@ -51,4 +51,8 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
+    <style name="fontTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@fonts/</item>
+    </style>
+
 </resources>

@@ -23,7 +23,7 @@ public class CreateOrder {
         String Description;
         String Mac;
 
-        private CreateOrderData(String amount) throws Exception {
+        private CreateOrderData(String amount, String orderId) throws Exception {
             long appTime = new Date().getTime();
             AppId = String.valueOf(AppInfo.APP_ID);
             AppUser = "Android_Demo";
@@ -33,7 +33,7 @@ public class CreateOrder {
             EmbedData = "{}";
             Items = "[]";
             BankCode = "zalopayapp";
-            Description = "Merchant pay for order #" + Helpers.getAppTransId();
+            Description = "Thanh toán đơn hàng Foodify #" + orderId;
             String inputHMac = String.format("%s|%s|%s|%s|%s|%s|%s",
                     this.AppId,
                     this.AppTransId,
@@ -47,8 +47,8 @@ public class CreateOrder {
         }
     }
 
-     public JSONObject createOrder(String amount) throws Exception {
-        CreateOrderData input = new CreateOrderData(amount);
+     public JSONObject createOrder(String amount, String orderId) throws Exception {
+        CreateOrderData input = new CreateOrderData(amount, orderId);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("app_id", input.AppId)

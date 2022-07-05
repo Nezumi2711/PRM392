@@ -11,17 +11,15 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:weightSum="5"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/food_image"
             android:src="@drawable/bg4"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="250dp"
             android:scaleType="centerCrop" />
 
 
@@ -30,8 +28,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:gravity="center_vertical"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             >
 
             <TextView
