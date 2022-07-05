@@ -48,7 +48,7 @@ public class OrderStatus extends AppCompatActivity {
     FirebaseDatabase db;
     DatabaseReference requests;
 
-    MaterialSpinner spinner;
+    MaterialSpinner spinnerOrder, spinnerPayment;
 
     APIService mService;
 
@@ -89,7 +89,7 @@ public class OrderStatus extends AppCompatActivity {
                 viewHolder.txtOrderStatus.setText("Tình trạng đơn: " + Common.coverCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText("Địa chỉ giao hàng: " + model.getAddress());
                 viewHolder.txtOrderPhone.setText("Số điện thoại giao hàng: " + model.getPhone());
-                viewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + model.getPaymentStatus());
+                viewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + Common.coverCodePaymentToStatus(model.getPaymentStatus()));
 
 
 
@@ -167,8 +167,8 @@ public class OrderStatus extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.update_order_layout, null);
 
-        spinner = (MaterialSpinner) view.findViewById(R.id.statusSpinner);
-        spinner.setItems("ĐÃ NHẬN ĐƠN", "ĐANG TRÊN ĐƯỜNG", "GIAO THÀNH CÔNG");
+        spinnerOrder = (MaterialSpinner) view.findViewById(R.id.statusOrderSpinner);
+        spinnerOrder.setItems("ĐÃ NHẬN ĐƠN", "ĐANG TRÊN ĐƯỜNG", "GIAO THÀNH CÔNG");
 
         //Set value default spinner
         requests.orderByKey().equalTo(key)
@@ -177,7 +177,27 @@ public class OrderStatus extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot postSnapShot: dataSnapshot.getChildren()) {
                             Request data = postSnapShot.getValue(Request.class);
-                            spinner.setSelectedIndex(Integer.parseInt(data.getStatus()));
+                            spinnerOrder.setSelectedIndex(Integer.parseInt(data.getStatus()));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(OrderStatus.this, "Đã có lỗi từ hệ thống, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        spinnerPayment = (MaterialSpinner) view.findViewById(R.id.statusPaymentSpinner);
+        spinnerPayment.setItems("CHƯA THANH TOÁN", "ĐÃ THANH TOÁN");
+
+        //Set value default spinner
+        requests.orderByKey().equalTo(key)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot postSnapShot: dataSnapshot.getChildren()) {
+                            Request data = postSnapShot.getValue(Request.class);
+                            spinnerPayment.setSelectedIndex(Integer.parseInt(data.getPaymentStatus()));
                         }
                     }
 
@@ -194,7 +214,8 @@ public class OrderStatus extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();;
-                item.setStatus(String.valueOf(spinner.getSelectedIndex()));
+                item.setStatus(String.valueOf(spinnerOrder.getSelectedIndex()));
+                item.setPaymentStatus(String.valueOf(spinnerPayment.getSelectedIndex()));
 
                 requests.child(localKey).setValue(item);
                 adapter.notifyDataSetChanged();

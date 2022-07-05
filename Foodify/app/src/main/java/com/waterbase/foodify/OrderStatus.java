@@ -99,7 +99,7 @@ public class OrderStatus extends AppCompatActivity {
                 orderViewHolder.txtOrderStatus.setText("Tình trạng đơn: " + Common.convertCodeToStatus(model.getStatus()));
                 orderViewHolder.txtOrderAddress.setText("Địa chỉ: " + model.getAddress());
                 orderViewHolder.txtOrderDate.setText("Ngày đặt: " + Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
-                orderViewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + model.getPaymentStatus());
+                orderViewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + Common.convertCodePaymentToStatus(model.getPaymentStatus()));
                 orderViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

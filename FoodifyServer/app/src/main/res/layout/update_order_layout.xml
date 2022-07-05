@@ -8,8 +8,41 @@
     app:cardElevation="4dp"
     >
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/statusSpinner"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:text="Tình trạng đơn hàng"
+            android:textAllCaps="true"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/statusOrderSpinner"
+            android:backgroundTint="@color/backgroundSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:text="Tình trạng thanh toán"
+            android:textAllCaps="true"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/statusPaymentSpinner"
+            android:backgroundTint="@color/backgroundSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

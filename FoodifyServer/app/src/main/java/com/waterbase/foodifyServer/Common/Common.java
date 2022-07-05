@@ -45,6 +45,13 @@ public class Common {
             return "Giao thành công";
     }
 
+    public static String coverCodePaymentToStatus(String code){
+        if(code.equals("0"))
+            return "CHƯA THANH TOÁN";
+        else
+            return "ĐÃ THANH TOÁN";
+    }
+
     public static IGeoCoordinates getGeoCodeService() {
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);
     }

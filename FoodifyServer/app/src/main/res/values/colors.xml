@@ -17,4 +17,5 @@
 
     <color name="overlayBackground">#7f333639</color>
     <color name="overlayActionBar">#0e0d0e</color>
+    <color name="backgroundSpinner">#E3E3E3</color>
 </resources>
