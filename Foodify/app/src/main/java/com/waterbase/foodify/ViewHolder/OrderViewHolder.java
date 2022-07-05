@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.waterbase.foodify.Interface.ItemClickListener;
 import com.waterbase.foodify.R;
 
-public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class OrderViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView txtOrderId, txtOrderStatus, txtOrderPhone, txtOrderAddress, txtOrderDate;
-
-    private ItemClickListener itemClickListener;
+    public TextView txtOrderId, txtOrderStatus, txtOrderAddress, txtOrderDate, txtOrderPayment;
 
     public ImageView btn_delete;
 
@@ -24,19 +22,8 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         txtOrderAddress = itemView.findViewById(R.id.order_address);
         txtOrderId = itemView.findViewById(R.id.order_id);
         txtOrderStatus = itemView.findViewById(R.id.order_status);
-        txtOrderPhone = itemView.findViewById(R.id.order_phone);
         txtOrderDate = itemView.findViewById(R.id.order_date);
+        txtOrderPayment = itemView.findViewById(R.id.order_payment);
         btn_delete = itemView.findViewById(R.id.btn_delete);
-
-        itemView.setOnClickListener(this);
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    @Override
-    public void onClick(View v) {
-       // itemClickListener.onClick(v, getAdapterPosition(), false);
     }
 }

@@ -82,13 +82,14 @@ public class OrderStatus extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, int i, @NonNull Request model) {
-                viewHolder.txtOrderId.setText(adapter.getRef(i).getKey());
+                viewHolder.txtOrderId.setText("Id đơn hàng: #" + adapter.getRef(i).getKey());
 
-                viewHolder.txtOrderDate.setText(Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
+                viewHolder.txtOrderDate.setText("Ngày đặt đơn: " + Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
 
-                viewHolder.txtOrderStatus.setText(Common.coverCodeToStatus(model.getStatus()));
-                viewHolder.txtOrderAddress.setText(model.getAddress());
-                viewHolder.txtOrderPhone.setText(model.getPhone());
+                viewHolder.txtOrderStatus.setText("Tình trạng đơn: " + Common.coverCodeToStatus(model.getStatus()));
+                viewHolder.txtOrderAddress.setText("Địa chỉ giao hàng: " + model.getAddress());
+                viewHolder.txtOrderPhone.setText("Số điện thoại giao hàng: " + model.getPhone());
+                viewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + model.getPaymentStatus());
 
 
 

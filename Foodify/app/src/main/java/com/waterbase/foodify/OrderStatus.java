@@ -95,11 +95,11 @@ public class OrderStatus extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(orderOptions) {
             @Override
             protected void onBindViewHolder(@NonNull OrderViewHolder orderViewHolder, int i, @NonNull Request model) {
-                orderViewHolder.txtOrderId.setText(adapter.getRef(i).getKey());
-                orderViewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
-                orderViewHolder.txtOrderAddress.setText(model.getAddress());
-                orderViewHolder.txtOrderPhone.setText(model.getPhone());
-                orderViewHolder.txtOrderDate.setText(Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
+                orderViewHolder.txtOrderId.setText("Id đơn hàng: #" + adapter.getRef(i).getKey());
+                orderViewHolder.txtOrderStatus.setText("Tình trạng đơn: " + Common.convertCodeToStatus(model.getStatus()));
+                orderViewHolder.txtOrderAddress.setText("Địa chỉ: " + model.getAddress());
+                orderViewHolder.txtOrderDate.setText("Ngày đặt: " + Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
+                orderViewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + model.getPaymentStatus());
                 orderViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

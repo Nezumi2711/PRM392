@@ -32,13 +32,10 @@ import com.squareup.picasso.Picasso;
 import com.waterbase.foodifyServer.Common.Common;
 import com.waterbase.foodifyServer.Model.Banner;
 import com.waterbase.foodifyServer.Model.Food;
-import com.waterbase.foodifyServer.Model.Request;
 import com.waterbase.foodifyServer.ViewHolder.BannerViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import info.hoang8f.widget.FButton;
 
 public class BannerActivity extends AppCompatActivity {
 

@@ -35,7 +35,6 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodifyServer.Common.Common;
-import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.Model.Food;
 import com.waterbase.foodifyServer.ViewHolder.FoodViewHolder;
 

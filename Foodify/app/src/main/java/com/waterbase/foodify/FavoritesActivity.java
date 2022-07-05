@@ -1,16 +1,14 @@
 package com.waterbase.foodify;
 
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.widget.RelativeLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.waterbase.foodify.Common.Common;

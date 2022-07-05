@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.waterbase.foodifyServer.Common.Common;
-import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.R;
 
 public class FoodViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{

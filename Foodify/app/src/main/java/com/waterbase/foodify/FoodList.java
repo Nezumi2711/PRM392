@@ -140,7 +140,7 @@ public class FoodList extends AppCompatActivity {
 
                 //Search
                 materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
-                materialSearchBar.setHint("Enter your food");
+                materialSearchBar.setHint("Tìm kiếm món ăn");
                 loadSuggest();
                 materialSearchBar.setCardViewElevation(10);
                 materialSearchBar.addTextChangeListener(new TextWatcher() {

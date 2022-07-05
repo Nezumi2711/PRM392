@@ -1,11 +1,6 @@
 package com.waterbase.foodify;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,10 +9,14 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -40,6 +39,11 @@ import com.waterbase.foodify.ViewHolder.FoodViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class SearchActivity extends AppCompatActivity {
 
     //Search
@@ -58,8 +62,22 @@ public class SearchActivity extends AppCompatActivity {
     Database localDB;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Set font all activity
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/font.ttf")
+                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
+                                .build()))
+                .build());
+
         setContentView(R.layout.activity_search);
 
         //Firebase
@@ -76,7 +94,7 @@ public class SearchActivity extends AppCompatActivity {
 
         //Search
         materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
-        materialSearchBar.setHint("Enter your food");
+        materialSearchBar.setHint("Tìm kiếm món ăn");
         loadSuggest();
         materialSearchBar.setCardViewElevation(10);
         materialSearchBar.addTextChangeListener(new TextWatcher() {
@@ -195,7 +213,7 @@ public class SearchActivity extends AppCompatActivity {
 
                         Favorites favorites = new Favorites();
 
-                        favorites.setFoodId(adapter.getRef(position).getKey());
+                        favorites.setFoodId(adapter.getRef(viewHolder.getAdapterPosition()).getKey());
                         favorites.setFoodName(model.getName());
                         favorites.setFoodDescription(model.getDescription());
                         favorites.setFoodDiscount(model.getDiscount());

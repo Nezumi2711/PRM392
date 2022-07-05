@@ -207,8 +207,6 @@ public class OrderDetail extends AppCompatActivity {
                     Token serverToken = postSnapShot.getValue(Token.class);
 
                     //Create raw payload to send
-//                    Notification notification = new Notification("Foodify", "Bạn có 1 đơn hàng mới " + order_number);
-//                    Sender content = new Sender(serverToken.getToken(), notification);
                     Map<String, String> dataSend = new HashMap<>();
                     dataSend.put("title", "Foodify");
                     dataSend.put("message", "Bạn có 1 đơn hàng mới +" + order_number);

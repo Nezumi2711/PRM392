@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.waterbase.foodifyServer.Common.Common;
-import com.waterbase.foodifyServer.Model.Order;
 import com.waterbase.foodifyServer.ViewHolder.OrderDetailAdapter;
 
 public class OrderDetail extends AppCompatActivity {

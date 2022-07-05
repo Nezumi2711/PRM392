@@ -330,15 +330,6 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                 intent.putExtra("requests", request);
                 startActivity(intent);
 
-                //Summit to Firebase
-                //We will using System.CurrentMilli to key
-//                String order_number = String.valueOf(System.currentTimeMillis());
-//                requests.child(order_number).setValue(request);
-//
-//                sendNotificationOrder(order_number);
-
-
-
             }
         });
 

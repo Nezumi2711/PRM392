@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.waterbase.foodifyServer.Common.Common;
-import com.waterbase.foodifyServer.Interface.ItemClickListener;
 import com.waterbase.foodifyServer.R;
 
 public class BannerViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{

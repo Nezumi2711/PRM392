@@ -1,26 +1,29 @@
 package com.waterbase.foodifyServer.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Request {
+public class Request implements Serializable {
     private String phone;
     private String name;
     private String address;
     private String total;
     private String status;
     private String comment;
-    private List<com.waterbase.foodifyServer.Model.Order> foods; // list of food order
+    private String paymentStatus;
+    private List<Order> foods; // list of food order
 
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, String status, String comment, List<Order> foods) {
+    public Request(String phone, String name, String address, String total, String status, String comment, String paymentStatus, List<Order> foods) {
         this.phone = phone;
         this.name = name;
         this.address = address;
         this.total = total;
         this.status = status;
         this.comment = comment;
+        this.paymentStatus = paymentStatus;
         this.foods = foods;
     }
 
@@ -70,6 +73,14 @@ public class Request {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public List<Order> getFoods() {
