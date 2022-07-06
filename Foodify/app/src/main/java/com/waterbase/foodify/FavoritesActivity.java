@@ -88,7 +88,6 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem, deleteIndex);
                     new Database(getBaseContext()).addToFavorites(deleteItem);
-//                    updateTotalPrice();
 
                 }
             });

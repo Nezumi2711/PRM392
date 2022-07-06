@@ -62,7 +62,6 @@ public class BannerActivity extends AppCompatActivity {
     MaterialSpinner foodListSpinner;
 
     Banner newBanner;
-    Uri filePath;
     
     List<Food> foodList =  new ArrayList<>();
     List foodName = new ArrayList();
