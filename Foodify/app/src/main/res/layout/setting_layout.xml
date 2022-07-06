@@ -19,6 +19,7 @@
         <CheckBox
             android:id="@+id/ckb_sub_new"
             android:text="Nhận thông báo từ hệ thống"
+            android:fontFamily="@font/regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />

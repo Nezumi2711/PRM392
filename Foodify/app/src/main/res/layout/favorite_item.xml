@@ -70,6 +70,7 @@
                 android:layout_weight="9"
                 android:layout_height="wrap_content"
                 android:text="Name of Food"
+                android:fontFamily="@font/regular"
                 android:textSize="20sp" />
 
 
@@ -83,6 +84,7 @@
                 android:id="@+id/food_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/regular"
                 android:text="$100"
                 android:textSize="20sp" />
 
@@ -94,6 +96,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_toEndOf="@+id/food_price"
                 android:text="$100"
+                android:fontFamily="@font/regular"
                 android:textColor="@color/red"
                 android:textSize="10sp" />
 
@@ -103,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_toEndOf="@+id/discount"
-                android:textStyle="bold"
+                android:fontFamily="@font/bold"
                 android:text="$100"
                 android:textSize="25sp" />
 

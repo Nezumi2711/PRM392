@@ -105,21 +105,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     IGoogleService mGoogleMapService;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
 
         setContentView(R.layout.activity_cart);
 
@@ -321,7 +308,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                         txtTotalPrice.getText().toString(),
                         "0",
                         edtComment.getText().toString(),
-                        "Chưa thanh toán!",
+                        "0",
                         cart
                 );
 

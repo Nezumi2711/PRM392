@@ -95,28 +95,23 @@
                         android:layout_marginTop="8dp"
                         android:padding="12dp"
                         android:text="Food Name"
+                        android:fontFamily="@font/bold"
                         android:textColor="@color/purple_500"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:id="@+id/layout_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-                        <ImageView
-                            android:src="@drawable/ic_baseline_attach_money_24"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
                         
                         <TextView
                             android:id="@+id/food_price"
+                            android:layout_marginLeft="12dp"
                             android:text="1,000"
-                            android:textColor="@color/colorPrimary"
+                            android:fontFamily="@font/regular"
+                            android:textColor="@color/black"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:layout_weight="9"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content" />
@@ -132,7 +127,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginBottom="18dp"
                         app:textSize="8sp"
-                        app:backGroundColor="@color/colorPrimary"
+                        app:backGroundColor="@color/purple_500"
                         app:initialNumber="1"
                         app:finalNumber="20"
                         />
@@ -168,6 +163,7 @@
                         android:lineSpacingMultiplier="1.5"
                         android:padding="12dp"
                         android:text="Description"
+                        android:fontFamily="@font/regular"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -178,6 +174,7 @@
             <info.hoang8f.widget.FButton
                 android:id="@+id/btnShowComment"
                 android:text="Hiển thị bình luận"
+                android:fontFamily="@font/regular"
                 android:textColor="@color/white"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="8dp"

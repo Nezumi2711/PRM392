@@ -34,7 +34,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/bold"
                     android:text="100000 VND"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -44,7 +44,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="italic"
+                    android:fontFamily="@font/italic"
                     android:text="Address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -54,7 +54,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="italic"
+                    android:fontFamily="@font/italic"
                     android:text="Comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -76,6 +76,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="20dp"
             android:text="Chi tiết đơn:"
+            android:fontFamily="@font/regular"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -101,7 +102,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_gravity="center"
-            android:textStyle="bold"
             app:icon="@drawable/zalopayfix"
             app:iconTint="@null"
             app:iconGravity="textStart"
@@ -111,6 +111,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/regular"
             android:text="Thanh toán bằng ZaloPay"
             android:textColor="#0068FF"
             android:backgroundTint="@color/white"
@@ -126,7 +127,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_gravity="center"
-            android:textStyle="bold"
             app:iconTint="@null"
             app:iconGravity="textStart"
             app:iconPadding="10dp"
@@ -135,6 +135,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:text="Thanh toán khi nhận hàng"
+            android:fontFamily="@font/regular"
             android:textColor="@color/white"
             />
 

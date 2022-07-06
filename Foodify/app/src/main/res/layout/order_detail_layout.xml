@@ -33,8 +33,8 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
                     android:text="Product Name"
+                    android:fontFamily="@font/bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -43,8 +43,8 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="italic"
                     android:text="Product Quantity"
+                    android:fontFamily="@font/regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -53,8 +53,8 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="italic"
                     android:text="Product Price"
+                    android:fontFamily="@font/regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -63,8 +63,8 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical|start"
                     android:textAllCaps="true"
-                    android:textStyle="italic"
                     android:text="Product Discount"
+                    android:fontFamily="@font/regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

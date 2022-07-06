@@ -36,24 +36,8 @@ public class SignIn extends AppCompatActivity {
     CheckBox ckbRemember;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
-
         setContentView(R.layout.activity_sign_in);
 
         edtPassword = (EditText) findViewById(R.id.edtPassword);
@@ -66,9 +50,6 @@ public class SignIn extends AppCompatActivity {
         Paper.init(this);
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
-
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Nabila.ttf");
-        txtAppName.setTypeface(face);
 
         //Init Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();

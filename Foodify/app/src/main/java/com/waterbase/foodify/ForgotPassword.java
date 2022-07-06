@@ -40,23 +40,8 @@ public class ForgotPassword extends AppCompatActivity {
     final String PHONE_PATTERN = "^0[98753]{1}\\d{8}$";
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
 
         setContentView(R.layout.activity_forgot_password);
 

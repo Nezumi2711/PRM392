@@ -47,6 +47,7 @@
                 <TextView
                     android:text="Tổng cộng: "
                     android:textSize="20sp"
+                    android:fontFamily="@font/regular"
                     android:textColor="@android:color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -54,6 +55,7 @@
                 <TextView
                     android:id="@+id/total"
                     android:text="$10,000"
+                    android:fontFamily="@font/bold"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
                     android:layout_width="wrap_content"
@@ -73,6 +75,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="Đặt hàng"
+                android:fontFamily="@font/bold"
                 android:textColor="@android:color/white"
                 app:cornerRadius="4dp"
                 app:fButtonColor="@color/btnSignActive"

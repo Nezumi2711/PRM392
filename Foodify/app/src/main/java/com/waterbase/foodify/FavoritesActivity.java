@@ -3,9 +3,12 @@ package com.waterbase.foodify;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,24 +38,12 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
     RelativeLayout rootLayout;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
-
         setContentView(R.layout.activity_favorites);
+
+        setTitle("Danh sách yêu thích");
 
         rootLayout = findViewById(R.id.rootLayout);
 
@@ -65,6 +56,12 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         loadFavorites();
+
+        // calling the action bar
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void loadFavorites() {
@@ -98,5 +95,15 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

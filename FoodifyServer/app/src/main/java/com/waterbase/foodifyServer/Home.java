@@ -110,7 +110,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Set Name for user
         View headerView = navigationView.getHeaderView(0);
         txtFullName = (TextView) headerView.findViewById(R.id.txtFullName);
-        txtFullName.setText(Common.currentUser.getName());
+        txtFullName.setText("Xin chào " + Common.currentUser.getName() + "!");
         
         //Init View
         recycler_menu = (RecyclerView) findViewById(R.id.recyler_menu);

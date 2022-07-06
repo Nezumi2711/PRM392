@@ -32,20 +32,8 @@ public class Welcome extends AppCompatActivity {
     TextView txtSlogan, txtAppName;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
         setContentView(R.layout.activity_welcome);
 
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
@@ -53,9 +41,6 @@ public class Welcome extends AppCompatActivity {
 
         txtSlogan = (TextView) findViewById(R.id.txtSlogan);
         txtAppName = (TextView) findViewById(R.id.txtAppName);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Nabila.ttf");
-        txtSlogan.setTypeface(face);
-        txtAppName.setTypeface(face);
 
         //Init paper
         Paper.init(this);

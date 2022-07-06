@@ -28,17 +28,20 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:textAllCaps="true"
-                android:textStyle="bold"
+                android:fontFamily="@font/bold"
+                android:textSize="18sp"
                 android:text="#11111"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+
+                android:textAppearance="@style/TextAppearance"/>
 
             <TextView
                 android:id="@+id/order_date"
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:textAllCaps="true"
-                android:textStyle="italic"
+                android:fontFamily="@font/italic"
                 android:text="Order Date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -48,7 +51,7 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:textAllCaps="true"
-                android:textStyle="italic"
+                android:fontFamily="@font/italic"
                 android:text="Status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -58,7 +61,7 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:textAllCaps="true"
-                android:textStyle="italic"
+                android:fontFamily="@font/italic"
                 android:text="Address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -68,7 +71,7 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"
                 android:textAllCaps="true"
-                android:textStyle="italic"
+                android:fontFamily="@font/italic"
                 android:text="Order Payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -21,6 +21,7 @@
         <TextView
             android:id="@+id/menu_name"
             android:text="Name of Menu"
+            android:fontFamily="@font/bold"
             android:textColor="@color/white"
             android:background="#4f0e0d0e"
             android:textSize="20sp"

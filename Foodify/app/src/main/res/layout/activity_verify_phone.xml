@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:text="Mã xác thực OTP"
-            android:textStyle="bold"
+            android:fontFamily="@font/bold"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textAllCaps="true"
@@ -40,7 +40,7 @@
             android:layout_marginEnd="30dp"
             android:textAlignment="center"
             android:text="Chúng tôi đã gửi mã xác thực cho bạn. Vui lòng nhập mã OTP khi nhận được tin nhắn!"
-            android:textStyle="bold"
+            android:fontFamily="@font/regular"
             android:textColor="@color/common_google_signin_btn_text_dark"
             android:textSize="12dp"
             />
@@ -53,7 +53,7 @@
             android:layout_marginEnd="30dp"
             android:textAlignment="center"
             android:text="Nhập mã xác thực"
-            android:textStyle="bold"
+            android:fontFamily="@font/bold"
             android:textColor="@color/common_google_signin_btn_text_dark"
             android:textSize="12dp"
             />
@@ -73,18 +73,19 @@
                 android:gravity="center"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
+                android:fontFamily="@font/regular"
                 android:backgroundTint="#CCCCCC"
                 android:inputType="number"
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
             <EditText
                 android:id="@+id/inputCode2"
                 android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:gravity="center"
+                android:fontFamily="@font/regular"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:backgroundTint="#CCCCCC"
@@ -92,7 +93,6 @@
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
             <EditText
                 android:id="@+id/inputCode3"
@@ -100,13 +100,13 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
+                android:fontFamily="@font/regular"
                 android:importantForAutofill="no"
                 android:backgroundTint="#CCCCCC"
                 android:inputType="number"
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
             <EditText
                 android:id="@+id/inputCode4"
@@ -114,13 +114,13 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
+                android:fontFamily="@font/regular"
                 android:importantForAutofill="no"
                 android:backgroundTint="#CCCCCC"
                 android:inputType="number"
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
             <EditText
                 android:id="@+id/inputCode5"
@@ -130,11 +130,11 @@
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:backgroundTint="#CCCCCC"
+                android:fontFamily="@font/regular"
                 android:inputType="number"
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
             <EditText
                 android:id="@+id/inputCode6"
@@ -144,11 +144,11 @@
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:backgroundTint="#CCCCCC"
+                android:fontFamily="@font/regular"
                 android:inputType="number"
                 android:maxLength="1"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 tools:ignore="LabelFor"/>
         </LinearLayout>
 
@@ -164,9 +164,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Không nhận được mã OTP? Hãy thử lại sau "
+                android:fontFamily="@font/regular"
                 android:textSize="12dp"
                 android:textColor="@color/white"
-                android:textStyle="bold"
                 />
 
             <TextView
@@ -175,9 +175,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gửi lại"
+                android:fontFamily="@font/bold"
                 android:textSize="12dp"
                 android:textColor="@color/purple_500"
-                android:textStyle="bold"
                 android:textAllCaps="true"
                 />
 
@@ -187,9 +187,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gửi lại"
+                android:fontFamily="@font/bold"
                 android:textSize="12dp"
                 android:textColor="@color/purple_500"
-                android:textStyle="bold"
                 android:textAllCaps="true"
                 />
 
@@ -207,8 +207,8 @@
                 android:background="@drawable/btn_bg_design"
                 android:padding="10dp"
                 android:text="Xác thực"
+                android:fontFamily="@font/bold"
                 android:textAllCaps="true"
-                android:textStyle="bold"
                 android:layout_marginTop="80dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp" />

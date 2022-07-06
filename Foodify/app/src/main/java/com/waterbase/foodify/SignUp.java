@@ -43,24 +43,10 @@ public class SignUp extends AppCompatActivity {
     final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
     final String PHONE_PATTERN = "^0[98753]{1}\\d{8}$";
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
 
         setContentView(R.layout.activity_sign_up);
 
@@ -74,8 +60,6 @@ public class SignUp extends AppCompatActivity {
 
         txtAppName = (TextView) findViewById(R.id.txtAppName);
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Nabila.ttf");
-        txtAppName.setTypeface(face);
 
         //Init Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();

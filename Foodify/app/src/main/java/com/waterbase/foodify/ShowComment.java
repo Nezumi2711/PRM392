@@ -44,11 +44,6 @@ public class ShowComment extends AppCompatActivity {
 
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         if(adapter != null)
@@ -58,15 +53,6 @@ public class ShowComment extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
 
         setContentView(R.layout.activity_show_comment);
 
@@ -100,7 +86,7 @@ public class ShowComment extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull ShowCommentViewHolder holder, int i, @NonNull Rating model) {
                             holder.ratingBar.setRating(Float.parseFloat(model.getRateValue()));
                             holder.txtComment.setText(model.getComment());
-                            holder.txtUserPhone.setText(model.getUserPhone());
+                            holder.txtUserPhone.setText(model.getUserPhone().replaceAll("\\d(?=(?:\\D*\\d){4})", "*"));
                         }
 
                         @NonNull
@@ -138,7 +124,7 @@ public class ShowComment extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull ShowCommentViewHolder holder, int i, @NonNull Rating model) {
                             holder.ratingBar.setRating(Float.parseFloat(model.getRateValue()));
                             holder.txtComment.setText(model.getComment());
-                            holder.txtUserPhone.setText(model.getUserPhone());
+                            holder.txtUserPhone.setText(model.getUserPhone().replaceAll("\\d(?=(?:\\D*\\d){4})", "*"));
                         }
 
                         @NonNull

@@ -23,8 +23,8 @@
             <TextView
                 android:id="@+id/txtUserPhone"
                 android:text="User Phone"
+                android:fontFamily="@font/bold"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -43,8 +43,8 @@
         <TextView
             android:id="@+id/txtComment"
             android:text="Comment"
+            android:fontFamily="@font/italic"
             android:textSize="16sp"
-            android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />

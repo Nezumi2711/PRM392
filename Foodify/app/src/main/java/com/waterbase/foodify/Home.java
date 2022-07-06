@@ -86,24 +86,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     HashMap<String, String> image_list;
     SliderLayout mSlider;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set font all activity
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(new CalligraphyInterceptor(
-                        new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/font.otf")
-                                .setFontAttrId(io.github.inflationx.calligraphy3.R.attr.fontPath)
-                                .build()))
-                .build());
 
         setContentView(R.layout.activity_home);
 
@@ -229,7 +215,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
         TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
-        navUserName.setText(Common.currentUser.getName());
+        navUserName.setText("Xin chào " + Common.currentUser.getName() + "!");
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
@@ -239,7 +225,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void applyFontToMenuItem(MenuItem mi) {
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/font.otf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/regular.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
         mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);

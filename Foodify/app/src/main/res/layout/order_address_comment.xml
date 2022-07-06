@@ -19,6 +19,7 @@
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtAddress"
             android:hint="Địa chỉ"
+            android:fontFamily="@font/regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@color/colorPrimary"
@@ -35,6 +36,7 @@
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtComment"
             android:hint="Ghi chú"
+            android:fontFamily="@font/regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@color/colorPrimary"
@@ -56,6 +58,7 @@
             <RadioButton
                 android:id="@+id/rdiAddress"
                 android:text="Giao hàng đến địa chỉ trên"
+                android:fontFamily="@font/regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
@@ -64,6 +67,7 @@
             <RadioButton
                 android:id="@+id/rdiShipToAddress"
                 android:text="Giao hàng đến vị trí của bạn"
+                android:fontFamily="@font/regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
@@ -71,6 +75,7 @@
             <RadioButton
                 android:id="@+id/rdiHomeAddress"
                 android:text="Giao hàng đến địa chỉ mặc định"
+                android:fontFamily="@font/regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
