@@ -251,11 +251,9 @@ public class OrderStatus extends AppCompatActivity {
                             Token token = postSnapShot.getValue(Token.class);
 
                             //Make raw payload
-//                            Notification notification = new Notification("Foodify", "Đơn của bạn " + localKey + " đã được cập nhật!");
-//                            Sender content = new Sender(token.getToken(), notification);
                             Map<String, String> dataSend = new HashMap<>();
-                            dataSend.put("title", "EDMT Dev");
-                            dataSend.put("message", "Đơn của bạn " + localKey + " đã được cập nhật!");
+                            dataSend.put("title", "Foodify");
+                            dataSend.put("message", "Đơn của bạn #" + localKey + " đã được cập nhật!");
                             DataMessage dataMessage = new DataMessage(token.getToken(), dataSend);
 
                             mService.sendNotification(dataMessage)
