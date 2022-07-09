@@ -1,9 +1,7 @@
 package com.waterbase.foodify;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,16 +21,12 @@ import com.rey.material.widget.CheckBox;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
-import io.github.inflationx.calligraphy3.CalligraphyConfig;
-import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
-import io.github.inflationx.viewpump.ViewPump;
-import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.paperdb.Paper;
 
 public class SignIn extends AppCompatActivity {
 
     EditText edtPhone, edtPassword;
-    Button btnSignIn;
+    Button btnSignIn, btnGoogle;
     TextView txtAppName, edtForgotPassword;
     CheckBox ckbRemember;
 
@@ -45,7 +40,6 @@ public class SignIn extends AppCompatActivity {
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
         ckbRemember = (CheckBox)findViewById(R.id.ckbRemember);
         edtForgotPassword = findViewById(R.id.forgotPassword);
-
         //Init Paper
         Paper.init(this);
 
@@ -114,6 +108,9 @@ public class SignIn extends AppCompatActivity {
                 }
             }
         });
+
+        //Google SignIn Button
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 
         //Set on click Forgot Password
         edtForgotPassword.setOnClickListener(new View.OnClickListener() {

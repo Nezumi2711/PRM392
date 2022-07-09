@@ -51,20 +51,6 @@
 
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnRating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        app:elevation="6dp"
-        android:src="@drawable/ic_baseline_star_24"
-        app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|right|start"
-        app:pressedTranslationZ="12dp"
-        app:useCompatPadding="true"
-
-        />
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
@@ -109,6 +95,7 @@
                             android:id="@+id/food_price"
                             android:layout_marginLeft="12dp"
                             android:text="1,000"
+                            android:layout_marginTop="10dp"
                             android:fontFamily="@font/regular"
                             android:textColor="@color/black"
                             android:textSize="18sp"
@@ -116,21 +103,20 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content" />
 
-
+                        <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/number_button"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginBottom="18dp"
+                            app:textSize="8sp"
+                            app:backGroundColor="@color/purple_500"
+                            app:initialNumber="1"
+                            app:finalNumber="20"
+                            />
                     </LinearLayout>
 
-                    <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/number_button"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginBottom="18dp"
-                        app:textSize="8sp"
-                        app:backGroundColor="@color/purple_500"
-                        app:initialNumber="1"
-                        app:finalNumber="20"
-                        />
+
 
                 </LinearLayout>
 
@@ -153,7 +139,9 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="true"
                         android:max="5"
-                        android:rating="0" />
+                        android:rating="0"
+                        android:layout_gravity="center"
+                        />
 
                     <TextView
                         android:id="@+id/food_description"

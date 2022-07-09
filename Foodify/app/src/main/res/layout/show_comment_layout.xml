@@ -25,18 +25,19 @@
                 android:text="User Phone"
                 android:fontFamily="@font/bold"
                 android:textSize="20sp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="9"
                 android:layout_height="wrap_content"
                 />
 
             <RatingBar
                 android:id="@+id/ratingBar"
                 style="?android:attr/ratingBarStyleSmall"
-                android:layout_marginLeft="140dp"
                 android:layout_gravity="center_vertical"
                 android:rating="3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 />
         </LinearLayout>
 

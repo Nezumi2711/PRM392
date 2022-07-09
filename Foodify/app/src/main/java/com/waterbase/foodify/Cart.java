@@ -1,13 +1,18 @@
 package com.waterbase.foodify;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,24 +25,39 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Database.Database;
@@ -58,18 +78,14 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import info.hoang8f.widget.FButton;
-import io.github.inflationx.calligraphy3.CalligraphyConfig;
-import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
-import io.github.inflationx.viewpump.ViewPump;
-import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Cart extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, RecyclerItemTouchHelperListener {
+public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
     String address = null;
 
@@ -79,7 +95,7 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     FirebaseDatabase database;
     DatabaseReference requests;
 
-    public TextView txtTotalPrice;
+    public TextView txtTotalPrice, txtEmptyCart;
     FButton btnPlace;
 
     List<Order> cart = new ArrayList<>();
@@ -90,16 +106,19 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     RelativeLayout rootLayout;
 
     //Location
+    private static final int REQUEST_CHECK_SETTINGS = 100;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    private static final long FASTEST_UPDATE_IN_MILLISECONDS = 1000;
+    private static final String TAG = Cart.class.getSimpleName();
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    private SettingsClient mSettingsClient;
     private LocationRequest mLocationRequest;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private LocationCallback mLocationCallBack;
+    private Location mCurrentLocation;
+    private boolean mRequestingLocationUpdates = false;
 
-    private static int UPDATE_INTERVAL = 5000;
-    private static int FATEST_INTERVAL = 3000;
-    private static int DISPLACEMENT = 10;
-
-    private static final int LOCATION_REQUEST_CODE = 9999;
-    private static final int PLAY_SERVICES_REQUEST = 9997;
 
     //Declare Google Map API Retrofit
     IGoogleService mGoogleMapService;
@@ -109,21 +128,6 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_cart);
-
-        //Runtime permission
-        if (checkLocatePermission()) {
-            ActivityCompat.requestPermissions(this, new String[]
-                    {
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    }, LOCATION_REQUEST_CODE
-            );
-        } else {
-            if (checkPlayServices()) {
-                buildGoogleApiClient();
-                createLocationRequest();
-            }
-        }
 
         //Init
         mService = Common.getFCMService();
@@ -139,6 +143,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         rootLayout = findViewById(R.id.rootLayout);
+        txtEmptyCart = findViewById(R.id.textEmptyCart);
+
+        visibilityTextEmpty();
 
         //Swipe to delete
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
@@ -150,8 +157,9 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cart.size() > 0)
+                if (cart.size() > 0){
                     showAlertDialog();
+                }
                 else
                     Toast.makeText(Cart.this, "Giỏ hàng của bạn đang trống!!!", Toast.LENGTH_SHORT).show();
             }
@@ -159,59 +167,54 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
 
         loadListFood();
 
+        //Location
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
+
+        mLocationCallBack = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                mCurrentLocation = locationResult.getLastLocation();
+            }
+        };
+
+        mLocationRequest = LocationRequest.create()
+                        .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
+                        .setFastestInterval(FASTEST_UPDATE_IN_MILLISECONDS)
+                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+
+        Dexter.withContext(this)
+                        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                mRequestingLocationUpdates = true;
+                                startLocationUpdates();
+                            }
+
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse response) {
+                                if(response.isPermanentlyDenied()){
+                                    openSettings();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        }).check();
+
         setTitle("Giỏ hàng");
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case LOCATION_REQUEST_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (checkPlayServices()) {
-                        buildGoogleApiClient();
-                        createLocationRequest();
-                    }
-                }
-            }
-        }
-    }
-
-    private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
-    }
-
-    private synchronized void buildGoogleApiClient() {
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-
-        mGoogleApiClient.connect();
-    }
-
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_REQUEST).show();
-            else {
-                Toast.makeText(this, "Thiết bị này chưa được hỗ trợ!", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            return false;
-        }
-        return true;
     }
 
     private void showAlertDialog() {
@@ -234,8 +237,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         rdiHomeAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    if(!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) || Common.currentUser.getHomeAddress() != null) {
+                if (isChecked) {
+                    if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) || Common.currentUser.getHomeAddress() != null) {
                         edtAddress.setText(Common.currentUser.getHomeAddress());
                     } else
                         Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
@@ -247,8 +250,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         rdiAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                edtAddress.setText("");
+                if (isChecked)
+                    edtAddress.setText("");
             }
         });
 
@@ -258,8 +261,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
-                                    mLastLocation.getLatitude(),
-                                    mLastLocation.getLongitude()))
+                                    mCurrentLocation.getLatitude(),
+                                    mCurrentLocation.getLongitude()))
                             .enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
@@ -331,7 +334,6 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
 
-
     private void loadListFood() {
         cart = new Database(this).getCarts(Common.currentUser.getPhone());
         adapter = new CartAdapter(cart, this);
@@ -341,7 +343,8 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
         //Calculate total price
         float total = 0;
         for (Order order : cart)
-            total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(order.getQuantity())) * (100 - Long.parseLong(order.getDiscount()))/100;;
+            total += (Float.parseFloat(order.getPrice())) * (Float.parseFloat(order.getQuantity())) * (100 - Long.parseLong(order.getDiscount())) / 100;
+        ;
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
@@ -378,57 +381,11 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        displayLocation();
-        startLocationUpdates();
-    }
-
-    private void startLocationUpdates() {
-        if (checkLocatePermission()) {
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
-
-    private void displayLocation() {
-        if (checkLocatePermission())
-            return;
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            Log.d("LOCATION", "Your location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
-        } else {
-            Log.d("LOCATION", "Could not get your location!");
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    private boolean checkLocatePermission() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        displayLocation();
-    }
-
-    @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if(viewHolder instanceof CartViewHolder)
-        {
-            String name = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).getProductName();
+        if (viewHolder instanceof CartViewHolder) {
+            String name = ((CartAdapter) recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).getProductName();
 
-            Order deleteItem = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
+            Order deleteItem = ((CartAdapter) recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
             int deleteIndex = viewHolder.getAdapterPosition();
 
             adapter.removeItem(deleteIndex);
@@ -444,23 +401,103 @@ public class Cart extends AppCompatActivity implements GoogleApiClient.Connectio
                     adapter.restoreItem(deleteItem, deleteIndex);
                     new Database(getBaseContext()).addToCart(deleteItem);
                     updateTotalPrice();
-
+                    visibilityTextEmpty();
                 }
             });
+
+            visibilityTextEmpty();
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
     }
 
-    public void updateTotalPrice()
-    {
+    public void updateTotalPrice() {
         //Calculate total price
         float total = 0;
         List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
         for (Order item : orders)
-            total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount()))/100;
+            total += (Float.parseFloat(item.getPrice())) * (Float.parseFloat(item.getQuantity())) * (100 - Long.parseLong(item.getDiscount())) / 100;
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
         txtTotalPrice.setText(fmt.format(total));
     }
+
+    //Location
+
+    private void openSettings(){
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
+        intent.setData(uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void startLocationUpdates(){
+        mSettingsClient.checkLocationSettings(mLocationSettingsRequest).addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallBack, Looper.myLooper());
+
+            }
+        }).addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode){
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Log.i(TAG, "Location settings are not satisfied. Attempting to upgrade location settings");
+
+                        try {
+                            ResolvableApiException rae = (ResolvableApiException) e;
+                            rae.startResolutionForResult(Cart.this, REQUEST_CHECK_SETTINGS);
+                        }catch (IntentSender.SendIntentException sie){
+                            Log.i(TAG, "PendingIntent unable to execute request");
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        String errorMessage = "Location settings are inadequate, and cannot be fixed here. Fix in Settings";
+                        Log.e(TAG, errorMessage);
+
+                        Toast.makeText(Cart.this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void stopLocationUpdates(){
+        mFusedLocationClient.removeLocationUpdates(mLocationCallBack).addOnCompleteListener(this, task -> Log.d(TAG, "Location updates stopped!"));
+    }
+
+    private boolean checkPermission(){
+        int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mRequestingLocationUpdates && checkPermission()){
+            startLocationUpdates();
+        }
+        visibilityTextEmpty();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mRequestingLocationUpdates){
+            stopLocationUpdates();
+        }
+    }
+
+    private void visibilityTextEmpty(){
+        if(cart.size() > 0){
+            txtEmptyCart.setVisibility(View.GONE);
+        } else {
+            txtEmptyCart.setVisibility(View.VISIBLE);
+        }
+    }
+
 }

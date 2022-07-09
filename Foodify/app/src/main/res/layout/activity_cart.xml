@@ -25,6 +25,18 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textEmptyCart"
+        android:text="Giỏ hàng của bạn đang trống!"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/italic"
+        android:textColor="#8AECECEC"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        />
+
     
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

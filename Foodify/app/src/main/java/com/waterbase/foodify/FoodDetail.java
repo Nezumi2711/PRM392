@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -49,7 +50,6 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     TextView food_name, food_price, food_description;
     ImageView food_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    FloatingActionButton btnRating;
     CounterFab btnCart;
     ElegantNumberButton numberButton;
     RatingBar ratingBar;
@@ -88,15 +88,18 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
         //Init view
         numberButton = (ElegantNumberButton) findViewById(R.id.number_button);
         btnCart = findViewById(R.id.btnCart);
-        btnRating = (FloatingActionButton) findViewById(R.id.btnRating);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
-        btnRating.setOnClickListener(new View.OnClickListener() {
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showRatingDialog();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    showRatingDialog();
+                }
+                return true;
             }
         });
+
 
         btnCart.setOnClickListener(new View.OnClickListener() {
             @Override

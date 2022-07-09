@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -23,6 +24,8 @@ import com.waterbase.foodify.Model.Favorites;
 import com.waterbase.foodify.ViewHolder.FavoritesAdapter;
 import com.waterbase.foodify.ViewHolder.FavoritesViewHolder;
 
+import org.w3c.dom.Text;
+
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
@@ -30,6 +33,7 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class FavoritesActivity extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
+    TextView txtEmptyList;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
@@ -47,10 +51,13 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
         rootLayout = findViewById(R.id.rootLayout);
 
+        txtEmptyList = findViewById(R.id.txtEmptyList);
+
+        setVisibilityText();
+
         recyclerView = findViewById(R.id.recycler_fav);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         //Swipe to delete
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
@@ -88,9 +95,10 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem, deleteIndex);
                     new Database(getBaseContext()).addToFavorites(deleteItem);
-
+                    setVisibilityText();
                 }
             });
+
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
@@ -104,5 +112,13 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setVisibilityText() {
+        if(new Database(this).getAllFavorites(Common.currentUser.getPhone()).size() > 0) {
+            txtEmptyList.setVisibility(View.GONE);
+        } else {
+            txtEmptyList.setVisibility(View.VISIBLE);
+        }
     }
 }
