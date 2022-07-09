@@ -13,7 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,39 +77,41 @@ public class ForgotPassword extends AppCompatActivity {
                                         progressBar.setVisibility(View.GONE);
                                         btnSendOTP.setVisibility(View.VISIBLE);
 
-                                        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                "+84" + edtPhone.getText().toString(),
-                                                60,
-                                                TimeUnit.SECONDS,
-                                                ForgotPassword.this,
-                                                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                                    @Override
-                                                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                                                        progressBar.setVisibility(View.GONE);
-                                                        btnSendOTP.setVisibility(View.VISIBLE);
-                                                    }
+                                        PhoneAuthProvider.verifyPhoneNumber(
+                                                PhoneAuthOptions
+                                                        .newBuilder(FirebaseAuth.getInstance())
+                                                        .setActivity(ForgotPassword.this)
+                                                        .setPhoneNumber("+84" + edtPhone.getText().toString())
+                                                        .setTimeout(60L, TimeUnit.SECONDS)
+                                                        .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                                            @Override
+                                                            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSendOTP.setVisibility(View.VISIBLE);
+                                                            }
 
-                                                    @Override
-                                                    public void onVerificationFailed(FirebaseException e) {
-                                                        progressBar.setVisibility(View.GONE);
-                                                        btnSendOTP.setVisibility(View.VISIBLE);
-                                                        Toast.makeText(ForgotPassword.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
+                                                            @Override
+                                                            public void onVerificationFailed(FirebaseException e) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSendOTP.setVisibility(View.VISIBLE);
+                                                                Toast.makeText(ForgotPassword.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            }
 
-                                                    @Override
-                                                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                                        progressBar.setVisibility(View.GONE);
-                                                        btnSendOTP.setVisibility(View.VISIBLE);
-                                                        Toast.makeText(ForgotPassword.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(ForgotPassword.this, VerifyPhone.class);
-                                                        intent.putExtra("phone", edtPhone.getText().toString());
-                                                        intent.putExtra("verificationId", verificationId);
-                                                        intent.putExtra("isForgotPassword", "true");
-                                                        startActivity(intent);
-                                                        finish();
-                                                    }
-                                                }
-                                        );
+                                                            @Override
+                                                            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                btnSendOTP.setVisibility(View.VISIBLE);
+                                                                Toast.makeText(ForgotPassword.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
+                                                                Intent intent = new Intent(ForgotPassword.this, VerifyPhone.class);
+                                                                intent.putExtra("phone", edtPhone.getText().toString());
+                                                                intent.putExtra("verificationId", verificationId);
+                                                                intent.putExtra("isForgotPassword", "true");
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        })
+                                                        .build());
+
                                     } else {
                                         progressBar.setVisibility(View.GONE);
                                         btnSendOTP.setVisibility(View.VISIBLE);

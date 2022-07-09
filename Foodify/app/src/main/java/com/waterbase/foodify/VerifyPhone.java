@@ -22,6 +22,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -90,28 +91,30 @@ public class VerifyPhone extends AppCompatActivity {
             public void onClick(View v) {
                 resendCode.setVisibility(View.GONE);
                 countdown.setVisibility(View.VISIBLE);
-                PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                        "+84" + phone,
-                        60,
-                        TimeUnit.SECONDS,
-                        VerifyPhone.this,
-                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                            @Override
-                            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                            }
 
-                            @Override
-                            public void onVerificationFailed(FirebaseException e) {
-                                Toast.makeText(VerifyPhone.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                PhoneAuthProvider.verifyPhoneNumber(
+                        PhoneAuthOptions
+                                .newBuilder(FirebaseAuth.getInstance())
+                                .setActivity(VerifyPhone.this)
+                                .setPhoneNumber("+84" + phone)
+                                .setTimeout(60L, TimeUnit.SECONDS)
+                                .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                    @Override
+                                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                                    }
 
-                            @Override
-                            public void onCodeSent(String newVerificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                verificationId = newVerificationId;
-                                Toast.makeText(VerifyPhone.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                );
+                                    @Override
+                                    public void onVerificationFailed(FirebaseException e) {
+                                        Toast.makeText(VerifyPhone.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onCodeSent(String newVerificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                        verificationId = newVerificationId;
+                                        Toast.makeText(VerifyPhone.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .build());
 
                 count.start();
             }

@@ -15,7 +15,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -100,41 +102,40 @@ public class SignUp extends AppCompatActivity {
                                                 Toast.makeText(SignUp.this, "Số điện thoại đã được đăng ký!", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             } else {
+                                                PhoneAuthOptions options =
+                                                        PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+                                                                .setPhoneNumber("+84" + edtPhone.getText().toString())       // Phone number to verify
+                                                                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                                                                .setActivity(SignUp.this)                 // Activity (for callback binding)
+                                                                .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                                                    @Override
+                                                                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                                                                        progressBar.setVisibility(View.GONE);
+                                                                        btnSignUp.setVisibility(View.VISIBLE);
+                                                                    }
 
-                                                //Success
-                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                        "+84" + edtPhone.getText().toString(),
-                                                        60,
-                                                        TimeUnit.SECONDS,
-                                                        SignUp.this,
-                                                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                                            @Override
-                                                            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                                                                progressBar.setVisibility(View.GONE);
-                                                                btnSignUp.setVisibility(View.VISIBLE);
-                                                            }
+                                                                    @Override
+                                                                    public void onVerificationFailed(FirebaseException e) {
+                                                                        progressBar.setVisibility(View.GONE);
+                                                                        btnSignUp.setVisibility(View.VISIBLE);
+                                                                        Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    }
 
-                                                            @Override
-                                                            public void onVerificationFailed(FirebaseException e) {
-                                                                progressBar.setVisibility(View.GONE);
-                                                                btnSignUp.setVisibility(View.VISIBLE);
-                                                                Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                            }
-
-                                                            @Override
-                                                            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                                                progressBar.setVisibility(View.GONE);
-                                                                btnSignUp.setVisibility(View.VISIBLE);
-                                                                User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                                                                Intent intent = new Intent(SignUp.this, VerifyPhone.class);
-                                                                intent.putExtra("user", user);
-                                                                intent.putExtra("phone", edtPhone.getText().toString());
-                                                                intent.putExtra("verificationId", verificationId);
-                                                                startActivity(intent);
-                                                                finish();
-                                                            }
-                                                        }
-                                                );
+                                                                    @Override
+                                                                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                                                        progressBar.setVisibility(View.GONE);
+                                                                        btnSignUp.setVisibility(View.VISIBLE);
+                                                                        User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                                                        Intent intent = new Intent(SignUp.this, VerifyPhone.class);
+                                                                        intent.putExtra("user", user);
+                                                                        intent.putExtra("phone", edtPhone.getText().toString());
+                                                                        intent.putExtra("verificationId", verificationId);
+                                                                        startActivity(intent);
+                                                                        finish();
+                                                                    }
+                                                                })          // OnVerificationStateChangedCallbacks
+                                                                .build();
+                                                PhoneAuthProvider.verifyPhoneNumber(options);
                                             }
                                         }
 
