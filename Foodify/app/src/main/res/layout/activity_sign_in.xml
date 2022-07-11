@@ -136,24 +136,25 @@
         android:fontFamily="@font/regular"
         android:textAlignment="center"
         android:textColor="#FBFBFB"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias=".3"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toStartOf="@+id/textViewB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 
     <TextView
+        android:id="@+id/textViewB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:text="Đăng ký tại đây!"
         android:fontFamily="@font/bold"
+        android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/purple_500"
         android:onClick="register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 

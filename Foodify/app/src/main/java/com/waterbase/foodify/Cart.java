@@ -240,7 +240,9 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                 if (isChecked) {
                     if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) || Common.currentUser.getHomeAddress() != null) {
                         edtAddress.setText(Common.currentUser.getHomeAddress());
+                        edtAddress.setEnabled(false);
                     } else
+                        edtAddress.setEnabled(false);
                         Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -251,7 +253,11 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
+                {
                     edtAddress.setText("");
+                    edtAddress.setEnabled(true);
+                }
+
             }
         });
 
@@ -275,6 +281,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
                                         address = firstObject.getString("formatted_address");
                                         edtAddress.setText(address);
+                                        edtAddress.setEnabled(false);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }

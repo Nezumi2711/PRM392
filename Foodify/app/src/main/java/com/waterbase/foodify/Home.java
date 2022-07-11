@@ -1,10 +1,13 @@
 package com.waterbase.foodify;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +29,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -61,6 +66,8 @@ import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
@@ -74,6 +81,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     FirebaseDatabase database;
     DatabaseReference category;
+
+    final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!_])(?=\\S+$).{4,}$";
 
     RecyclerView recyler_menu;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
@@ -148,7 +157,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         //Set font to navigation
         Menu m = navigationView.getMenu();
-        for (int i=0;i<m.size();i++) {
+        for (int i = 0; i < m.size(); i++) {
             MenuItem mi = m.getItem(i);
 
             //for aapplying a font to subMenu ...
@@ -222,12 +231,61 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Setup Slider
         setupSlider();
 
+        if(!NotificationManagerCompat.from(this).areNotificationsEnabled()){
+            showNotificationAlertDialog("Hãy bật quyền thông báo trên thiết bị của bạn để chúng thôi có thể cung cấp thông tin cho bạn một cách nhanh nhất!");
+        }
+        
+
+    }
+
+    private void showNotificationAlertDialog(String msg) {
+        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
+                .setTitle("Thông báo!")
+                .setMessage(msg)
+                .setPositiveButton("Đồng ý", null)
+                .setNegativeButton("Để sau", null)
+                .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button agree = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+                agree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
+                        intent.setData(uri);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        alertDialog.dismiss();
+                    }
+                });
+
+                Button disagree = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                disagree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Paper.book().write("sub_new", "false");
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        alertDialog.show();
+        TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+        Typeface face=Typeface.createFromAsset(getAssets(),"fonts/regular.ttf");
+        textView.setTypeface(face);
     }
 
     private void applyFontToMenuItem(MenuItem mi) {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/regular.ttf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
-        mNewTitle.setSpan(new CustomTypefaceSpan("" , font), 0 , mNewTitle.length(),  Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
 
@@ -241,14 +299,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot postSnapShot: dataSnapshot.getChildren())
-                {
+                for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
                     Banner banner = postSnapShot.getValue(Banner.class);
 
                     image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
                 }
-                for(String key: image_list.keySet())
-                {
+                for (String key : image_list.keySet()) {
                     String[] keySplit = key.split("@@@");
                     String nameOfFood = keySplit[0];
                     String idOfFood = keySplit[1];
@@ -342,8 +398,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             showSettingDialog();
         } else if (id == R.id.nav_favorites) {
             startActivity(new Intent(Home.this, FavoritesActivity.class));
-        }
-        else if (id == R.id.nav_log_out) {
+        } else if (id == R.id.nav_log_out) {
 
             //Delete Remember user & password
             Paper.book().destroy();
@@ -372,7 +427,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Add code remember state of Checkbox
         Paper.init(this);
         String isSubscribe = Paper.book().read("sub_new");
-        if(isSubscribe == null || TextUtils.isEmpty(isSubscribe) || isSubscribe.equals("false"))
+        if (isSubscribe == null || TextUtils.isEmpty(isSubscribe) || isSubscribe.equals("false"))
             ckb_subscribe_new.setChecked(false);
         else
             ckb_subscribe_new.setChecked(true);
@@ -384,14 +439,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-                if(ckb_subscribe_new.isChecked())
-                {
+                if (ckb_subscribe_new.isChecked()) {
                     FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
                     //Write value
                     Paper.book().write("sub_new", "true");
-                }
-                else
-                {
+                    if(!NotificationManagerCompat.from(Home.this).areNotificationsEnabled()){
+                        showNotificationAlertDialog("Oops, máy bạn chưa được bật thông báo! Bạn có muốn bật để nhận thông báo từ hệ thống báo không?");
+                    }
+                } else {
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(Common.topicName);
                     //Write value
                     Paper.book().write("sub_new", "false");
@@ -451,52 +506,79 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         alertDialog.setView(layout_pwd);
 
-        //Button
-        alertDialog.setPositiveButton("Đổi mật khẩu", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Đổi mật khẩu", null);
+
+        AlertDialog d = alertDialog.create();
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onShow(DialogInterface dialog) {
+                Button changePassword = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                changePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.app.AlertDialog waitingDialog = new SpotsDialog(Home.this);
+                        waitingDialog.show();
 
-                android.app.AlertDialog waitingDialog = new SpotsDialog(Home.this);
-                waitingDialog.show();
+                        if (!TextUtils.isEmpty(edtPassword.getText().toString()) && !TextUtils.isEmpty(edtNewPassword.getText().toString()) && !TextUtils.isEmpty(edtRepeatPassword.getText().toString())) {
+                            //Verify password
+                            Pattern patternPassword = Pattern.compile(PASSWORD_PATTERN);
+                            Matcher matcherPassword = patternPassword.matcher(edtRepeatPassword.getText().toString());
 
-                //Check old password
-                if(edtPassword.getText().toString().equals(Common.currentUser.getPassword())) {
+                            if (matcherPassword.matches() && edtRepeatPassword.getText().toString().length() >= 8) {
+                                //Check old password
+                                if (edtPassword.getText().toString().equals(Common.currentUser.getPassword())) {
 
-                    //Check new password and repeat password
-                    if(edtNewPassword.getText().toString().equals(edtRepeatPassword.getText().toString())){
-                        Map<String, Object> passwordUpdate = new HashMap<>();
-                        passwordUpdate.put("password", edtNewPassword.getText().toString());
+                                    //Check new password and repeat password
+                                    if (edtNewPassword.getText().toString().equals(edtRepeatPassword.getText().toString())) {
+                                        Map<String, Object> passwordUpdate = new HashMap<>();
+                                        passwordUpdate.put("password", edtNewPassword.getText().toString());
 
-                        //Make update
-                        DatabaseReference user = FirebaseDatabase.getInstance().getReference("User");
-                        user.child(Common.currentUser.getPhone())
-                                .updateChildren(passwordUpdate)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
+                                        //Make update
+                                        DatabaseReference user = FirebaseDatabase.getInstance().getReference("User");
+                                        user.child(Common.currentUser.getPhone())
+                                                .updateChildren(passwordUpdate)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        waitingDialog.dismiss();
+                                                        Common.currentUser.setPassword(edtNewPassword.getText().toString());
+                                                        Toast.makeText(Home.this, "Mật khẩu đã được cập nhật!", Toast.LENGTH_SHORT).show();
+                                                        d.dismiss();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(Home.this, "Đã xảy ra lỗi hệ thống: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    } else {
                                         waitingDialog.dismiss();
-                                        Toast.makeText(Home.this, "Mật khẩu đã được cập nhật!", Toast.LENGTH_SHORT).show();
+                                        edtRepeatPassword.setError("Mật khẩu chưa khớp! Vui lòng thử lại!");
                                     }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(Home.this, "Đã xảy ra lỗi hệ thống: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    } else {
-                        waitingDialog.dismiss();
-                        Toast.makeText(Home.this, "Mật khẩu chưa khớp! Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    waitingDialog.dismiss();
+                                    edtPassword.setError("Sai mật khẩu, vui lòng thử lại!");
+                                }
+                            } else {
+                                waitingDialog.dismiss();
+                                Toast.makeText(Home.this, "Mật khẩu của bạn cần tối thiểu có 8 ký tự, 1 ký tự viết hoa, 1 số và 1 ký tự đặc biệt!", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            waitingDialog.dismiss();
+                            if(TextUtils.isEmpty(edtPassword.getText().toString())){
+                                edtPassword.setError("Vui lòng điền vào trường này!");
+                            } else if(TextUtils.isEmpty(edtNewPassword.getText().toString())){
+                                edtNewPassword.setError("Vui lòng điền vào trường này!");
+                            } else if(TextUtils.isEmpty(edtRepeatPassword.getText().toString())){
+                                edtRepeatPassword.setError("Vui lòng điền vào trường này!");
+                            }
+                        }
                     }
-                } else {
-                    waitingDialog.dismiss();
-                    Toast.makeText(Home.this, "Sai mật khẩu! Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                }
+                });
             }
         });
-
-        AlertDialog dialog = alertDialog.create();
-        dialog.show();
+        d.show();
     }
 
     @Override
@@ -508,7 +590,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_search)
+        if (item.getItemId() == R.id.menu_search)
             startActivity(new Intent(Home.this, SearchActivity.class));
 
         return super.onOptionsItemSelected(item);

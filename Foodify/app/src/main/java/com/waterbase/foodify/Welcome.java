@@ -100,17 +100,16 @@ public class Welcome extends AppCompatActivity {
                             startActivity(homeIntent);
                             finish();
                         } else {
-                            Toast.makeText(Welcome.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            Paper.book().destroy();
                         }
                     } else {
                         mDialog.dismiss();
-                        Toast.makeText(Welcome.this, "Số điện thoại chưa được đăng ký. Vui lòng đăng ký để sử dụng!", Toast.LENGTH_SHORT).show();
+                        Paper.book().destroy();
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
         } else {

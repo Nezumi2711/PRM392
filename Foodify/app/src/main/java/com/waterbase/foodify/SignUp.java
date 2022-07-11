@@ -42,7 +42,7 @@ public class SignUp extends AppCompatActivity {
     Button btnSignUp;
     TextView txtAppName;
 
-    final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+    final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!_])(?=\\S+$).{4,}$";
     final String PHONE_PATTERN = "^0[98753]{1}\\d{8}$";
 
 
