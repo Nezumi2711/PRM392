@@ -92,7 +92,7 @@ public class OrderDetail extends AppCompatActivity {
         btnPay = findViewById(R.id.btnPay);
         btnZaloPay = findViewById(R.id.btnZaloPay);
 
-        lstFoods = (RecyclerView) findViewById(R.id.lstFoods);
+        lstFoods = findViewById(R.id.lstFoods);
         lstFoods.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         lstFoods.setLayoutManager(layoutManager);

@@ -77,14 +77,35 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/btn_delete"
-            android:src="@drawable/ic_baseline_delete_24"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dp"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:layout_gravity="center"
+            >
+
+
+            <ImageView
+                android:id="@+id/btn_detail"
+                android:src="@drawable/ic_baseline_assignment_24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <ImageView
+                android:id="@+id/btn_delete"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

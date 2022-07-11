@@ -9,21 +9,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 import com.waterbase.foodify.Model.Order;
-import com.waterbase.foodify.OrderDetail;
+import com.waterbase.foodify.OrderStatusDetail;
 import com.waterbase.foodify.R;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class OrderDetailAdapter extends RecyclerView.Adapter<MyViewHolder>{
+public class OrderStatusDetailAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
     List<Order> myOrders;
-    private OrderDetail orderDetail;
+    private OrderStatusDetail orderStatusDetail;
 
-    public OrderDetailAdapter(List<Order> myOrders, OrderDetail orderDetail) {
+    public OrderStatusDetailAdapter(List<Order> myOrders, OrderStatusDetail orderStatusDetail) {
         this.myOrders = myOrders;
-        this.orderDetail = orderDetail;
+        this.orderStatusDetail = orderStatusDetail;
     }
 
     @NonNull
@@ -39,7 +39,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<MyViewHolder>{
         double totalPrice;
         Order order = myOrders.get(position);
 
-        Picasso.with(orderDetail.getBaseContext())
+        Picasso.with(orderStatusDetail.getBaseContext())
                 .load(myOrders.get(position).getImage())
                 .resize(70,70)
                 .centerCrop()

@@ -14,7 +14,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
 
     public TextView txtOrderId, txtOrderStatus, txtOrderAddress, txtOrderDate, txtOrderPayment;
 
-    public ImageView btn_delete;
+    public ImageView btn_delete, btn_detail;
 
     public OrderViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -25,5 +25,6 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
         txtOrderDate = itemView.findViewById(R.id.order_date);
         txtOrderPayment = itemView.findViewById(R.id.order_payment);
         btn_delete = itemView.findViewById(R.id.btn_delete);
+        btn_detail = itemView.findViewById(R.id.btn_detail);
     }
 }

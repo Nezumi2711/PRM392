@@ -1,15 +1,18 @@
 package com.waterbase.foodify;
 
-import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,11 +26,6 @@ import com.google.firebase.database.Query;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.Request;
 import com.waterbase.foodify.ViewHolder.OrderViewHolder;
-
-import io.github.inflationx.calligraphy3.CalligraphyConfig;
-import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
-import io.github.inflationx.viewpump.ViewPump;
-import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class OrderStatus extends AppCompatActivity {
 
@@ -86,6 +84,18 @@ public class OrderStatus extends AppCompatActivity {
                 orderViewHolder.txtOrderAddress.setText("Địa chỉ: " + model.getAddress());
                 orderViewHolder.txtOrderDate.setText("Ngày đặt: " + Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
                 orderViewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + Common.convertCodePaymentToStatus(model.getPaymentStatus()));
+
+                orderViewHolder.btn_detail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Pass object to another activity!
+                        Intent intent = new Intent(OrderStatus.this, OrderStatusDetail.class);
+                        intent.putExtra("requests", model);
+                        startActivity(intent);
+                    }
+                });
+
+
                 orderViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -110,15 +120,34 @@ public class OrderStatus extends AppCompatActivity {
     }
 
     private void deleteOrder(String key) {
-        requests.child(key)
-                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        AlertDialog alertDialog = new AlertDialog.Builder(OrderStatus.this).setTitle("Xác nhận").setMessage("Bạn có muốn xoá đơn #" + key).setPositiveButton("Đồng ý",null)
+                        .setNegativeButton("Thoát", null)
+                        .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button agree = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                agree.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(OrderStatus.this, new StringBuilder("Đơn hàng ").append(key).append(" đã xoá!").toString(), Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        requests.child(key)
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(OrderStatus.this, new StringBuilder("Đơn hàng ").append(key).append(" đã xoá!").toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener((e) -> {
+                                    Toast.makeText(OrderStatus.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                        alertDialog.dismiss();
                     }
-                }).addOnFailureListener((e) -> {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+            }
+        });
+
+        alertDialog.show();
+
     }
 
     @Override
@@ -135,5 +164,11 @@ public class OrderStatus extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.startListening();
     }
 }
