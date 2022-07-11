@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,138 +7,143 @@
     android:background="@drawable/bg4"
     tools:context=".OrderDetail">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/order_info"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardElevation="4dp"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical"
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/order_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_weight="9"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/order_total"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical|start"
-                    android:textAllCaps="true"
-                    android:fontFamily="@font/bold"
-                    android:text="100000 VND"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="9"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/order_address"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical|start"
-                    android:textAllCaps="true"
-                    android:fontFamily="@font/italic"
-                    android:text="Address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/order_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/bold"
+                        android:gravity="center_vertical|start"
+                        android:text="100000 VND"
+                        android:textAllCaps="true" />
 
-                <TextView
-                    android:id="@+id/order_comment"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical|start"
-                    android:textAllCaps="true"
-                    android:fontFamily="@font/italic"
-                    android:text="Comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/order_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/italic"
+                        android:gravity="center_vertical|start"
+                        android:text="Address"
+                        android:textAllCaps="true" />
+
+                    <TextView
+                        android:id="@+id/order_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/italic"
+                        android:gravity="center_vertical|start"
+                        android:text="Comment"
+                        android:textAllCaps="true" />
+                </LinearLayout>
+
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:layout_marginLeft="8dp"
+        android:text="Chi tiết đơn:"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
-    <LinearLayout
-        android:id="@+id/orderDetail"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:layout_below="@+id/order_info"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginBottom="20dp"
-            android:text="Chi tiết đơn:"
-            android:fontFamily="@font/regular"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lstFoods"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_below="@id/orderDetail"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lstFoods"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/btnPaymentMethod"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="500dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <LinearLayout
+        android:id="@+id/btnPaymentMethod"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnZaloPay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_gravity="center"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/regular"
+            android:gravity="center"
+            android:text="Thanh toán bằng ZaloPay"
+            android:textAllCaps="false"
+            android:textColor="#0068FF"
             app:icon="@drawable/zalopayfix"
-            app:iconTint="@null"
             app:iconGravity="textStart"
             app:iconPadding="10dp"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="@font/regular"
-            android:text="Thanh toán bằng ZaloPay"
-            android:textColor="#0068FF"
-            android:backgroundTint="@color/white"
-            />
+            app:iconTint="@null"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPay"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_gravity="center"
-            app:iconTint="@null"
+            android:fontFamily="@font/regular"
+            android:gravity="center"
+            android:text="Thanh toán khi nhận hàng"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             app:iconGravity="textStart"
             app:iconPadding="10dp"
-            android:gravity="center"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Thanh toán khi nhận hàng"
-            android:fontFamily="@font/regular"
-            android:textColor="@color/white"
-            />
+            app:iconTint="@null"/>
+
 
     </LinearLayout>
 
-</RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -241,10 +241,10 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                     if (!TextUtils.isEmpty(Common.currentUser.getHomeAddress()) || Common.currentUser.getHomeAddress() != null) {
                         edtAddress.setText(Common.currentUser.getHomeAddress());
                         edtAddress.setEnabled(false);
-                    } else
+                    } else {
                         edtAddress.setEnabled(false);
                         Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
-
+                    }
                 }
             }
         });

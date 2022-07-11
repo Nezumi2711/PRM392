@@ -178,7 +178,6 @@ public class VerifyPhone extends AppCompatActivity {
 
                                                     Toast.makeText(VerifyPhone.this, "Tạo tài khoản thành công! Vui lòng đăng nhập lại để tiếp tục", Toast.LENGTH_SHORT).show();
                                                     startActivity(intent);
-                                                    finish();
                                                 } else {
 
                                                     //Change pass user
@@ -186,8 +185,8 @@ public class VerifyPhone extends AppCompatActivity {
                                                     intent.putExtra("user", user);
                                                     intent.putExtra("phone", phone);
                                                     startActivity(intent);
-                                                    finish();
                                                 }
+                                                finish();
                                             }
 
                                             @Override
