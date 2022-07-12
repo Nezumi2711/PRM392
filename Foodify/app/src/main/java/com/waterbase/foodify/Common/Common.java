@@ -17,6 +17,8 @@ import java.util.Locale;
 public class Common {
     public static User currentUser;
 
+    public static String versionAppNewest = "";
+
     public static String PHONE_TEXT = "userPhone";
 
     public static Location currentLocation;

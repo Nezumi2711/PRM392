@@ -155,10 +155,9 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cart.size() > 0){
+                if (cart.size() > 0) {
                     showAlertDialog();
-                }
-                else
+                } else
                     Toast.makeText(Cart.this, "Giỏ hàng của bạn đang trống!!!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -167,7 +166,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
         //Location
 
-        if(Common.currentLocation == null) {
+        if (Common.currentLocation == null) {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mSettingsClient = LocationServices.getSettingsClient(this);
 
@@ -199,7 +198,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
                         @Override
                         public void onPermissionDenied(PermissionDeniedResponse response) {
-                            if(response.isPermanentlyDenied()){
+                            if (response.isPermanentlyDenied()) {
                                 openSettings();
                             }
                         }
@@ -255,8 +254,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         rdiAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
+                if (isChecked) {
                     edtAddress.setText("");
                     edtAddress.setEnabled(true);
                 }
@@ -265,11 +263,11 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         });
 
         //Add event
-        if(Common.currentAddress == null) {
-            rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
+        rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (Common.currentAddress == null) {
                         mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
                                         Common.currentLocation.getLatitude(),
                                         Common.currentLocation.getLongitude()))
@@ -297,15 +295,14 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                                         Log.i("LOCATION", "" + t.getMessage());
                                     }
                                 });
+                    } else {
+                        edtAddress.setText(Common.currentAddress);
+                        edtAddress.setEnabled(false);
                     }
+
                 }
-            });
-        } else {
-            edtAddress.setText(Common.currentAddress);
-            edtAddress.setEnabled(false);
-        }
-
-
+            }
+        });
 
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_baseline_shopping_cart_24);
@@ -440,7 +437,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
     //Location
 
-    private void openSettings(){
+    private void openSettings() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
@@ -449,7 +446,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         startActivity(intent);
     }
 
-    private void startLocationUpdates(){
+    private void startLocationUpdates() {
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest).addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
             @SuppressLint("MissingPermission")
             @Override
@@ -461,14 +458,14 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
             @Override
             public void onFailure(@NonNull Exception e) {
                 int statusCode = ((ApiException) e).getStatusCode();
-                switch (statusCode){
+                switch (statusCode) {
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         Log.i(TAG, "Location settings are not satisfied. Attempting to upgrade location settings");
 
                         try {
                             ResolvableApiException rae = (ResolvableApiException) e;
                             rae.startResolutionForResult(Cart.this, REQUEST_CHECK_SETTINGS);
-                        }catch (IntentSender.SendIntentException sie){
+                        } catch (IntentSender.SendIntentException sie) {
                             Log.i(TAG, "PendingIntent unable to execute request");
                         }
                         break;
@@ -482,11 +479,11 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         });
     }
 
-    private void stopLocationUpdates(){
+    private void stopLocationUpdates() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallBack).addOnCompleteListener(this, task -> Log.d(TAG, "Location updates stopped!"));
     }
 
-    private boolean checkPermission(){
+    private boolean checkPermission() {
         int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
@@ -494,7 +491,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     @Override
     protected void onResume() {
         super.onResume();
-        if(mRequestingLocationUpdates && checkPermission()){
+        if (mRequestingLocationUpdates && checkPermission()) {
             startLocationUpdates();
         }
         visibilityTextEmpty();
@@ -503,13 +500,13 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     @Override
     protected void onPause() {
         super.onPause();
-        if(mRequestingLocationUpdates){
+        if (mRequestingLocationUpdates) {
             stopLocationUpdates();
         }
     }
 
-    private void visibilityTextEmpty(){
-        if(cart.size() > 0){
+    private void visibilityTextEmpty() {
+        if (cart.size() > 0) {
             txtEmptyCart.setVisibility(View.GONE);
         } else {
             txtEmptyCart.setVisibility(View.VISIBLE);

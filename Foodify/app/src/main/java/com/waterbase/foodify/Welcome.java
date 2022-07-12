@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +32,9 @@ public class Welcome extends AppCompatActivity {
     Button btnSignIn, btnSignUp;
     TextView txtSlogan, txtAppName;
 
+    FirebaseDatabase database;
+    DatabaseReference version;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,23 @@ public class Welcome extends AppCompatActivity {
 
         //Init paper
         Paper.init(this);
+
+
+        database = FirebaseDatabase.getInstance();
+        version = database.getReference("Version");
+
+        version.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = snapshot.getValue(String.class);
+                Common.versionAppNewest = value;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Welcome.this, "Không thể truy xuất phiên bản app!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {

@@ -1,7 +1,5 @@
 package com.waterbase.foodify;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -70,14 +68,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
-import io.github.inflationx.calligraphy3.CalligraphyConfig;
-import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
-import io.github.inflationx.viewpump.ViewPump;
-import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.paperdb.Paper;
 
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    String versionNameApp = BuildConfig.VERSION_NAME;
 
     FirebaseDatabase database;
     DatabaseReference category;
@@ -177,6 +173,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
 
+        if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
+            alertDialogUpdate();
+        }
+
+
         FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
                 .setQuery(category, Category.class)
                 .build();
@@ -236,6 +237,32 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         }
         
 
+    }
+
+    private void alertDialogUpdate() {
+        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
+                .setTitle("Thông báo!")
+                .setMessage("Hiện tại đã có phiên bản mới hơn! Vui lòng cập nhật ứng dụng để mang đến những trải nghiệm tốt nhất!")
+                .setPositiveButton("Đồng ý", null)
+                .setNegativeButton("Để sau", null)
+                .create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button agree = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+                agree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri uri = Uri.parse("https://drive.google.com/uc?id=1uDUvpzJt8p96iDNMdNrsR9lqVAT06gqk&export=download");
+                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+        alertDialog.show();
     }
 
     private void showNotificationAlertDialog(String msg) {
