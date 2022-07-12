@@ -87,8 +87,6 @@ import retrofit2.Response;
 
 public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
-    String address = null;
-
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
@@ -168,46 +166,51 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         loadListFood();
 
         //Location
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mSettingsClient = LocationServices.getSettingsClient(this);
 
-        mLocationCallBack = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                mCurrentLocation = locationResult.getLastLocation();
-            }
-        };
+        if(Common.currentLocation == null) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mSettingsClient = LocationServices.getSettingsClient(this);
 
-        mLocationRequest = LocationRequest.create()
-                        .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
-                        .setFastestInterval(FASTEST_UPDATE_IN_MILLISECONDS)
-                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
+            mLocationCallBack = new LocationCallback() {
+                @Override
+                public void onLocationResult(@NonNull LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    mCurrentLocation = locationResult.getLastLocation();
+                    Common.currentLocation = mCurrentLocation;
+                }
+            };
 
-        Dexter.withContext(this)
-                        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                mRequestingLocationUpdates = true;
-                                startLocationUpdates();
+            mLocationRequest = LocationRequest.create()
+                    .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
+                    .setFastestInterval(FASTEST_UPDATE_IN_MILLISECONDS)
+                    .setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+            builder.addLocationRequest(mLocationRequest);
+            mLocationSettingsRequest = builder.build();
+
+            Dexter.withContext(this)
+                    .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                            mRequestingLocationUpdates = true;
+                            startLocationUpdates();
+                        }
+
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse response) {
+                            if(response.isPermanentlyDenied()){
+                                openSettings();
                             }
+                        }
 
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
-                                if(response.isPermanentlyDenied()){
-                                    openSettings();
-                                }
-                            }
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check();
+        }
 
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                                token.continuePermissionRequest();
-                            }
-                        }).check();
 
         setTitle("Giỏ hàng");
         // calling the action bar
@@ -262,40 +265,46 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         });
 
         //Add event
-        rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
-                                    mCurrentLocation.getLatitude(),
-                                    mCurrentLocation.getLongitude()))
-                            .enqueue(new Callback<String>() {
-                                @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(response.body());
+        if(Common.currentAddress == null) {
+            rdiShipToAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        mGoogleMapService.getAddressName(String.format("https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs",
+                                        Common.currentLocation.getLatitude(),
+                                        Common.currentLocation.getLongitude()))
+                                .enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response.body());
 
-                                        JSONArray resultsArray = jsonObject.getJSONArray("results");
+                                            JSONArray resultsArray = jsonObject.getJSONArray("results");
 
-                                        JSONObject firstObject = resultsArray.getJSONObject(0);
+                                            JSONObject firstObject = resultsArray.getJSONObject(0);
 
-                                        address = firstObject.getString("formatted_address");
-                                        edtAddress.setText(address);
-                                        edtAddress.setEnabled(false);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                            Common.currentAddress = firstObject.getString("formatted_address");
+                                            edtAddress.setText(Common.currentAddress);
+                                            edtAddress.setEnabled(false);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    Toast.makeText(Cart.this, "Error to get location: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    Log.i("LOCATION", "" + t.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        Toast.makeText(Cart.this, "Error to get location: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.i("LOCATION", "" + t.getMessage());
+                                    }
+                                });
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            edtAddress.setText(Common.currentAddress);
+            edtAddress.setEnabled(false);
+        }
+
 
 
         alertDialog.setView(order_address_comment);

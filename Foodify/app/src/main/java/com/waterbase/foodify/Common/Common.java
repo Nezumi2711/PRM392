@@ -1,6 +1,7 @@
 package com.waterbase.foodify.Common;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.DateFormat;
@@ -17,6 +18,9 @@ public class Common {
     public static User currentUser;
 
     public static String PHONE_TEXT = "userPhone";
+
+    public static Location currentLocation;
+    public static String currentAddress;
 
     public static String topicName = "News";
 

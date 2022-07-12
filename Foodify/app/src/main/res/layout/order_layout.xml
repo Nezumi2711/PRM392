@@ -67,6 +67,26 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/order_count"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|start"
+                android:textAllCaps="true"
+                android:fontFamily="@font/italic"
+                android:text="Count of Order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/order_price"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|start"
+                android:textAllCaps="true"
+                android:fontFamily="@font/italic"
+                android:text="Order Total Price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
                 android:id="@+id/order_payment"
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical|start"

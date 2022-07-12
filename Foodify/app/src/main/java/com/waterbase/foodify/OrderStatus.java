@@ -84,6 +84,8 @@ public class OrderStatus extends AppCompatActivity {
                 orderViewHolder.txtOrderAddress.setText("Địa chỉ: " + model.getAddress());
                 orderViewHolder.txtOrderDate.setText("Ngày đặt: " + Common.getDate(Long.parseLong(adapter.getRef(i).getKey())));
                 orderViewHolder.txtOrderPayment.setText("Tình trạng thanh toán: " + Common.convertCodePaymentToStatus(model.getPaymentStatus()));
+                orderViewHolder.txtOrderCount.setText("Số lượng món ăn: " + model.getFoods().size());
+                orderViewHolder.txtOrderPrice.setText("Tổng cộng: " + model.getTotal());
 
                 orderViewHolder.btn_detail.setOnClickListener(new View.OnClickListener() {
                     @Override

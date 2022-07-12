@@ -12,7 +12,7 @@ import com.waterbase.foodify.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView txtOrderId, txtOrderStatus, txtOrderAddress, txtOrderDate, txtOrderPayment;
+    public TextView txtOrderId, txtOrderStatus, txtOrderAddress, txtOrderDate, txtOrderPayment, txtOrderCount, txtOrderPrice;
 
     public ImageView btn_delete, btn_detail;
 
@@ -24,6 +24,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
         txtOrderStatus = itemView.findViewById(R.id.order_status);
         txtOrderDate = itemView.findViewById(R.id.order_date);
         txtOrderPayment = itemView.findViewById(R.id.order_payment);
+        txtOrderCount = itemView.findViewById(R.id.order_count);
+        txtOrderPrice = itemView.findViewById(R.id.order_price);
+
         btn_delete = itemView.findViewById(R.id.btn_delete);
         btn_detail = itemView.findViewById(R.id.btn_detail);
     }
