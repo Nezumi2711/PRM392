@@ -1,7 +1,9 @@
 package com.waterbase.foodify;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,6 +89,11 @@ public class VerifyPhone extends AppCompatActivity {
             }
         };
         count.start();
+
+        requestSMSPermission();
+        new OTP_Receiver().setEditText(inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6);
+
+
 
         resendCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,5 +305,18 @@ public class VerifyPhone extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void requestSMSPermission()
+    {
+        String permission = Manifest.permission.RECEIVE_SMS;
+
+        int grant = ContextCompat.checkSelfPermission(this, permission);
+        if(grant != PackageManager.PERMISSION_GRANTED){
+            String[] permission_list = new String[1];
+            permission_list[0] = permission;
+
+            ActivityCompat.requestPermissions(this, permission_list, 1);
+        }
     }
 }
