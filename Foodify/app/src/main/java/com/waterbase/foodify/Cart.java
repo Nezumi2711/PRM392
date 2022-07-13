@@ -244,6 +244,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                         edtAddress.setText(Common.currentUser.getHomeAddress());
                         edtAddress.setEnabled(false);
                     } else {
+                        edtAddress.setText("");
                         edtAddress.setEnabled(false);
                         Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
                     }
