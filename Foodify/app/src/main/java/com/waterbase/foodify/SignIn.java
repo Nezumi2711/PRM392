@@ -58,7 +58,7 @@ public class SignIn extends AppCompatActivity {
                     //Save user& password
                     if(ckbRemember.isChecked()) {
                         Paper.book().write(Common.USER_KEY, edtPhone.getText().toString());
-                        Paper.book().write(Common.PWD_KEY, edtPassword.getText().toString());
+                        Paper.book().write(Common.PWD_KEY, Common.encryptPassword(edtPassword.getText().toString()));
                     }
                     final ProgressDialog mDialog = new ProgressDialog(SignIn.this);
                     mDialog.setMessage("Xin vui lòng chờ...");
@@ -77,7 +77,7 @@ public class SignIn extends AppCompatActivity {
                                     mDialog.dismiss();
                                     User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
                                     user.setPhone(edtPhone.getText().toString());
-                                    if (user.getPassword().equals(edtPassword.getText().toString())) {
+                                    if (user.getPassword().equals(Common.encryptPassword(edtPassword.getText().toString()))) {
                                         Intent homeIntent = new Intent(SignIn.this, Home.class);
                                         Common.currentUser = user;
                                         startActivity(homeIntent);

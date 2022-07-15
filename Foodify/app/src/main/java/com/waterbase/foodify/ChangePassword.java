@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
 
 import java.util.regex.Matcher;
@@ -58,7 +59,7 @@ public class ChangePassword extends AppCompatActivity {
 
                     //Check same password
                     if (edtPassword.getText().toString().equals(edtPasswordVerify.getText().toString())) {
-                        table_user.child(phone).child("password").setValue(edtPasswordVerify.getText().toString());
+                        table_user.child(phone).child("password").setValue(Common.encryptPassword(edtPasswordVerify.getText().toString()));
                         Toast.makeText(ChangePassword.this, "Đổi mật khẩu thành công. Vui lòng đăng nhập lại để tiếp tục!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(ChangePassword.this, SignIn.class));
                         finish();

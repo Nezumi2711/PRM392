@@ -125,7 +125,7 @@ public class SignUp extends AppCompatActivity {
                                                                     public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                                                                         progressBar.setVisibility(View.GONE);
                                                                         btnSignUp.setVisibility(View.VISIBLE);
-                                                                        User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                                                        User user = new User(edtName.getText().toString(), Common.encryptPassword(edtPassword.getText().toString()));
                                                                         Intent intent = new Intent(SignUp.this, VerifyPhone.class);
                                                                         intent.putExtra("user", user);
                                                                         intent.putExtra("phone", edtPhone.getText().toString());

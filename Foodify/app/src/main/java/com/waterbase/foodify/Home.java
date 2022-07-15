@@ -73,6 +73,8 @@ import io.paperdb.Paper;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private long backPressedTime;
+
     String versionNameApp = BuildConfig.VERSION_NAME;
 
     FirebaseDatabase database;
@@ -471,7 +473,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     //Write value
                     Paper.book().write("sub_new", "true");
                     if(!NotificationManagerCompat.from(Home.this).areNotificationsEnabled()){
-                        showNotificationAlertDialog("Oops, máy bạn chưa được bật thông báo! Bạn có muốn bật để nhận thông báo từ hệ thống báo không?");
+                        showNotificationAlertDialog("Oops, máy bạn chưa được cấp quyền thông báo! Bạn có muốn bật để nhận thông báo từ hệ thống không?");
                     }
                 } else {
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(Common.topicName);
@@ -621,5 +623,18 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             startActivity(new Intent(Home.this, SearchActivity.class));
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(this, "Nhấn BACK 1 lần nữa để thoát!", Toast.LENGTH_SHORT).show();
+        }
+
+        backPressedTime = System.currentTimeMillis();
+
     }
 }
