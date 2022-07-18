@@ -182,8 +182,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
             alertDialogUpdate();
-        } else {
-            alertDialogNewest();
         }
 
 
@@ -276,7 +274,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private void alertDialogNewest() {
         AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
                 .setTitle("Thông báo!")
-                .setMessage("Hiện tại đã có phiên bản mới hơn! Vui lòng cập nhật ứng dụng để mang đến những trải nghiệm tốt nhất!")
+                .setMessage("Bạn đã cập nhật phiên bản mới nhất!")
                 .setPositiveButton("Tôi biết rồi", null)
                 .create();
         alertDialog.show();
