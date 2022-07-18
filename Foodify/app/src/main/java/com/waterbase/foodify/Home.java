@@ -258,7 +258,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 agree.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url = "https://github.com/Piashsarker/AndroidAppUpdateLibrary/raw/master/app-debug.apk";
+                        String url = "https://github.com/Nezumi2711/PRM392/raw/main/Foodify/app/debug/app-debug.apk";
                         DownloadApk downloadApk = new DownloadApk(Home.this);
                         downloadApk.startDownloadingApk(url);
                         alertDialog.dismiss();
