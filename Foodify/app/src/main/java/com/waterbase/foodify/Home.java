@@ -1,7 +1,9 @@
 package com.waterbase.foodify;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -75,6 +78,7 @@ import io.paperdb.Paper;
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private long backPressedTime;
+    private static final int MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1001;
 
     String versionNameApp = BuildConfig.VERSION_NAME;
 
@@ -258,15 +262,51 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 agree.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url = "https://github.com/Nezumi2711/PRM392/raw/main/Foodify/app/debug/app-debug.apk";
-                        DownloadApk downloadApk = new DownloadApk(Home.this);
-                        downloadApk.startDownloadingApk(url);
+                        checkWriteExternalStoragePermission();
                         alertDialog.dismiss();
                     }
                 });
             }
         });
         alertDialog.show();
+    }
+
+    private void checkWriteExternalStoragePermission() {
+
+        if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // If we have permission than we can Start the Download the task
+            downloadTask();
+        } else {
+            //  If we don't have permission than requesting  the permission
+            requestWriteExternalStoragePermission();
+        }
+    }
+
+    private void requestWriteExternalStoragePermission() {
+        if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Home.this,  new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else{
+            ActivityCompat.requestPermissions(Home.this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE && grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            downloadTask();
+        } else {
+            Toast.makeText(Home.this, "Permission Not Granted.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void downloadTask() {
+        // This @DownloadApk class is provided by our library
+        // Pass the Context when creating object of DownloadApk
+
+        String url = "https://github.com/Nezumi2711/PRM392/raw/main/Foodify/app/debug/app-debug.apk";
+        DownloadApk downloadApk = new DownloadApk(Home.this);
+        downloadApk.startDownloadingApk(url);
     }
 
     private void showNotificationAlertDialog(String msg) {
