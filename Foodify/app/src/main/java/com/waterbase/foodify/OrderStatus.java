@@ -2,7 +2,9 @@ package com.waterbase.foodify;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,9 +61,10 @@ public class OrderStatus extends AppCompatActivity {
         
         loadOrders(Common.currentUser.getPhone());
 
-        setTitle("Tình trạng đơn hàng");
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Tình trạng đơn hàng</font>"));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

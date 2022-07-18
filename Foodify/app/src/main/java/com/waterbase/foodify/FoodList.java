@@ -9,8 +9,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -183,6 +185,8 @@ public class FoodList extends AppCompatActivity {
 
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>" + categoryName +"</font>"));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

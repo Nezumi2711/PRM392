@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -210,10 +212,10 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                     }).check();
         }
 
-
-        setTitle("Giỏ hàng");
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Giỏ hàng</font>"));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

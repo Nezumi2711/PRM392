@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,8 +57,6 @@ public class ShowComment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_show_comment);
-
-        setTitle("Bình luận");
 
         //Firebase
         database = FirebaseDatabase.getInstance();
@@ -145,6 +145,8 @@ public class ShowComment extends AppCompatActivity {
 
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Bình luận</font>"));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

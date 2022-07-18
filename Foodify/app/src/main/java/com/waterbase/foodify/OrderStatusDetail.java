@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -33,8 +35,6 @@ public class OrderStatusDetail extends AppCompatActivity {
         setContentView(R.layout.activity_order_status_detail);
 
         String comment = "";
-
-        setTitle("Thông tin chi tiết đơn hàng");
 
         order_address = findViewById(R.id.order_address);
         order_total = findViewById(R.id.order_total);
@@ -67,6 +67,8 @@ public class OrderStatusDetail extends AppCompatActivity {
 
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Thông tin chi tiết đơn hàng</font>"));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

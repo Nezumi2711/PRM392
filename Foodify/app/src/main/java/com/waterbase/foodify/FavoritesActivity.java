@@ -2,7 +2,9 @@ package com.waterbase.foodify;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -47,8 +49,6 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
         setContentView(R.layout.activity_favorites);
 
-        setTitle("Danh sách yêu thích");
-
         rootLayout = findViewById(R.id.rootLayout);
 
         txtEmptyList = findViewById(R.id.txtEmptyList);
@@ -66,6 +66,9 @@ public class FavoritesActivity extends AppCompatActivity implements RecyclerItem
 
         // calling the action bar
         ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Danh sách yêu thích</font>"));
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFFF5353));
 
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true);

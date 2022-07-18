@@ -39,6 +39,7 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.dcastalia.localappupdate.DownloadApk;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -257,8 +258,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 agree.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Uri uri = Uri.parse("https://drive.google.com/uc?id=1uDUvpzJt8p96iDNMdNrsR9lqVAT06gqk&export=download");
-                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                        String url = "https://github.com/Piashsarker/AndroidAppUpdateLibrary/raw/master/app-debug.apk";
+                        DownloadApk downloadApk = new DownloadApk(Home.this);
+                        downloadApk.startDownloadingApk(url);
                         alertDialog.dismiss();
                     }
                 });
@@ -442,7 +444,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
-        return true;
+        return false;
     }
 
     private void showSettingDialog() {
