@@ -304,7 +304,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // This @DownloadApk class is provided by our library
         // Pass the Context when creating object of DownloadApk
 
-        String url = "https://github.com/Nezumi2711/PRM392/raw/main/Foodify/app/debug/app-debug.apk";
+        String url = "https://github.com/Nezumi2711/PRM392/raw/main/app-debug.apk";
         DownloadApk downloadApk = new DownloadApk(Home.this);
         downloadApk.startDownloadingApk(url);
     }
