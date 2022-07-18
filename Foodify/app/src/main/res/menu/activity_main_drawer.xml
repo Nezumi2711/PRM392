@@ -38,6 +38,12 @@
             android:iconTint="@color/white"
             />
         <item
+            android:id="@+id/nav_update"
+            android:icon="@drawable/ic_baseline_download_24"
+            android:title="Kiểm tra cập nhật"
+            android:iconTint="@color/white"
+            />
+        <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_baseline_exit_to_app_24"
             android:iconTint="@color/white"

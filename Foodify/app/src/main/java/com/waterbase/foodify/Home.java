@@ -182,6 +182,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
             alertDialogUpdate();
+        } else {
+            alertDialogNewest();
         }
 
 
@@ -271,6 +273,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         alertDialog.show();
     }
 
+    private void alertDialogNewest() {
+        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
+                .setTitle("Thông báo!")
+                .setMessage("Hiện tại đã có phiên bản mới hơn! Vui lòng cập nhật ứng dụng để mang đến những trải nghiệm tốt nhất!")
+                .setPositiveButton("Tôi biết rồi", null)
+                .create();
+        alertDialog.show();
+    }
+
     private void checkWriteExternalStoragePermission() {
 
         if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -306,7 +317,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         String url = "https://github.com/Nezumi2711/PRM392/raw/main/app-debug.apk";
         DownloadApk downloadApk = new DownloadApk(Home.this);
-        downloadApk.startDownloadingApk(url);
+        downloadApk.startDownloadingApk(url, "Update 2.0");
     }
 
     private void showNotificationAlertDialog(String msg) {
@@ -469,6 +480,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             showSettingDialog();
         } else if (id == R.id.nav_favorites) {
             startActivity(new Intent(Home.this, FavoritesActivity.class));
+        } else if (id == R.id.nav_update) {
+            if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
+                alertDialogUpdate();
+            } else {
+                alertDialogNewest();
+            }
         } else if (id == R.id.nav_log_out) {
 
             //Delete Remember user & password
