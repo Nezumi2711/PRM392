@@ -1,0 +1,15 @@
+<resources>
+    <string name="latest_version">Hiện tại bạn đang ở bản mới nhất!</string>
+    <string name="start_download">Bắt đầu tải</string>
+    <string name="start_download_hint">Bạn có thể kiểm tra tiến trình tải sau ít phút!</string>
+    <string name="start_downloading">Tải phiên bản mới</string>
+    <string name="download_completed">Đã tải xong</string>
+    <string name="click_hint">Nhấn đề cài đặt</string>
+    <string name="download_error">Tải bị lỗi</string>
+    <string name="continue_downloading">Nhấn để tiếp tục tải</string>
+    <string name="background_downloading">Ứng dụng đang được tải ở dưới nền!</string>
+    <string name="dialog_new">Phiên bản v%s đã ra mắt! Hãy cập nhật ngay!</string>
+    <string name="dialog_new_size">Dung lượng tệp：%sMB</string>
+    <string name="update">Cập nhật</string>
+
+</resources>

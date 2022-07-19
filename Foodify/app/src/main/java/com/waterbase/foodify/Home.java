@@ -38,11 +38,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.andremion.counterfab.CounterFab;
+import com.azhon.appupdate.manager.DownloadManager;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.dcastalia.localappupdate.DownloadApk;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -97,6 +97,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     //Slider
     HashMap<String, String> image_list;
     SliderLayout mSlider;
+
+    DownloadManager manager = null;
 
 
     @Override
@@ -180,7 +182,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
 
-        if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
+        if (Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)) {
             alertDialogUpdate();
         }
 
@@ -239,36 +241,30 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Setup Slider
         setupSlider();
 
-        if(!NotificationManagerCompat.from(this).areNotificationsEnabled()){
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
             showNotificationAlertDialog("Hãy bật quyền thông báo trên thiết bị của bạn để chúng thôi có thể cung cấp thông tin cho bạn một cách nhanh nhất!");
         }
-        
+
 
     }
 
     private void alertDialogUpdate() {
-        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
-                .setTitle("Thông báo!")
-                .setMessage("Hiện tại đã có phiên bản mới hơn! Vui lòng cập nhật ứng dụng để mang đến những trải nghiệm tốt nhất!")
-                .setPositiveButton("Đồng ý", null)
-                .setNegativeButton("Để sau", null)
-                .create();
+        String url = "https://github.com/Nezumi2711/PRM392/raw/main/app-debug.apk";
+        manager = new DownloadManager.Builder(Home.this)
+                .apkUrl(url)
+                .apkName("app-debug.apk")
+                .smallIcon(R.mipmap.ic_launcher)
+                .apkVersionCode(3)
+                .apkSize("26.5")
+                .showNotification(false)
+                .showBgdToast(false)
+                .apkVersionName(Common.versionAppNewest + ".0 ")
+                .apkDescription("1. Sửa lỗi đặt hàng!\n2. Cải thiện hiệu suất\n3. Tối ưu giao diện\n4. Cập nhật thư viện app.")
+                .dialogProgressBarColor(0xFFFF5353)
+                .jumpInstallPage(false)
+                .build();
 
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Button agree = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-                agree.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        checkWriteExternalStoragePermission();
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
-        alertDialog.show();
+        manager.download();
     }
 
     private void alertDialogNewest() {
@@ -278,44 +274,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 .setPositiveButton("Tôi biết rồi", null)
                 .create();
         alertDialog.show();
-    }
-
-    private void checkWriteExternalStoragePermission() {
-
-        if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            // If we have permission than we can Start the Download the task
-            downloadTask();
-        } else {
-            //  If we don't have permission than requesting  the permission
-            requestWriteExternalStoragePermission();
-        }
-    }
-
-    private void requestWriteExternalStoragePermission() {
-        if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Home.this,  new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else{
-            ActivityCompat.requestPermissions(Home.this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE && grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            downloadTask();
-        } else {
-            Toast.makeText(Home.this, "Permission Not Granted.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void downloadTask() {
-        // This @DownloadApk class is provided by our library
-        // Pass the Context when creating object of DownloadApk
-
-        String url = "https://github.com/Nezumi2711/PRM392/raw/main/app-debug.apk";
-        DownloadApk downloadApk = new DownloadApk(Home.this);
-        downloadApk.startDownloadingApk(url, "Update 2.0");
     }
 
     private void showNotificationAlertDialog(String msg) {
@@ -358,7 +316,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         alertDialog.show();
         TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
-        Typeface face=Typeface.createFromAsset(getAssets(),"fonts/regular.ttf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/regular.ttf");
         textView.setTypeface(face);
     }
 
@@ -479,7 +437,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         } else if (id == R.id.nav_favorites) {
             startActivity(new Intent(Home.this, FavoritesActivity.class));
         } else if (id == R.id.nav_update) {
-            if(Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)){
+            if (Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)) {
                 alertDialogUpdate();
             } else {
                 alertDialogNewest();
@@ -529,7 +487,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     FirebaseMessaging.getInstance().subscribeToTopic(Common.topicName);
                     //Write value
                     Paper.book().write("sub_new", "true");
-                    if(!NotificationManagerCompat.from(Home.this).areNotificationsEnabled()){
+                    if (!NotificationManagerCompat.from(Home.this).areNotificationsEnabled()) {
                         showNotificationAlertDialog("Oops, máy bạn chưa được cấp quyền thông báo! Bạn có muốn bật để nhận thông báo từ hệ thống không?");
                     }
                 } else {
@@ -652,11 +610,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                             }
                         } else {
                             waitingDialog.dismiss();
-                            if(TextUtils.isEmpty(edtPassword.getText().toString())){
+                            if (TextUtils.isEmpty(edtPassword.getText().toString())) {
                                 edtPassword.setError("Vui lòng điền vào trường này!");
-                            } else if(TextUtils.isEmpty(edtNewPassword.getText().toString())){
+                            } else if (TextUtils.isEmpty(edtNewPassword.getText().toString())) {
                                 edtNewPassword.setError("Vui lòng điền vào trường này!");
-                            } else if(TextUtils.isEmpty(edtRepeatPassword.getText().toString())){
+                            } else if (TextUtils.isEmpty(edtRepeatPassword.getText().toString())) {
                                 edtRepeatPassword.setError("Vui lòng điền vào trường này!");
                             }
                         }
@@ -684,7 +642,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public void onBackPressed() {
-        if(backPressedTime + 2000 > System.currentTimeMillis()) {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
             return;
         } else {

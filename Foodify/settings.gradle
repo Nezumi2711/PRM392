@@ -8,3 +8,4 @@ pluginManagement {
 
 rootProject.name = "Foodify"
 include ':app'
+include ':appupdate'
