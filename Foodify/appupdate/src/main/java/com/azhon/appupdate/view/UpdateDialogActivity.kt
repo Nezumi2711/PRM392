@@ -67,7 +67,6 @@ class UpdateDialogActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun initView() {
         val ibClose = findViewById<View>(R.id.ib_close)
-        val vLine = findViewById<View>(R.id.line)
         val ivBg = findViewById<ImageView>(R.id.iv_bg)
         val tvTitle = findViewById<TextView>(R.id.tv_title)
         val tvSize = findViewById<TextView>(R.id.tv_size)

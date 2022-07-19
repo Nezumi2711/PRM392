@@ -1,10 +1,11 @@
 package com.waterbase.foodify;
 
-import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
@@ -29,7 +32,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -268,12 +270,41 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void alertDialogNewest() {
-        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
-                .setTitle("Thông báo!")
-                .setMessage("Bạn đã cập nhật phiên bản mới nhất!")
-                .setPositiveButton("Tôi biết rồi", null)
-                .create();
-        alertDialog.show();
+//        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
+//                .setTitle("Thông báo!")
+//                .setMessage("Bạn đã cập nhật phiên bản mới nhất!")
+//                .setPositiveButton("Tôi biết rồi", null)
+//                .create();
+//        alertDialog.show();
+        final Dialog dialog = new Dialog(Home.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_newest);
+
+        final TextView dialogTitle = dialog.findViewById(R.id.tv_title);
+        final TextView dialogContent = dialog.findViewById(R.id.tv_content);
+        final Button btnClose = dialog.findViewById(R.id.btn_close);
+
+        dialogTitle.setText("Bạn đã cập nhật phiên bản mới nhất!");
+        dialogContent.setText("Phiên bản hiện tại: v" + Common.versionAppNewest +  ".0!");
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+
+        window.setLayout(Math.round(getResources().getDisplayMetrics().widthPixels * 0.75f), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        dialog.show();
     }
 
     private void showNotificationAlertDialog(String msg) {

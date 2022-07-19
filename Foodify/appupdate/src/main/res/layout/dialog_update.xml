@@ -22,10 +22,11 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="18sp"
             tools:text="发现新版v2.0.1可以下载啦！" />
 
         <TextView
@@ -34,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/italic"
             android:layout_marginRight="16dp"
             android:textColor="#757575"
             android:textSize="14sp"
@@ -52,6 +54,7 @@
                 android:id="@+id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/regular"
                 android:lineSpacingMultiplier="1.1"
                 android:textColor="#757575"
                 android:textSize="14sp"
@@ -72,6 +75,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/bold"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/bg_button"
