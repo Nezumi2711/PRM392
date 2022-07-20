@@ -1,6 +1,7 @@
 package com.waterbase.foodify;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -69,6 +70,7 @@ import com.waterbase.foodify.Model.Category;
 import com.waterbase.foodify.Model.Token;
 import com.waterbase.foodify.ViewHolder.MenuViewHolder;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -81,7 +83,6 @@ import io.paperdb.Paper;
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private long backPressedTime;
-    private static final int MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1001;
 
     String versionNameApp = BuildConfig.VERSION_NAME;
 
@@ -181,14 +182,19 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             applyFontToMenuItem(mi);
         }
 
-        //Init database
-        database = FirebaseDatabase.getInstance();
-        category = database.getReference("Category");
-
+        //Check Update
         if (Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)) {
             alertDialogUpdate();
         }
 
+        //Get size Cache
+        if(getSizeCache() > 50 && Double.parseDouble(versionNameApp) == Double.parseDouble(Common.versionAppNewest)){
+            deleteCache(this);
+        }
+
+        //Init database
+        database = FirebaseDatabase.getInstance();
+        category = database.getReference("Category");
 
         FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
                 .setQuery(category, Category.class)
@@ -251,6 +257,29 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     }
 
+    private long getSizeCache() {
+        long size = 0;
+        size += getDirSize(this.getCacheDir());
+        size += getDirSize(this.getExternalCacheDir());
+        return (size/1024)/1024;
+    }
+
+    public long getDirSize(File dir){
+        long size = 0;
+        for (File file : dir.listFiles()) {
+            if (file != null && file.isDirectory()) {
+                size += getDirSize(file);
+            } else if (file != null && file.isFile()) {
+                size += file.length();
+            }
+        }
+        return size;
+    }
+
+    private void checkUpdate(){
+
+    }
+
     private void alertDialogUpdate() {
         String url = "https://github.com/Nezumi2711/PRM392/raw/main/app-debug.apk";
         manager = new DownloadManager.Builder(Home.this)
@@ -261,7 +290,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 .apkSize("26.5")
                 .showNotification(false)
                 .showBgdToast(false)
-                .apkVersionName(Common.versionAppNewest + ".0 ")
+                .apkVersionName(Common.versionAppNewest + " ")
                 .apkDescription(String.format(Common.changelog))
                 .dialogProgressBarColor(0xFFFF5353)
                 .jumpInstallPage(false)
@@ -285,7 +314,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         final Button btnClose = dialog.findViewById(R.id.btn_close);
 
         dialogTitle.setText("Bạn đã cập nhật phiên bản mới nhất!");
-        dialogContent.setText("Phiên bản hiện tại: v" + Common.versionAppNewest +  ".0!");
+        dialogContent.setText("Phiên bản hiện tại: v" + Common.versionAppNewest +  "!");
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -680,5 +709,29 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         backPressedTime = System.currentTimeMillis();
 
+    }
+
+    private static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) { e.printStackTrace();}
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
     }
 }
