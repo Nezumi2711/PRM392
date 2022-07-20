@@ -261,7 +261,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 .showNotification(false)
                 .showBgdToast(false)
                 .apkVersionName(Common.versionAppNewest + ".0 ")
-                .apkDescription("-Sửa lỗi giao diện!")
+                .apkDescription(Common.changelog)
                 .dialogProgressBarColor(0xFFFF5353)
                 .jumpInstallPage(false)
                 .build();

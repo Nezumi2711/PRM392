@@ -33,7 +33,7 @@ public class Welcome extends AppCompatActivity {
     TextView txtSlogan, txtAppName;
 
     FirebaseDatabase database;
-    DatabaseReference version;
+    DatabaseReference version, changelog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +52,7 @@ public class Welcome extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         version = database.getReference("Version");
+        changelog = database.getReference("Changelog");
 
         version.addValueEventListener(new ValueEventListener() {
             @Override
@@ -63,6 +64,19 @@ public class Welcome extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(Welcome.this, "Không thể truy xuất phiên bản app!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        changelog.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String changelog  = snapshot.getValue(String.class);
+                Common.changelog = changelog;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
