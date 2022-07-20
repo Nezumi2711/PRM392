@@ -41,8 +41,10 @@ import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.ViewHolder.FoodViewHolder;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
@@ -271,6 +273,10 @@ public class FoodList extends AppCompatActivity {
     }
 
     private void loadListFood(String categoryId) {
+
+        Locale locale = new Locale("vi", "VN");
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+
         //Create query by category Id
         Query searchByName = foodList.orderByChild("menuId").equalTo(categoryId);
         //Create Options with query
@@ -284,16 +290,18 @@ public class FoodList extends AppCompatActivity {
                 viewHolder.food_name.setText(model.getName());
 
                 if (Integer.parseInt(model.getDiscount()) > 0) {
-                    String foodPrice = model.getPrice() + "đ";
+
+
+                    String foodPrice = fmt.format(Long.parseLong(model.getPrice()));
                     long newFoodPrice = Long.parseLong(model.getPrice()) - Long.parseLong(model.getPrice()) * Long.parseLong(model.getDiscount()) / 100;
                     SpannableStringBuilder spnBuilder = new SpannableStringBuilder(foodPrice);
                     StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
                     spnBuilder.setSpan(strikethroughSpan, 0, foodPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.food_price.setText(spnBuilder);
-                    viewHolder.newPrice.setText(newFoodPrice + "đ");
+                    viewHolder.newPrice.setText(fmt.format(newFoodPrice));
                     viewHolder.discount.setText("- " + model.getDiscount() + "%");
                 } else {
-                    viewHolder.food_price.setText(String.format("%s đ", model.getPrice()));
+                    viewHolder.food_price.setText(fmt.format(Long.parseLong(model.getPrice())));
                     viewHolder.discount.setVisibility(View.GONE);
                     viewHolder.newPrice.setVisibility(View.GONE);
                 }

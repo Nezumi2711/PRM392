@@ -38,7 +38,9 @@ import com.waterbase.foodify.Model.Food;
 import com.waterbase.foodify.Model.Order;
 import com.waterbase.foodify.Model.Rating;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 
 import info.hoang8f.widget.FButton;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
@@ -201,6 +203,9 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     }
 
     private void getDetailFood(String foodId) {
+        Locale locale = new Locale("vi", "VN");
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+
         foods.child(foodId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -211,7 +216,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
                 collapsingToolbarLayout.setTitle(currentFood.getName());
 
-                food_price.setText(currentFood.getPrice());
+                food_price.setText(fmt.format(Long.parseLong(currentFood.getPrice())));
 
                 food_name.setText(currentFood.getName());
 
