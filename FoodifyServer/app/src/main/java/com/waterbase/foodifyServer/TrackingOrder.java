@@ -64,11 +64,11 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-    private static int UPDATE_INTERVAL = 1000;
-    private static int FATEST_INTERVAL = 5000;
-    private static int DISPLACEMENT = 10;
+    private static final int UPDATE_INTERVAL = 1000;
+    private static final int FATEST_INTERVAL = 5000;
+    private static final int DISPLACEMENT = 10;
 
-    private static String MAP_API = "AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs";
+    private static final String MAP_API = "AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs";
 
     private IGeoCoordinates mService;
 
