@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.azhon.appupdate.util.ApkUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.waterbase.foodify.Common.Common;
 import com.waterbase.foodify.Model.User;
+
+import java.io.File;
 
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
@@ -49,7 +52,9 @@ public class Welcome extends AppCompatActivity {
         //Init paper
         Paper.init(this);
 
+        deleteCache(this);
 
+        ApkUtil.Companion.deleteOldApk(this, "${externalCacheDir?.path}/app-debug.apk");
         database = FirebaseDatabase.getInstance();
         version = database.getReference("Version");
         changelog = database.getReference("Changelog");
@@ -150,6 +155,30 @@ public class Welcome extends AppCompatActivity {
         } else {
             Toast.makeText(Welcome.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
             return;
+        }
+    }
+
+    public static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) { e.printStackTrace();}
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
         }
     }
 

@@ -41,6 +41,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.andremion.counterfab.CounterFab;
 import com.azhon.appupdate.manager.DownloadManager;
+import com.azhon.appupdate.util.ApkUtil;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -265,6 +266,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 .dialogProgressBarColor(0xFFFF5353)
                 .jumpInstallPage(false)
                 .build();
+
+        ApkUtil.Companion.deleteOldApk(this, "${externalCacheDir?.path}/app-debug.apk");
 
         manager.download();
     }
