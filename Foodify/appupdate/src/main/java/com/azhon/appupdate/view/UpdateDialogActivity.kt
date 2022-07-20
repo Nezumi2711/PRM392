@@ -71,11 +71,13 @@ class UpdateDialogActivity : AppCompatActivity(), View.OnClickListener {
         val tvTitle = findViewById<TextView>(R.id.tv_title)
         val tvSize = findViewById<TextView>(R.id.tv_size)
         val tvDescription = findViewById<TextView>(R.id.tv_description)
+
         progressBar = findViewById(R.id.np_bar)
         btnUpdate = findViewById(R.id.btn_update)
         progressBar.visibility = View.VISIBLE
         btnUpdate.tag = 0
         btnUpdate.setOnClickListener(this)
+        progressBar.visibility = View.GONE
         ibClose.setOnClickListener(this)
         if (manager.dialogImage != -1) {
             ivBg.setBackgroundResource(manager.dialogImage)
@@ -133,6 +135,7 @@ class UpdateDialogActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
                 if (!manager.forcedUpgrade) {
+                    progressBar.visibility = View.VISIBLE
                     btnUpdate.isEnabled = false
                     btnUpdate.text = resources.getString(R.string.background_downloading)
                 } else {
