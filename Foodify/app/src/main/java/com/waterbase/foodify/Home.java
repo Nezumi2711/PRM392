@@ -1,7 +1,6 @@
 package com.waterbase.foodify;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -83,6 +82,8 @@ import io.paperdb.Paper;
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private long backPressedTime;
+
+    public static File apkFile = new File("/storage/emulated/0/Android/data/com.waterbase.foodify/cache/app-debug.apk");
 
     String versionNameApp = BuildConfig.VERSION_NAME;
 
@@ -185,11 +186,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //Check Update
         if (Double.parseDouble(versionNameApp) < Double.parseDouble(Common.versionAppNewest)) {
             alertDialogUpdate();
-        }
-
-        //Get size Cache
-        if(getSizeCache() > 50 && Double.parseDouble(versionNameApp) == Double.parseDouble(Common.versionAppNewest)){
-            deleteCache(this);
+        } else {
+            if(apkFile.exists())
+                apkFile.delete();
         }
 
         //Init database
@@ -254,29 +253,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             showNotificationAlertDialog("Hãy bật quyền thông báo trên thiết bị của bạn để chúng thôi có thể cung cấp thông tin cho bạn một cách nhanh nhất!");
         }
 
-
-    }
-
-    private long getSizeCache() {
-        long size = 0;
-        size += getDirSize(this.getCacheDir());
-        size += getDirSize(this.getExternalCacheDir());
-        return (size/1024)/1024;
-    }
-
-    public long getDirSize(File dir){
-        long size = 0;
-        for (File file : dir.listFiles()) {
-            if (file != null && file.isDirectory()) {
-                size += getDirSize(file);
-            } else if (file != null && file.isFile()) {
-                size += file.length();
-            }
-        }
-        return size;
-    }
-
-    private void checkUpdate(){
 
     }
 
@@ -709,29 +685,5 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         backPressedTime = System.currentTimeMillis();
 
-    }
-
-    private static void deleteCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
-    }
-
-    private static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-            return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
-            return dir.delete();
-        } else {
-            return false;
-        }
     }
 }
