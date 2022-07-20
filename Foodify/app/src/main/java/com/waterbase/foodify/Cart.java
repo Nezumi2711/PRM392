@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -310,43 +311,46 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_baseline_shopping_cart_24);
 
-        alertDialog.setPositiveButton("Đặt", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Đặt", null);
+        alertDialog.setNegativeButton("Thoát", null);
+
+        AlertDialog d = alertDialog.create();
+
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onShow(DialogInterface dialog) {
+                Button order = d.getButton(AlertDialog.BUTTON_POSITIVE);
 
-                if (TextUtils.isEmpty(edtAddress.getText().toString())) {
-                    Toast.makeText(Cart.this, "Vui lòng nhập địa chỉ giao hàng!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                order.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (TextUtils.isEmpty(edtAddress.getText().toString())) {
+                            edtAddress.setError("Vui lòng nhập địa chỉ giao hàng!");
+                        } else {
+                            //Create new Request
+                            Request request = new Request(
+                                    Common.currentUser.getPhone(),
+                                    Common.currentUser.getName(),
+                                    edtAddress.getText().toString(),
+                                    txtTotalPrice.getText().toString(),
+                                    "0",
+                                    edtComment.getText().toString(),
+                                    "0",
+                                    cart
+                            );
 
-                //Create new Request
-                Request request = new Request(
-                        Common.currentUser.getPhone(),
-                        Common.currentUser.getName(),
-                        edtAddress.getText().toString(),
-                        txtTotalPrice.getText().toString(),
-                        "0",
-                        edtComment.getText().toString(),
-                        "0",
-                        cart
-                );
-
-                //Pass object to another activity!
-                Intent intent = new Intent(Cart.this, OrderDetail.class);
-                intent.putExtra("requests", request);
-                startActivity(intent);
-
+                            //Pass object to another activity!
+                            Intent intent = new Intent(Cart.this, OrderDetail.class);
+                            intent.putExtra("requests", request);
+                            startActivity(intent);
+                            d.dismiss();
+                        }
+                    }
+                });
             }
         });
 
-        alertDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
+        d.show();
     }
 
 

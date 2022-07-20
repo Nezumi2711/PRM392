@@ -95,7 +95,7 @@
                             android:id="@+id/food_price"
                             android:layout_marginLeft="12dp"
                             android:text="1,000"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="12dp"
                             android:fontFamily="@font/regular"
                             android:textColor="@color/black"
                             android:textSize="18sp"
@@ -110,7 +110,8 @@
                             android:layout_marginRight="12dp"
                             android:layout_marginBottom="18dp"
                             app:textSize="8sp"
-                            app:backGroundColor="@color/purple_500"
+                            app:textColor="@color/purple_500"
+                            app:backGroundColor="@color/white"
                             app:initialNumber="1"
                             app:finalNumber="20"
                             />

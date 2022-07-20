@@ -261,7 +261,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 .showNotification(false)
                 .showBgdToast(false)
                 .apkVersionName(Common.versionAppNewest + ".0 ")
-                .apkDescription("1. Sửa lỗi đặt hàng!\n2. Cải thiện hiệu suất\n3. Tối ưu giao diện\n4. Cập nhật thư viện app.")
+                .apkDescription("-Sửa lỗi giao diện!")
                 .dialogProgressBarColor(0xFFFF5353)
                 .jumpInstallPage(false)
                 .build();
@@ -270,12 +270,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void alertDialogNewest() {
-//        AlertDialog alertDialog = new AlertDialog.Builder(Home.this)
-//                .setTitle("Thông báo!")
-//                .setMessage("Bạn đã cập nhật phiên bản mới nhất!")
-//                .setPositiveButton("Tôi biết rồi", null)
-//                .create();
-//        alertDialog.show();
+
         final Dialog dialog = new Dialog(Home.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
