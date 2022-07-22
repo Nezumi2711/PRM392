@@ -20,6 +20,8 @@ import java.util.Locale;
 public class Common {
     public static User currentUser;
 
+    public final static String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!_])(?=\\S+$).{4,}$";
+
     public static String versionAppNewest = "";
     public static String changelog = "";
 

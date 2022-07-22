@@ -15,7 +15,6 @@ public class User implements Serializable {
     public User(String name, String password){
         Name = name;
         Password = password;
-        IsStaff = "false";
     }
 
     public String getName() {

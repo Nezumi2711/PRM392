@@ -5,10 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home_address"
-            android:icon="@drawable/ic_baseline_home_24"
+            android:id="@+id/nav_information"
+            android:icon="@drawable/ic_baseline_account_circle_24"
             android:iconTint="@color/white"
-            android:title="Địa chỉ mặc định"
+            android:title="Thông tin cá nhân"
             />
         <item
             android:id="@+id/nav_favorites"
@@ -25,12 +25,6 @@
             android:icon="@drawable/ic_baseline_access_time_24"
             android:title="Tình trạng đơn hàng" />
 
-        <item
-            android:id="@+id/nav_change_pwd"
-            android:icon="@drawable/ic_baseline_security_24"
-            android:title="Đổi mật khẩu"
-            android:iconTint="@color/white"
-            />
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_baseline_settings_24"

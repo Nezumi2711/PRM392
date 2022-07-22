@@ -249,7 +249,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                     } else {
                         edtAddress.setText("");
                         edtAddress.setEnabled(false);
-                        Toast.makeText(Cart.this, "Vui lòng điền địa chỉ mặc định của bạn!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Cart.this, "Địa chỉ mặc định chưa có sẵn! Vui lòng điền địa chỉ mặc định trong thông tin cá nhân!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

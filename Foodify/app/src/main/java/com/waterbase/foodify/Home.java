@@ -90,7 +90,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     FirebaseDatabase database;
     DatabaseReference category;
 
-    final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!_])(?=\\S+$).{4,}$";
+
 
     RecyclerView recyler_menu;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
@@ -104,6 +104,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     SliderLayout mSlider;
 
     DownloadManager manager = null;
+
+    TextView navUserName;
 
 
     @Override
@@ -241,7 +243,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
-        TextView navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
+        navUserName = (TextView) headerView.findViewById(R.id.txtFullName);
         navUserName.setText("Xin chào " + Common.currentUser.getName() + "!");
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
@@ -432,6 +434,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     protected void onResume() {
         super.onResume();
         adapter.startListening();
+        navUserName.setText("Xin chào " + Common.currentUser.getName() + "!");
         fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
     }
 
@@ -462,10 +465,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         } else if (id == R.id.nav_order) {
             Intent orderIntent = new Intent(Home.this, OrderStatus.class);
             startActivity(orderIntent);
-        } else if (id == R.id.nav_change_pwd) {
-            showChangePasswordDialog();
-        } else if (id == R.id.nav_home_address) {
-            showHomeAddressDialog();
+        } else if (id == R.id.nav_information) {
+            startActivity(new Intent(Home.this, InformationUser.class));
         } else if (id == R.id.nav_setting) {
             showSettingDialog();
         } else if (id == R.id.nav_favorites) {
@@ -568,95 +569,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         });
 
         alertDialog.show();
-    }
-
-    private void showChangePasswordDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Home.this);
-        alertDialog.setTitle("Đổi mật khẩu");
-        alertDialog.setMessage("Vui lòng điền đầy đủ thông tin");
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View layout_pwd = inflater.inflate(R.layout.change_password_layout, null);
-
-        MaterialEditText edtPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtPassword);
-        MaterialEditText edtNewPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtNewPassword);
-        MaterialEditText edtRepeatPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtRepeatPassword);
-
-        alertDialog.setView(layout_pwd);
-
-        alertDialog.setPositiveButton("Đổi mật khẩu", null);
-
-        AlertDialog d = alertDialog.create();
-        d.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Button changePassword = d.getButton(AlertDialog.BUTTON_POSITIVE);
-                changePassword.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        android.app.AlertDialog waitingDialog = new SpotsDialog(Home.this);
-                        waitingDialog.show();
-
-                        if (!TextUtils.isEmpty(edtPassword.getText().toString()) && !TextUtils.isEmpty(edtNewPassword.getText().toString()) && !TextUtils.isEmpty(edtRepeatPassword.getText().toString())) {
-                            //Verify password
-                            Pattern patternPassword = Pattern.compile(PASSWORD_PATTERN);
-                            Matcher matcherPassword = patternPassword.matcher(edtRepeatPassword.getText().toString());
-
-                            if (matcherPassword.matches() && edtRepeatPassword.getText().toString().length() >= 8) {
-                                //Check old password
-                                if (edtPassword.getText().toString().equals(Common.currentUser.getPassword())) {
-
-                                    //Check new password and repeat password
-                                    if (edtNewPassword.getText().toString().equals(edtRepeatPassword.getText().toString())) {
-                                        Map<String, Object> passwordUpdate = new HashMap<>();
-                                        passwordUpdate.put("password", edtNewPassword.getText().toString());
-
-                                        //Make update
-                                        DatabaseReference user = FirebaseDatabase.getInstance().getReference("User");
-                                        user.child(Common.currentUser.getPhone())
-                                                .updateChildren(passwordUpdate)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        waitingDialog.dismiss();
-                                                        Common.currentUser.setPassword(edtNewPassword.getText().toString());
-                                                        Toast.makeText(Home.this, "Mật khẩu đã được cập nhật!", Toast.LENGTH_SHORT).show();
-                                                        d.dismiss();
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(Home.this, "Đã xảy ra lỗi hệ thống: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    } else {
-                                        waitingDialog.dismiss();
-                                        edtRepeatPassword.setError("Mật khẩu chưa khớp! Vui lòng thử lại!");
-                                    }
-                                } else {
-                                    waitingDialog.dismiss();
-                                    edtPassword.setError("Sai mật khẩu, vui lòng thử lại!");
-                                }
-                            } else {
-                                waitingDialog.dismiss();
-                                Toast.makeText(Home.this, "Mật khẩu của bạn cần tối thiểu có 8 ký tự, 1 ký tự viết hoa, 1 số và 1 ký tự đặc biệt!", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            waitingDialog.dismiss();
-                            if (TextUtils.isEmpty(edtPassword.getText().toString())) {
-                                edtPassword.setError("Vui lòng điền vào trường này!");
-                            } else if (TextUtils.isEmpty(edtNewPassword.getText().toString())) {
-                                edtNewPassword.setError("Vui lòng điền vào trường này!");
-                            } else if (TextUtils.isEmpty(edtRepeatPassword.getText().toString())) {
-                                edtRepeatPassword.setError("Vui lòng điền vào trường này!");
-                            }
-                        }
-                    }
-                });
-            }
-        });
-        d.show();
     }
 
     @Override
