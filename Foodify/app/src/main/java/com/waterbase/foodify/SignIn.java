@@ -84,13 +84,11 @@ public class SignIn extends AppCompatActivity {
                                         finish();
 
                                         table_user.removeEventListener(this);
-                                    } else {
-                                        Toast.makeText(SignIn.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
-                                } else {
-                                    mDialog.dismiss();
-                                    Toast.makeText(SignIn.this, "Số điện thoại chưa được đăng ký. Vui lòng đăng ký để sử dụng!", Toast.LENGTH_SHORT).show();
                                 }
+                                mDialog.dismiss();
+                                Toast.makeText(SignIn.this, "Số điện thoại hoặc mật khẩu không đúng. Xin vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                             } else {
                                 mDialog.dismiss();
                                 Toast.makeText(SignIn.this, "Số điện thoại và mật khẩu không được để trống. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
@@ -108,9 +106,6 @@ public class SignIn extends AppCompatActivity {
                 }
             }
         });
-
-        //Google SignIn Button
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 
         //Set on click Forgot Password
         edtForgotPassword.setOnClickListener(new View.OnClickListener() {

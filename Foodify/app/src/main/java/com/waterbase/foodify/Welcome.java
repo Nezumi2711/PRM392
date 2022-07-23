@@ -24,8 +24,6 @@ import io.paperdb.Paper;
 public class Welcome extends AppCompatActivity {
 
     Button btnSignIn, btnSignUp;
-    TextView txtSlogan, txtAppName;
-
     FirebaseDatabase database;
     DatabaseReference version, changelog;
 
@@ -36,9 +34,6 @@ public class Welcome extends AppCompatActivity {
 
         btnSignIn = (Button) findViewById(R.id.btnSignIn);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
-
-        txtSlogan = (TextView) findViewById(R.id.txtSlogan);
-        txtAppName = (TextView) findViewById(R.id.txtAppName);
 
         //Init paper
         Paper.init(this);
@@ -141,6 +136,7 @@ public class Welcome extends AppCompatActivity {
                 }
             });
         } else {
+            Paper.book().destroy();
             Toast.makeText(Welcome.this, "Vui lòng kiểm tra kết nối mạng!", Toast.LENGTH_SHORT).show();
             return;
         }
