@@ -68,7 +68,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     private static final int FATEST_INTERVAL = 5000;
     private static final int DISPLACEMENT = 10;
 
-    private static final String MAP_API = "AIzaSyCqmoLlawoQzmwjZI2_Yo_V33An_nNZADs";
+    private static final String MAP_API = "YOUR_API";
 
     private IGeoCoordinates mService;
 
